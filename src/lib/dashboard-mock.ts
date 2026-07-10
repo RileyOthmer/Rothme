@@ -27,7 +27,6 @@ export type UpcomingItem = {
 
 export type DashboardData = {
   greetingName: string;
-  timeOfDay: "morning" | "afternoon" | "evening";
   health: {
     status: HealthStatus;
     score: number;
@@ -36,7 +35,8 @@ export type DashboardData = {
     todo: string;
   };
   aiSummary: {
-    greeting: string;
+    // Greeting is derived from time-of-day on the client (AISummary component)
+    // to avoid SSR/locale hydration mismatches.
     paragraph: string;
     recommendations: { id: string; text: string; cta: string }[];
   };
@@ -51,28 +51,12 @@ export type DashboardData = {
   upcoming: UpcomingItem[];
 };
 
-function timeOfDay(): "morning" | "afternoon" | "evening" {
-  const h = new Date().getHours();
-  if (h < 12) return "morning";
-  if (h < 18) return "afternoon";
-  return "evening";
-}
-
 export function getDashboardData(name = "there"): DashboardData {
-  const tod = timeOfDay();
-  const greet =
-    tod === "morning"
-      ? "Good morning"
-      : tod === "afternoon"
-        ? "Good afternoon"
-        : "Good evening";
-
   const newCustomers = 12;
   const lastWeekCustomers = 9;
 
   return {
     greetingName: name,
-    timeOfDay: tod,
     health: {
       status: "healthy",
       score: 82,
