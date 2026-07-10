@@ -99,6 +99,17 @@ function DashboardPage() {
         </p>
       </main>
 
+      <button
+        type="button"
+        onClick={() => openAssistant({ threadKey: "general" })}
+        className="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 rounded-full border border-border-strong bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-md transition-all hover:shadow-lg"
+      >
+        <MessageCircle className="h-4 w-4" />
+        Ask your strategist
+      </button>
+
+      <AssistantPanel />
+
       <Toaster theme="light" position="bottom-right" />
     </div>
   );
