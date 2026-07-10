@@ -7,6 +7,8 @@ import { Toaster } from "sonner";
 import { getProfile } from "@/lib/profile.functions";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { DecisionCenter } from "@/features/decisions/DecisionCenter";
+import { HealthScoreCard } from "@/features/health/HealthScoreCard";
+import { getSeedHealthScore } from "@/features/health/seed";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -37,14 +39,17 @@ function DashboardPage() {
   }, [profileQuery.data, router]);
 
   const firstName = profileQuery.data?.full_name?.split(" ")[0] ?? "there";
+  const health = getSeedHealthScore();
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppHeader />
 
-      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <main className="mx-auto max-w-3xl space-y-10 px-4 py-10 sm:px-6 sm:py-14">
+        <HealthScoreCard score={health} />
         <DecisionCenter firstName={firstName} hasConnections={true} />
       </main>
+
 
       <Toaster position="bottom-right" />
     </div>
