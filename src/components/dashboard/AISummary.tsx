@@ -32,7 +32,7 @@ export function AISummary({
       </div>
 
       <h1 className="font-serif text-[32px] leading-[1.1] tracking-tight text-foreground sm:text-[40px]">
-        {data.greeting}
+        {greeting}
       </h1>
 
       <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-muted-foreground sm:text-base">
