@@ -1,8 +1,27 @@
+import { useEffect, useState } from "react";
 import { Sparkles } from "lucide-react";
 import type { DashboardData } from "@/lib/dashboard-mock";
 import { toast } from "sonner";
 
-export function AISummary({ data }: { data: DashboardData["aiSummary"] }) {
+function greetingForHour(h: number, name: string) {
+  const tod = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+  return `${tod}, ${name}.`;
+}
+
+export function AISummary({
+  data,
+  name = "there",
+}: {
+  data: DashboardData["aiSummary"];
+  name?: string;
+}) {
+  // Render a stable greeting during SSR + first client paint, then swap to
+  // the time-aware one after mount. Prevents hydration mismatch.
+  const [greeting, setGreeting] = useState<string>(`Hello, ${name}.`);
+  useEffect(() => {
+    setGreeting(greetingForHour(new Date().getHours(), name));
+  }, [name]);
+
   return (
     <section className="rounded-2xl border border-border bg-surface p-6 shadow-sm sm:p-9">
       <div className="mb-5 flex items-center gap-2">

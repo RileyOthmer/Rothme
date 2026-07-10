@@ -65,7 +65,6 @@ export function getDashboardData(name = "there"): DashboardData {
       todo: "Keep going — you have one small task today.",
     },
     aiSummary: {
-      greeting: `${greet}, ${name}.`,
       paragraph:
         "Your marketing is performing well. This week your advertising brought in more customers than last week, and people are opening your emails more often. Nothing urgent — a few small moves will keep things trending up.",
       recommendations: [
