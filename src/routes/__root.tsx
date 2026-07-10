@@ -79,13 +79,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Northstar — Marketing on autopilot" },
+      { title: "Velora — Marketing on autopilot" },
       {
         name: "description",
         content:
-          "Northstar reads your marketing for you and tells you — in plain English — what happened, why, and what to do next.",
+          "Velora reads your marketing for you and tells you — in plain English — what happened, why, and what to do next.",
       },
-      { property: "og:title", content: "Northstar — Marketing on autopilot" },
+      { property: "og:title", content: "Velora — Marketing on autopilot" },
       {
         property: "og:description",
         content: "Plain-English marketing insights for business owners. No charts. No jargon.",

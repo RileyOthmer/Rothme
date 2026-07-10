@@ -18,10 +18,10 @@ import {
 export const Route = createFileRoute("/settings/notifications")({
   head: () => ({
     meta: [
-      { title: "Notification settings — Northstar" },
+      { title: "Notification settings — Velora" },
       {
         name: "description",
-        content: "Choose when and how Northstar reaches out.",
+        content: "Choose when and how Velora reaches out.",
       },
     ],
   }),
@@ -77,7 +77,7 @@ function NotificationSettingsPage() {
           You decide when we speak up.
         </h1>
         <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-          Northstar stays quiet by default. Choose which topics matter to you
+          Velora stays quiet by default. Choose which topics matter to you
           and how often you want to hear about them.
         </p>
 

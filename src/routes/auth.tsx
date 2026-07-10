@@ -17,8 +17,8 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Northstar" },
-      { name: "description", content: "Sign in or create a Northstar account." },
+      { title: "Sign in — Velora" },
+      { name: "description", content: "Sign in or create a Velora account." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -184,7 +184,7 @@ function AuthPage() {
           </form>
 
           <p className="mt-6 text-center text-sm text-muted-foreground">
-            {mode === "signin" ? "New to Northstar? " : "Already have an account? "}
+            {mode === "signin" ? "New to Velora? " : "Already have an account? "}
             <button
               type="button"
               onClick={() => setMode(mode === "signin" ? "signup" : "signin")}

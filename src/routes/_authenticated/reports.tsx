@@ -10,7 +10,7 @@ import type { WeeklyReportPayload } from "@/lib/reports-mock";
 export const Route = createFileRoute("/_authenticated/reports")({
   head: () => ({
     meta: [
-      { title: "Weekly reports — Northstar" },
+      { title: "Weekly reports — Velora" },
       {
         name: "description",
         content: "Your weekly plain-English marketing report — what happened, why, and what to do next.",

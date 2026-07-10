@@ -21,7 +21,7 @@ export function Wordmark({ size = "sm" }: { size?: "sm" | "md" }) {
           " font-medium tracking-tight text-foreground transition-opacity group-hover:opacity-80"
         }
       >
-        northstar
+        velora
       </span>
     </Link>
   );

@@ -5,7 +5,7 @@ import { Wordmark } from "@/components/brand/Wordmark";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Northstar — Understand your marketing, not your dashboards" },
+      { title: "Velora — Understand your marketing, not your dashboards" },
       {
         name: "description",
         content:
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/")({
       },
       {
         property: "og:title",
-        content: "Northstar — Understand your marketing, not your dashboards",
+        content: "Velora — Understand your marketing, not your dashboards",
       },
       {
         property: "og:description",
@@ -116,7 +116,7 @@ const pricing = [
 const faqs = [
   {
     q: "Do I need to know anything about marketing?",
-    a: "No. Northstar is written for business owners, not marketers. If you can read an email, you can use it.",
+    a: "No. Velora is written for business owners, not marketers. If you can read an email, you can use it.",
   },
   {
     q: "Which accounts can I connect?",
@@ -132,7 +132,7 @@ const faqs = [
   },
   {
     q: "What if I already have an agency?",
-    a: "Great — keep them. Most customers use Northstar to understand what their agency is doing and to catch things earlier.",
+    a: "Great — keep them. Most customers use Velora to understand what their agency is doing and to catch things earlier.",
   },
 ];
 
@@ -475,7 +475,7 @@ function Footer() {
           />
         </div>
         <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} Northstar.</span>
+          <span>© {new Date().getFullYear()} Velora.</span>
           <span>Made for people who'd rather run their business.</span>
         </div>
       </div>
