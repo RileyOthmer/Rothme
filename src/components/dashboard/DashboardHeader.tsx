@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { RefreshCw, Sparkles } from "lucide-react";
 import { Wordmark } from "@/components/brand/Wordmark";
+import { NotificationBell } from "@/components/notifications/NotificationBell";
+
 
 export function DashboardHeader({ onRefresh }: { onRefresh?: () => void }) {
   // Format the date on the client only — avoids SSR/locale hydration mismatch.
@@ -37,6 +39,7 @@ export function DashboardHeader({ onRefresh }: { onRefresh?: () => void }) {
             <RefreshCw className="h-3.5 w-3.5" />
             Refresh
           </button>
+          <NotificationBell />
           <span
             aria-hidden
             className="grid h-8 w-8 place-items-center rounded-full border border-border bg-surface text-xs font-medium text-foreground shadow-xs"
