@@ -1,99 +1,98 @@
 
-# Dashboard MVP — Plan (revised for "confused-user-first")
+# Brand refresh — calm, premium SaaS
 
-Every card on the dashboard answers the same four questions in order, in the same voice a friend would use. No jargon, no charts, no numbers-without-meaning. If a term isn't in everyday English, we either replace it or explain it inline.
+Shift Northstar from the current dark/indigo Linear look to a calmer, lighter Stripe/Notion/OpenAI direction. This is a design-system change plus a restyle of every existing surface (landing + dashboard). No new features.
 
-## The four-question card contract
+## Brand identity
 
-Every `SectionCard` on the dashboard renders these slots in this order:
+- **Name**: Northstar (keep)
+- **Wordmark**: lowercase `northstar` set in the display face at tight tracking; small circular mark (a soft off-center ring, evoking a compass/star) in ink — replaces the current filled purple square with an "N"
+- **Voice**: quiet, direct, plain English (already established)
 
-1. **What happened** — one short sentence, plain English. ("You got 12 new customers this week.")
-2. **Why** — one sentence of cause. ("Your Tuesday ad reached more people than usual.")
-3. **What to do** — one clear action verb. ("Boost that ad for 3 more days.")
-4. **Help me do it** — a single primary button that starts the action. ("Boost it for me")
+## Color system
 
-If a card can't answer all four, it doesn't ship. Cards that are purely informational (Recent Growth) still show 1–3; the button becomes "Show me why" that expands a plain-English explanation.
+Light-first, near-white surfaces, ink text, one restrained accent. Everything defined as semantic tokens in `src/styles.css`; no raw hex in components.
 
-This contract is enforced by the `SectionCard` component API — the four slots are required props, not optional. That makes it structurally impossible to ship a jargon-y or dead-end card.
+| Token | Role | Value (oklch) | Approx hex |
+|---|---|---|---|
+| `--background` | app bg | `oklch(0.99 0.002 95)` | #FCFCFB — warm off-white |
+| `--surface` | cards | `oklch(1 0 0)` | #FFFFFF |
+| `--surface-2` | insets, code | `oklch(0.975 0.003 95)` | #F6F5F3 |
+| `--foreground` | primary text | `oklch(0.22 0.01 260)` | ~#232527 |
+| `--muted-foreground` | secondary text | `oklch(0.52 0.01 260)` | ~#6B6F76 |
+| `--border` | hairlines | `oklch(0 0 0 / 8%)` | rgba(0,0,0,.08) |
+| `--border-strong` | inputs, focus | `oklch(0 0 0 / 14%)` | rgba(0,0,0,.14) |
+| `--primary` | accent | `oklch(0.32 0.05 255)` | ~#2B3340 — deep ink-blue |
+| `--primary-foreground` | text on accent | white | |
+| `--success` | verdict green | `oklch(0.58 0.09 155)` | muted sage |
+| `--warning` | verdict amber | `oklch(0.72 0.10 75)` | muted ochre |
+| `--danger` | verdict red | `oklch(0.55 0.14 25)` | muted terracotta |
 
-## Language rules (baked into the codebase)
+Deliberately no purple/indigo, no saturated blue, no gradients as decoration. The accent is nearly black-blue — used only for the primary button, links, and the wordmark mark. Verdict colors are muted so *working / steady / slipping* still reads without shouting.
 
-- Ship `src/lib/plain-english.ts` with a `banned` list: *CTR, CPC, CPM, impressions, reach, engagement rate, conversion rate, ROAS, funnel, SEO, SERP, organic, bounce rate, sessions, MAU, DAU, retention cohort, attribution*, etc.
-- A dev-only lint check (`bun run lint:plain`) greps `src/components/dashboard/**` and route files for banned terms and fails the check if found.
-- Approved replacements table lives in the same file so the AI-summary generator and static copy pull from one source: `impressions → people who saw it`, `CTR → how often people clicked`, `conversion → people who bought`, `bounce rate → people who left right away`, `budget → daily spend`, etc.
-- Any number ≥ 2 digits gets a comparison ("12 new customers — 3 more than last week"), never a bare number.
-- Currency always with `$` and no decimals under $100.
+Dark mode: keep the token map but shift `:root` values under a future toggle — out of scope for this pass; the `.dark` block stays defined but unused.
 
-## Sections, restated in the four-question voice
+## Typography
 
-**Marketing Health Score**
-- What happened: "Your marketing is healthy."
-- Why: "More people bought this week than last week, and your ads are steady."
-- What to do: "Keep going — one small task today."
-- Help me do it: `Show today's task` → scrolls to Today's Priorities.
-- No 0–100 number by default. Just the word (**Healthy / Needs attention / At risk**) and a colored dot. The number is inside `Show advanced ▾`.
+- **Display / UI**: **Inter** (via `<link>` in `__root.tsx`). Weights 400 / 500 / 600. Tight tracking on headings (`-0.02em` at ≥ 2xl).
+- **Serif accent**: **Instrument Serif** for the hero H1 on the landing only — one considered serif moment (Stripe/OpenAI move). Not used in the dashboard.
+- **Mono**: **JetBrains Mono** for numeric values inside advanced disclosures.
+- Scale: 12 / 13 / 14 / 15 / 16 / 18 / 20 / 24 / 30 / 40 / 56. Body sits at 15px. Line-height 1.55 on body, 1.15 on display.
 
-**AI Summary** (the hero of the page)
-- Time-aware greeting, 2–3 sentences, then 3 bulleted recommendations, each starting with a verb.
-- Every bullet has its own "Help me do it" button — even if the MVP button just opens a pre-filled draft or a "coming soon" toast, the affordance is always there.
-- Copy generated from mock data via a deterministic template for MVP; shape ready to swap for a Lovable AI Gateway call.
+## Shape, shadow, motion
 
-**Today's Priorities** (3 items, no more)
-- Each item is itself a mini four-question card: title (what), one line why, an action button (help me do it), and a "Not now" secondary.
-- Checkable, persists to localStorage.
+- **Radius**: `--radius: 12px` (cards `rounded-xl`, buttons `rounded-lg`, pills `rounded-full`).
+- **Shadows** (new tokens):
+  - `--shadow-xs`: `0 1px 2px oklch(0 0 0 / 4%)` — inputs, pills
+  - `--shadow-sm`: `0 1px 2px oklch(0 0 0 / 4%), 0 1px 0 oklch(0 0 0 / 3%)` — default card
+  - `--shadow-md`: `0 8px 24px -8px oklch(0 0 0 / 8%), 0 2px 4px oklch(0 0 0 / 4%)` — hero surfaces
+  - Combined with a 1px hairline border, never a shadow alone.
+- **Motion**: `--ease-out: cubic-bezier(0.2, 0.8, 0.2, 1)`; all transitions 150–200ms. Card hover: `translateY(-1px)` + shadow step-up. Disclosure open: `opacity + max-height` at 180ms. No parallax, no bouncy springs.
+- Focus ring: 2px `--ring` (accent at 40% alpha) with 2px offset in surface color.
 
-**Recent Growth**
-- One sentence. "You got 12 new customers this week — 3 more than last week."
-- Button: `Why did this happen?` → expands 2 more plain sentences.
-- No line chart. No sparkline.
+## Reusable primitives to add / update
 
-**Performance Summary**
-- Three rows: **Ads**, **Posts**, **Emails** (not "Content", not "Channels").
-- Each row is one sentence ending in a verdict word: *working*, *steady*, *slipping*.
-- Each row has a `What should I do?` link that expands the action.
-- `Show advanced ▾` at the bottom reveals raw numbers *with a plain-English label next to each* — e.g. "CTR (how often people clicked): 3.2%". Never a naked acronym.
+- `Button` variants: `primary` (ink), `secondary` (surface w/ border), `ghost`. All `h-9`, `rounded-lg`, `shadow-xs`.
+- `Card` — restyled `SectionCard`: white surface, hairline border, `shadow-sm`, `p-6 sm:p-7`. Eyebrow color shifts from mono-gray to a slightly darker slate for contrast on light bg.
+- `Pill` (Health / Verdict): white bg, hairline border, `shadow-xs`, colored dot + colored text.
+- `Divider` — hairline, 1px, muted.
+- Retire the accent bar on the left of `SectionCard` — replace with a subtle top-right verdict pill only. Calmer.
 
-**Tasks (this week)**
-- Same mini-card shape as Priorities. Checkable, localStorage.
+## Landing (`/`) restyle
 
-**Upcoming Recommendations**
-- Grouped by day. Each item is one sentence + a `Do it` button.
-- "Fri — Post a short customer story. **Draft it for me**"
+- Off-white bg, remove the radial purple glow.
+- Header: wordmark left, single `Open dashboard` ghost link right.
+- Hero: eyebrow → serif H1 ("Know if your business is healthy. In one glance.") with the word *healthy* in ink italic serif, not colored — → body copy → single primary CTA + one-line reassurance.
+- Add a quiet "as seen in" strip? **No** — leave whitespace instead (calmer, more Stripe-ish).
+- Below the fold: three-up "how it works" strip with icon + one sentence each (What happened / Why / What to do). Same four-question spine surfaces as brand promise.
 
-## Component API changes from the prior plan
+## Dashboard restyle
 
-```ts
-// src/components/dashboard/SectionCard.tsx
-type SectionCardProps = {
-  eyebrow: string;                   // "Recent growth"
-  whatHappened: React.ReactNode;     // required
-  why?: React.ReactNode;             // optional, shown when present
-  whatToDo?: React.ReactNode;        // optional, shown when present
-  action?: { label: string; onClick: () => void }; // "Help me do it"
-  advanced?: React.ReactNode;        // hidden behind Show advanced ▾
-};
-```
+Same structure, new skin:
 
-New primitives:
-- `PlainTerm` — inline `<abbr>`-like component: `<PlainTerm term="CTR">how often people clicked</PlainTerm>` renders the plain phrase with the technical term as a hover/tap tooltip. Used only inside `advanced` slots.
-- `ExplainButton` — the standard "Why did this happen?" / "Explain this" trigger that expands inline plain-English text.
-- `HelpMeButton` — the standard primary action button, always labeled with a verb ("Boost it for me", "Draft it for me", "Reply for me").
+- Page bg `--background` (warm off-white). Cards `--surface` (white) with hairline + soft shadow.
+- Header: sticky, translucent (`backdrop-blur`), hairline bottom. Left: wordmark. Right: date + `Refresh` ghost button + avatar placeholder circle.
+- AI Summary card: white, no gradient. Small ink `Sparkles` icon in a subtle rounded square. Recommendation rows lose their outlined nested box → become plain rows separated by hairlines with the CTA button right-aligned.
+- Health / Growth / Performance / Priorities / Tasks / Upcoming: same components, restyled through tokens. Pills adopt the new soft-shadow look. Verdict dots use the muted semantic colors.
+- Advanced disclosures animate open (150ms opacity + height).
+- Checkbox: rounded-md, hairline border in default; filled with `--foreground` (ink) when checked — not the accent — so the dashboard reads as calm even when half-checked.
 
-## Confusion-safety defaults
+## Files to touch
 
-- Every page loads with **all advanced sections collapsed**.
-- Empty states never say "No data". They say what to do: "Nothing to review yet — connect your first channel to see how it's doing."
-- Loading states show the section eyebrow + a one-sentence skeleton, never a bare spinner on the whole page.
-- Errors say what happened and what to do: "We couldn't load your growth data. Try refreshing — if it keeps happening, we'll email you."
+- `src/styles.css` — full token rewrite (light-first, new shadows, new radius, motion vars, `@theme` mapping incl. shadow tokens)
+- `src/routes/__root.tsx` — swap Geist for Inter + Instrument Serif + JetBrains Mono `<link>`
+- `src/routes/index.tsx` — landing restyle
+- `src/routes/dashboard.tsx` — remove dark bg override; header/layout tweaks
+- `src/components/dashboard/*` — restyle only (no API changes): `SectionCard`, `AISummary`, `HealthScore`, `GrowthCallout`, `PerformanceSummary`, `Checklist`, `UpcomingList`, `DashboardHeader`, `StatusPill`
+- New: `src/components/brand/Wordmark.tsx` (mark + wordmark, reused in landing + dashboard header)
 
-## Everything else from the prior plan still stands
+## Explicitly out of scope
 
-- Route: `/_authenticated/dashboard`, auth via Lovable Cloud, `/auth` with email + Google
-- Mock data via `src/lib/dashboard-mock.ts` behind a `getDashboardData` server function, read with TanStack Query
-- Linear/Vercel dark aesthetic, semantic tokens only, mobile-first with `lg:` two-column
-- No profiles table for MVP (greeting derived from `auth.user.email`)
-- Marketing site's `/` stays intact; dashboard added on top
+- Dark-mode toggle (tokens stay defined for later)
+- New pages (`/product`, `/pricing`, `/about`) from the earlier marketing-site plan — not requested in this pass
+- Auth screens — still deferred
+- Any change to the dashboard's information architecture, copy, or the four-question card contract
 
-## Open question (unchanged from prior plan)
+## Verification
 
-I'll keep the marketing site's `/` landing intact and add `/auth` + the dashboard on top. Say the word if you'd rather strip the landing down to a login redirect for the MVP.
+After the restyle I'll load `/` and `/dashboard` in Playwright at desktop (1280) and mobile (390), screenshot, and check: no raw hex leaked, contrast passes for body/muted text on the new background, shadows visible but subtle, no jumpy motion on hover, and every existing card still shows *what / why / what to do / help me do it*.
