@@ -25,6 +25,15 @@ export type UpcomingItem = {
   cta: string;
 };
 
+export type GrowthMetric = {
+  id: "revenue" | "leads" | "traffic";
+  label: string;
+  value: string;
+  deltaLabel: string;
+  direction: "up" | "down" | "flat";
+  plain: string;
+};
+
 export type DashboardData = {
   greetingName: string;
   health: {
@@ -34,10 +43,12 @@ export type DashboardData = {
     why: string;
     todo: string;
   };
+  businessSummary: string;
   aiSummary: {
     // Greeting is derived from time-of-day on the client (AISummary component)
     // to avoid SSR/locale hydration mismatches.
-    paragraph: string;
+    headline: string;
+    body: string;
     recommendations: { id: string; text: string; cta: string }[];
   };
   priorities: PriorityItem[];
@@ -46,6 +57,7 @@ export type DashboardData = {
     why: string[];
     delta: number;
   };
+  growthMetrics: GrowthMetric[];
   performance: PerformanceRow[];
   tasks: { id: string; title: string }[];
   upcoming: UpcomingItem[];
@@ -64,23 +76,25 @@ export function getDashboardData(name = "there"): DashboardData {
       why: "More people bought this week than last week, and your ads are steady.",
       todo: "Keep going — you have one small task today.",
     },
+    businessSummary:
+      "You made more money than last week, brought in more new customers, and more people visited your site. Emails are the only area slipping — a small fix will bring them back.",
     aiSummary: {
-      paragraph:
-        "Your marketing is performing well. This week your advertising brought in more customers than last week, and people are opening your emails more often. Nothing urgent — a few small moves will keep things trending up.",
+      headline: "Your marketing is healthy.",
+      body: "This week your ads generated 18% more customers than last week.",
       recommendations: [
         {
           id: "rec-1",
-          text: "Publish one short video today. Short videos are getting the most attention from your audience this week.",
+          text: "Publish one short video.",
           cta: "Draft it for me",
         },
         {
           id: "rec-2",
-          text: "Reply to 4 customer comments waiting since yesterday. Quick replies keep people coming back.",
+          text: "Reply to these comments.",
           cta: "Open replies",
         },
         {
           id: "rec-3",
-          text: "Increase your daily ad spend by $15. Your best ad still has room to reach more people.",
+          text: "Increase your budget by $15/day.",
           cta: "Boost it for me",
         },
       ],
@@ -113,6 +127,32 @@ export function getDashboardData(name = "there"): DashboardData {
       ],
       delta: newCustomers - lastWeekCustomers,
     },
+    growthMetrics: [
+      {
+        id: "revenue",
+        label: "Revenue",
+        value: "$8,420",
+        deltaLabel: "+12% vs last week",
+        direction: "up",
+        plain: "money you made from sales this week",
+      },
+      {
+        id: "leads",
+        label: "Leads",
+        value: "34",
+        deltaLabel: "+8 vs last week",
+        direction: "up",
+        plain: "people who showed interest but haven't bought yet",
+      },
+      {
+        id: "traffic",
+        label: "Traffic",
+        value: "2,180",
+        deltaLabel: "+6% vs last week",
+        direction: "up",
+        plain: "people who visited your website",
+      },
+    ],
     performance: [
       {
         area: "Ads",
