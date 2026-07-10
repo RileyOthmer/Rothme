@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { Toaster, toast } from "sonner";
 
 import { getDashboardData } from "@/lib/dashboard-mock";
@@ -10,6 +11,8 @@ import { GrowthCallout } from "@/components/dashboard/GrowthCallout";
 import { PerformanceSummary } from "@/components/dashboard/PerformanceSummary";
 import { Checklist } from "@/components/dashboard/Checklist";
 import { UpcomingList } from "@/components/dashboard/UpcomingList";
+import { AssistantPanel } from "@/components/assistant/AssistantPanel";
+import { openAssistant } from "@/hooks/use-assistant";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -95,6 +98,17 @@ function DashboardPage() {
           Everything here is written in plain English. Nothing to Google.
         </p>
       </main>
+
+      <button
+        type="button"
+        onClick={() => openAssistant({ threadKey: "general" })}
+        className="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 rounded-full border border-border-strong bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-md transition-all hover:shadow-lg"
+      >
+        <MessageCircle className="h-4 w-4" />
+        Ask your strategist
+      </button>
+
+      <AssistantPanel />
 
       <Toaster theme="light" position="bottom-right" />
     </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { RefreshCw } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { RefreshCw, Sparkles } from "lucide-react";
 import { Wordmark } from "@/components/brand/Wordmark";
 
 export function DashboardHeader({ onRefresh }: { onRefresh?: () => void }) {
@@ -21,6 +22,13 @@ export function DashboardHeader({ onRefresh }: { onRefresh?: () => void }) {
         <Wordmark />
         <div className="flex items-center gap-3">
           <span className="hidden text-xs text-muted-foreground sm:inline">{today}</span>
+          <Link
+            to="/assistant"
+            className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-surface px-3 text-xs font-medium text-foreground shadow-xs transition-all duration-150 hover:bg-surface-2"
+          >
+            <Sparkles className="h-3.5 w-3.5" />
+            Ask
+          </Link>
           <button
             type="button"
             onClick={onRefresh}

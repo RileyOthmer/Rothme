@@ -1,4 +1,5 @@
 import type { DashboardData } from "@/lib/dashboard-mock";
+import { AskAboutButton } from "@/components/assistant/AskAboutButton";
 import { HealthPill } from "./StatusPill";
 import { PlainTerm } from "./PlainTerm";
 
@@ -13,7 +14,13 @@ export function HealthScore({
     <section className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7">
       <div className="mb-4 flex items-center justify-between gap-4">
         <span className="eyebrow">Marketing health</span>
-        <HealthPill status={data.status} />
+        <div className="flex items-center gap-2">
+          <AskAboutButton
+            threadKey="health"
+            seed="What does my marketing health score actually mean, and what's dragging it down?"
+          />
+          <HealthPill status={data.status} />
+        </div>
       </div>
 
       <h2 className="text-xl font-medium leading-snug tracking-tight text-foreground sm:text-[22px]">
