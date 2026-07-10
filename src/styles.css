@@ -109,15 +109,49 @@
 }
 
 .dark {
-  /* Reserved for a future toggle — unused in this pass. */
-  --background: oklch(0.16 0.005 260);
-  --foreground: oklch(0.98 0 0);
-  --surface: oklch(0.20 0.005 260);
-  --surface-2: oklch(0.24 0.005 260);
+  /* Surfaces — cool near-black, layered by a single step */
+  --background: oklch(0.16 0.008 260);
+  --foreground: oklch(0.97 0.003 260);
+  --surface: oklch(0.20 0.008 260);
+  --surface-2: oklch(0.235 0.008 260);
+
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: oklch(0.22 0.008 260);
+  --popover-foreground: var(--foreground);
+
+  /* Ink accent inverts: bright, high-contrast on dark */
+  --primary: oklch(0.92 0.02 255);
+  --primary-foreground: oklch(0.18 0.01 260);
+  --accent: var(--primary);
+  --accent-foreground: var(--primary-foreground);
+
+  --secondary: oklch(0.235 0.008 260);
+  --secondary-foreground: var(--foreground);
+
+  --muted: oklch(0.235 0.008 260);
+  --muted-foreground: oklch(0.68 0.008 260);
+
+  --destructive: oklch(0.62 0.16 25);
+  --destructive-foreground: oklch(0.99 0 0);
+
   --border: oklch(1 0 0 / 8%);
   --border-strong: oklch(1 0 0 / 14%);
-  --muted: oklch(0.24 0.005 260);
-  --muted-foreground: oklch(0.68 0.01 260);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.92 0.02 255 / 40%);
+
+  --success: oklch(0.72 0.13 155);
+  --success-foreground: oklch(0.14 0.01 260);
+  --warning: oklch(0.80 0.12 75);
+  --warning-foreground: oklch(0.14 0.01 260);
+  --danger: oklch(0.66 0.17 25);
+  --danger-foreground: oklch(0.99 0 0);
+
+  /* Elevation in dark: rely on surface layering + rim, not diffuse shadow */
+  --shadow-xs: 0 1px 0 oklch(1 0 0 / 4%) inset;
+  --shadow-sm: 0 1px 0 oklch(1 0 0 / 4%) inset, 0 1px 2px oklch(0 0 0 / 40%);
+  --shadow-md: 0 1px 0 oklch(1 0 0 / 6%) inset, 0 12px 32px -12px oklch(0 0 0 / 60%);
+  --shadow-lg: 0 1px 0 oklch(1 0 0 / 8%) inset, 0 24px 60px -20px oklch(0 0 0 / 70%);
 }
 
 @layer base {
