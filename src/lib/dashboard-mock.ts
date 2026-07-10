@@ -127,6 +127,32 @@ export function getDashboardData(name = "there"): DashboardData {
       ],
       delta: newCustomers - lastWeekCustomers,
     },
+    growthMetrics: [
+      {
+        id: "revenue",
+        label: "Revenue",
+        value: "$8,420",
+        deltaLabel: "+12% vs last week",
+        direction: "up",
+        plain: "money you made from sales this week",
+      },
+      {
+        id: "leads",
+        label: "Leads",
+        value: "34",
+        deltaLabel: "+8 vs last week",
+        direction: "up",
+        plain: "people who showed interest but haven't bought yet",
+      },
+      {
+        id: "traffic",
+        label: "Traffic",
+        value: "2,180",
+        deltaLabel: "+6% vs last week",
+        direction: "up",
+        plain: "people who visited your website",
+      },
+    ],
     performance: [
       {
         area: "Ads",
