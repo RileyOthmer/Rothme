@@ -35,6 +35,54 @@ export type Database = {
         }
         Relationships: []
       }
+      metric_snapshots: {
+        Row: {
+          captured_at: string
+          confidence: number
+          created_at: string
+          currency: string | null
+          dimension_key: string
+          dimensions: Json
+          granularity: string
+          id: string
+          metric: string
+          period_start: string
+          provider: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          captured_at?: string
+          confidence?: number
+          created_at?: string
+          currency?: string | null
+          dimension_key?: string
+          dimensions?: Json
+          granularity: string
+          id?: string
+          metric: string
+          period_start: string
+          provider: string
+          user_id: string
+          value: number
+        }
+        Update: {
+          captured_at?: string
+          confidence?: number
+          created_at?: string
+          currency?: string | null
+          dimension_key?: string
+          dimensions?: Json
+          granularity?: string
+          id?: string
+          metric?: string
+          period_start?: string
+          provider?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           business_name: string | null
