@@ -8,7 +8,7 @@ export function PerformanceSummary({ rows }: { rows: DashboardData["performance"
   const [showAdv, setShowAdv] = useState(false);
 
   return (
-    <section className="rounded-xl border border-border bg-surface p-5 sm:p-6">
+    <section className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7">
       <div className="eyebrow mb-4">Performance summary</div>
 
       <ul className="divide-y divide-border">
@@ -16,21 +16,23 @@ export function PerformanceSummary({ rows }: { rows: DashboardData["performance"
           <li key={row.area} className="py-4 first:pt-0 last:pb-0">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0 flex-1">
-                <div className="mb-1 flex items-center gap-2">
-                  <span className="text-sm font-semibold text-foreground">{row.area}</span>
+                <div className="mb-1.5 flex items-center gap-2">
+                  <span className="text-sm font-semibold tracking-tight text-foreground">
+                    {row.area}
+                  </span>
                   <VerdictPill verdict={row.verdict} />
                 </div>
-                <p className="text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+                <p className="text-[15px] leading-relaxed text-muted-foreground">
                   {row.sentence}
                 </p>
               </div>
             </div>
             {showAdv ? (
-              <dl className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <dl className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3 animate-in fade-in duration-150">
                 {row.advanced.map((m) => (
                   <div
                     key={m.label}
-                    className="rounded-md border border-border bg-surface-2 px-3 py-2"
+                    className="rounded-lg border border-border bg-surface-2 px-3 py-2"
                   >
                     <dt className="text-[11px] text-muted-foreground">
                       <PlainTerm term={m.label}>{m.plain}</PlainTerm>
@@ -44,7 +46,7 @@ export function PerformanceSummary({ rows }: { rows: DashboardData["performance"
         ))}
       </ul>
 
-      <div className="mt-4 border-t border-border pt-4">
+      <div className="mt-5 border-t border-border pt-4">
         <button
           type="button"
           onClick={() => setShowAdv((v) => !v)}
@@ -52,7 +54,7 @@ export function PerformanceSummary({ rows }: { rows: DashboardData["performance"
         >
           {showAdv ? "Hide numbers" : "Show numbers"}
           <ChevronDown
-            className={"h-3 w-3 transition-transform " + (showAdv ? "rotate-180" : "")}
+            className={"h-3 w-3 transition-transform duration-150 " + (showAdv ? "rotate-180" : "")}
           />
         </button>
       </div>

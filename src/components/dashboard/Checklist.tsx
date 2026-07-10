@@ -24,7 +24,7 @@ export function Checklist({
       {items.map((item) => {
         const done = checked.has(item.id);
         return (
-          <li key={item.id} className="py-3 first:pt-0 last:pb-0">
+          <li key={item.id} className="py-3.5 first:pt-0 last:pb-0">
             <div className="flex items-start gap-3">
               <button
                 type="button"
@@ -32,18 +32,18 @@ export function Checklist({
                 aria-pressed={done}
                 aria-label={done ? "Mark not done" : "Mark done"}
                 className={
-                  "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-colors " +
+                  "mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition-all duration-150 " +
                   (done
-                    ? "border-success bg-success text-success-foreground"
-                    : "border-border-strong bg-surface-2 hover:border-foreground/40")
+                    ? "border-foreground bg-foreground text-background shadow-xs"
+                    : "border-border-strong bg-surface hover:border-foreground/50")
                 }
               >
-                {done ? <Check className="h-3.5 w-3.5" /> : null}
+                {done ? <Check className="h-3.5 w-3.5" strokeWidth={2.5} /> : null}
               </button>
               <div className="min-w-0 flex-1">
                 <div
                   className={
-                    "text-sm font-medium leading-snug transition-colors " +
+                    "text-sm font-medium leading-snug transition-colors duration-150 " +
                     (done ? "text-muted-foreground line-through" : "text-foreground")
                   }
                 >
@@ -55,11 +55,11 @@ export function Checklist({
                   </div>
                 ) : null}
                 {item.action && onAction && !done ? (
-                  <div className="mt-2">
+                  <div className="mt-2.5">
                     <button
                       type="button"
                       onClick={() => onAction(item)}
-                      className="inline-flex h-7 items-center rounded-md border border-border-strong bg-surface-2 px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+                      className="inline-flex h-7 items-center rounded-md border border-border-strong bg-surface px-2.5 text-xs font-medium text-foreground shadow-xs transition-all duration-150 hover:bg-surface-2"
                     >
                       {item.action}
                     </button>
