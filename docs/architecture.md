@@ -356,3 +356,160 @@ src/
 - **No notification delivery in v1** — spam risk outweighs value until real signals exist.
 
 Amendments require an entry here with date + rationale.
+
+---
+
+## 12. Integration Architecture
+
+Every marketing platform is a **plug-in adapter** behind one interface. Core app code depends only on the adapter contract and the unified schema — never on a specific platform. Adding a new platform = add one file, register it, done. No core changes, no conditionals like `if (provider === "meta")`.
+
+### 12.1 The core rule
+
+> The core application never imports a provider SDK, calls a provider URL, or names a provider in a conditional. It only talks to `ProviderAdapter` and reads `MetricSnapshot`.
+
+If you find yourself writing `switch (provider)` outside the registry, the abstraction is wrong — push the difference into the adapter.
+
+### 12.2 The adapter contract
+
+Every platform ships one module implementing:
+
+```ts
+// src/integrations/providers/types.ts
+export interface ProviderAdapter {
+  id: ProviderId;               // "meta_ads", "shopify", ...
+  name: string;                 // "Meta Ads"
+  category: ProviderCategory;   // "ads" | "analytics" | "commerce" | "email" | "social" | "payments" | "crm"
+  authKind: "oauth2" | "api_key" | "connector_gateway";
+
+  connect(ctx: AdapterCtx): Promise<ConnectResult>;         // start auth flow / store credential ref
+  refresh(ctx: AdapterCtx): Promise<void>;                  // token refresh, no-op for api_key
+  pull(ctx: AdapterCtx, range: DateRange): Promise<MetricSnapshot[]>;   // fetch → normalize
+  health(ctx: AdapterCtx): Promise<HealthReport>;           // "connected", "expired", "rate_limited", "missing_scope"
+  disconnect(ctx: AdapterCtx): Promise<void>;               // revoke + purge
+}
+```
+
+`AdapterCtx` carries `userId`, a scoped Supabase client, the connection row, and a `secrets` accessor that resolves the env var name from `standard_connectors--get_connection_secrets` — no adapter reads `process.env` directly.
+
+### 12.3 The unified schema
+
+Every adapter's `pull()` returns `MetricSnapshot[]` in one shape (see §6). Derived metrics (CAC, ROAS, conversion rate) are computed on read in the aggregation layer. Adapters never store derived values, never store raw payloads on the hot path — only normalized snapshots.
+
+This is the single seam that lets the AI reason across "all connected data" without knowing which platforms are connected.
+
+### 12.4 The registry
+
+```ts
+// src/integrations/providers/registry.ts
+import { metaAdsAdapter } from "./meta-ads";
+import { googleAdsAdapter } from "./google-ads";
+// ... one import per platform
+
+export const registry: Record<ProviderId, ProviderAdapter> = {
+  meta_ads: metaAdsAdapter,
+  google_ads: googleAdsAdapter,
+  // ...
+};
+
+export function getAdapter(id: ProviderId): ProviderAdapter {
+  const a = registry[id];
+  if (!a) throw new Error(`Unknown provider: ${id}`);
+  return a;
+}
+```
+
+The registry is the *only* place that names all providers. The UI iterates `Object.values(registry)` to render the connection catalog. The scheduler iterates it to sync. Nothing else knows the full list.
+
+### 12.5 File layout
+
+```
+src/integrations/providers/
+├── types.ts            # ProviderAdapter, MetricSnapshot, HealthReport, DateRange
+├── registry.ts         # the one place that lists every adapter
+├── normalize.ts        # helpers shared across adapters (currency, timezone, dedupe keys)
+├── meta-ads/
+│   ├── index.ts        # exports metaAdsAdapter
+│   ├── auth.ts         # OAuth flow specifics
+│   ├── pull.ts         # API calls → raw
+│   └── map.ts          # raw → MetricSnapshot[]
+├── google-ads/…
+├── shopify/…
+├── ga4/…
+├── tiktok/…
+├── linkedin/…
+├── pinterest/…
+├── snapchat/…
+├── x/…
+├── youtube/…
+├── klaviyo/…
+├── mailchimp/…
+├── hubspot/…
+└── stripe/…
+```
+
+Each folder is self-contained. Deleting a folder + removing its registry entry removes the platform.
+
+### 12.6 Auth, credentials, secrets
+
+Three auth kinds cover every platform we plan to support:
+
+| Kind | Used by | Storage |
+| --- | --- | --- |
+| `connector_gateway` | Preferred where available — Lovable's gateway handles OAuth + refresh (Meta, Google, Shopify, HubSpot, Mailchimp, X, LinkedIn, TikTok…) | Connection env var, resolved via `secrets` accessor |
+| `oauth2` | Direct per-user OAuth (Klaviyo, Pinterest, Snapchat, YouTube where end-users need their own account) | Per-user encrypted token row |
+| `api_key` | Legacy or admin-only integrations | Per-user encrypted secret row |
+
+**Rule: prefer `connector_gateway` whenever the platform is gateway-enabled.** It eliminates token refresh code, removes redirect-URL churn, and keeps credentials off our servers. Fall back to per-user `oauth2` only when the gateway doesn't cover the platform or when each end user must connect their own account and the gateway model doesn't fit.
+
+No adapter ever contains a literal API key, client secret, or OAuth redirect URL — those live in secrets + provider dashboards.
+
+### 12.7 Sync lifecycle
+
+One shared scheduler drives every adapter:
+
+```
+        ┌──────────────┐
+cron ─▶ │  orchestrator│ ─▶ for each active connection:
+        └──────────────┘        adapter.refresh(ctx)
+                                adapter.pull(ctx, range)  ── writes MetricSnapshot[]
+                                adapter.health(ctx)       ── writes health row
+```
+
+Failures are per-connection, never global. A broken adapter degrades one card ("Meta Ads is temporarily unavailable — last synced 2h ago") — it never blocks the dashboard.
+
+Backoff, rate limits, and retry live in the orchestrator, not the adapters. Adapters throw typed errors (`RateLimitError`, `AuthExpiredError`, `UpstreamError`) and the orchestrator decides.
+
+### 12.8 Data plane
+
+```
+account_connections   one row per (user, provider) — auth state, health
+metric_snapshots      normalized, append-only, indexed by (user, provider, metric, ts, dimensions_hash)
+provider_events       raw, opaque, for replay/debug only — cold storage, never queried by app
+```
+
+The AI only ever reads `metric_snapshots`. It doesn't care whether the underlying platform is Shopify or WooCommerce — the schema is the same.
+
+### 12.9 Adding a new platform (the whole checklist)
+
+1. Create `src/integrations/providers/<slug>/index.ts` exporting an adapter that satisfies `ProviderAdapter`.
+2. Map raw responses to `MetricSnapshot[]` in `map.ts`. If a needed metric doesn't fit the schema, extend the schema — don't leak the provider's shape.
+3. Add the id to `ProviderId` and one line to `registry.ts`.
+4. Add category-appropriate icon + copy to the connector catalog (data-driven from the adapter).
+5. Ship. No route file, no dashboard component, no AI prompt, and no scheduler code changes.
+
+That's the whole test of the architecture: **step 3 is the only line that touches shared code.**
+
+### 12.10 Prioritized rollout
+
+Order is set by leverage (data density × user coverage) ÷ integration cost:
+
+1. **GA4** — no app review, immediate cross-cutting web signal
+2. **Shopify** — revenue truth for a huge slice of owner-operators
+3. **Meta Ads** — largest paid channel for SMBs
+4. **Google Ads** — pairs with GA4 attribution
+5. **Stripe** — revenue for non-Shopify commerce and services
+6. **Mailchimp / Klaviyo** — email is the highest-margin channel, easy wins
+7. **HubSpot** — CRM signal for lead-gen businesses
+8. **TikTok / YouTube / LinkedIn / Pinterest / Snapchat / X** — organic + paid social, added on demand
+
+Each new adapter is judged against the principle test before it ships. A platform we *could* connect but our users don't actually make decisions from doesn't earn a slot.
