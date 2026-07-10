@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw } from "lucide-react";
 import { Wordmark } from "@/components/brand/Wordmark";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -85,6 +86,7 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
               Refresh
             </button>
           ) : null}
+          <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger
               aria-label="Account menu"
