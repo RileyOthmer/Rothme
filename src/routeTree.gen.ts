@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as DesignRouteImport } from './routes/design'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -29,6 +30,11 @@ import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authentica
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DesignRoute = DesignRouteImport.update({
+  id: '/design',
+  path: '/design',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assistant'
     | '/auth'
+    | '/design'
     | '/notifications'
     | '/dashboard'
     | '/onboarding'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assistant'
     | '/auth'
+    | '/design'
     | '/notifications'
     | '/dashboard'
     | '/onboarding'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/assistant'
     | '/auth'
+    | '/design'
     | '/notifications'
     | '/_authenticated/dashboard'
     | '/_authenticated/onboarding'
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AssistantRoute: typeof AssistantRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  DesignRoute: typeof DesignRoute
   NotificationsRoute: typeof NotificationsRoute
   ApiChatRoute: typeof ApiChatRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
@@ -233,6 +246,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/design': {
+      id: '/design'
+      path: '/design'
+      fullPath: '/design'
+      preLoaderRoute: typeof DesignRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -402,6 +422,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AssistantRoute: AssistantRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  DesignRoute: DesignRoute,
   NotificationsRoute: NotificationsRoute,
   ApiChatRoute: ApiChatRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
