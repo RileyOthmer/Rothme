@@ -34,7 +34,11 @@ export const updateProfile = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => updateProfileSchema.parse(data))
   .handler(async ({ data, context }) => {
-    const patch: Record<string, unknown> = {};
+    const patch: {
+      full_name?: string;
+      business_name?: string;
+      onboarded_at?: string;
+    } = {};
     if (data.full_name !== undefined) patch.full_name = data.full_name;
     if (data.business_name !== undefined) patch.business_name = data.business_name;
     if (data.mark_onboarded) patch.onboarded_at = new Date().toISOString();
