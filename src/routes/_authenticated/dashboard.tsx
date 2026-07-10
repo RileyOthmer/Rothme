@@ -7,6 +7,8 @@ import { Toaster } from "sonner";
 import { getProfile } from "@/lib/profile.functions";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { DecisionCenter } from "@/features/decisions/DecisionCenter";
+import { HealthScoreCard } from "@/features/health/HealthScoreCard";
+import { getSeedHealthScore } from "@/features/health/seed";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
