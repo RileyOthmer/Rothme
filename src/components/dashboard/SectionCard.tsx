@@ -8,15 +8,8 @@ export type SectionCardProps = {
   whatToDo?: ReactNode;
   action?: { label: string; onClick: () => void };
   advanced?: ReactNode;
-  tone?: "default" | "success" | "warning" | "danger";
+  right?: ReactNode;
   children?: ReactNode;
-};
-
-const toneRing: Record<NonNullable<SectionCardProps["tone"]>, string> = {
-  default: "",
-  success: "before:bg-success",
-  warning: "before:bg-warning",
-  danger: "before:bg-danger",
 };
 
 export function SectionCard({
@@ -26,32 +19,27 @@ export function SectionCard({
   whatToDo,
   action,
   advanced,
-  tone = "default",
+  right,
   children,
 }: SectionCardProps) {
   const [showAdv, setShowAdv] = useState(false);
   return (
-    <section
-      className={
-        "relative overflow-hidden rounded-xl border border-border bg-surface p-5 sm:p-6 " +
-        "before:absolute before:inset-y-0 before:left-0 before:w-[2px] " +
-        toneRing[tone]
-      }
-    >
-      <div className="eyebrow mb-3">{eyebrow}</div>
+    <section className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7">
+      <div className="mb-4 flex items-start justify-between gap-4">
+        <span className="eyebrow">{eyebrow}</span>
+        {right}
+      </div>
 
-      <div className="text-lg font-medium leading-snug text-foreground sm:text-xl">
+      <div className="text-xl font-medium leading-snug tracking-tight text-foreground sm:text-[22px]">
         {whatHappened}
       </div>
 
       {why ? (
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
-          {why}
-        </p>
+        <p className="mt-2 text-[15px] leading-relaxed text-muted-foreground">{why}</p>
       ) : null}
 
       {whatToDo ? (
-        <p className="mt-3 text-sm leading-relaxed text-foreground/90 sm:text-[15px]">
+        <p className="mt-4 text-[15px] leading-relaxed text-foreground/90">
           <span className="eyebrow mr-2 align-middle">What to do</span>
           <span className="align-middle">{whatToDo}</span>
         </p>
@@ -60,11 +48,11 @@ export function SectionCard({
       {children ? <div className="mt-4">{children}</div> : null}
 
       {action ? (
-        <div className="mt-5">
+        <div className="mt-6">
           <button
             type="button"
             onClick={action.onClick}
-            className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring"
+            className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground shadow-xs transition-all duration-150 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-surface"
           >
             {action.label}
           </button>
@@ -72,7 +60,7 @@ export function SectionCard({
       ) : null}
 
       {advanced ? (
-        <div className="mt-5 border-t border-border pt-4">
+        <div className="mt-6 border-t border-border pt-4">
           <button
             type="button"
             onClick={() => setShowAdv((v) => !v)}
@@ -80,10 +68,10 @@ export function SectionCard({
           >
             {showAdv ? "Hide advanced" : "Show advanced"}
             <ChevronDown
-              className={"h-3 w-3 transition-transform " + (showAdv ? "rotate-180" : "")}
+              className={"h-3 w-3 transition-transform duration-150 " + (showAdv ? "rotate-180" : "")}
             />
           </button>
-          {showAdv ? <div className="mt-3">{advanced}</div> : null}
+          {showAdv ? <div className="mt-3 animate-in fade-in duration-150">{advanced}</div> : null}
         </div>
       ) : null}
     </section>

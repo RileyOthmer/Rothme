@@ -8,16 +8,21 @@ export function GrowthCallout({ data }: { data: DashboardData["growth"] }) {
     data.delta > 0 ? "text-success" : data.delta < 0 ? "text-danger" : "text-muted-foreground";
 
   return (
-    <section className="rounded-xl border border-border bg-surface p-5 sm:p-6">
-      <div className="mb-3 flex items-center justify-between">
+    <section className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7">
+      <div className="mb-4 flex items-center justify-between gap-4">
         <span className="eyebrow">Recent growth</span>
-        <span className={"inline-flex items-center gap-1 text-xs font-medium " + tone}>
-          <Icon className="h-3.5 w-3.5" />
+        <span
+          className={
+            "inline-flex items-center gap-1 rounded-full border border-border bg-surface px-2.5 py-0.5 text-[11px] font-medium shadow-xs " +
+            tone
+          }
+        >
+          <Icon className="h-3 w-3" />
           {data.delta > 0 ? `+${data.delta}` : data.delta}
         </span>
       </div>
 
-      <p className="text-lg font-medium leading-snug text-foreground sm:text-xl">
+      <p className="text-xl font-medium leading-snug tracking-tight text-foreground sm:text-[22px]">
         {data.what}
       </p>
 

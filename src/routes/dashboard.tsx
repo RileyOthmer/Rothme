@@ -43,23 +43,20 @@ function DashboardPage() {
         }}
       />
 
-      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10">
-        {/* Hero briefing */}
-        <AISummary data={data.aiSummary} />
+      <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-14">
+        <AISummary data={data.aiSummary} name={data.greetingName} />
 
-        <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* Main column */}
+        <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-12">
           <div className="space-y-6 lg:col-span-8">
             <HealthScore data={data.health} onAction={scrollToPriorities} />
             <GrowthCallout data={data.growth} />
             <PerformanceSummary rows={data.performance} />
           </div>
 
-          {/* Rail */}
           <aside className="space-y-6 lg:col-span-4">
             <section
               ref={prioritiesRef}
-              className="rounded-xl border border-border bg-surface p-5 sm:p-6"
+              className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7"
             >
               <div className="mb-1 flex items-center justify-between">
                 <span className="eyebrow">Today's priorities</span>
@@ -67,7 +64,7 @@ function DashboardPage() {
                   {data.priorities.length} things
                 </span>
               </div>
-              <p className="mb-4 text-xs text-muted-foreground">
+              <p className="mb-5 text-xs text-muted-foreground">
                 Do these three today and you're set.
               </p>
               <Checklist
@@ -82,7 +79,7 @@ function DashboardPage() {
               />
             </section>
 
-            <section className="rounded-xl border border-border bg-surface p-5 sm:p-6">
+            <section className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7">
               <div className="eyebrow mb-4">Tasks this week</div>
               <Checklist
                 storageKey="northstar.tasks"
@@ -94,12 +91,12 @@ function DashboardPage() {
           </aside>
         </div>
 
-        <p className="mt-10 text-center text-xs text-muted-foreground">
+        <p className="mt-14 text-center text-xs text-muted-foreground">
           Everything here is written in plain English. Nothing to Google.
         </p>
       </main>
 
-      <Toaster theme="dark" position="bottom-right" />
+      <Toaster theme="light" position="bottom-right" />
     </div>
   );
 }

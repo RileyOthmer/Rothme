@@ -3,24 +3,24 @@ import type { DashboardData } from "@/lib/dashboard-mock";
 
 export function UpcomingList({ items }: { items: DashboardData["upcoming"] }) {
   return (
-    <section className="rounded-xl border border-border bg-surface p-5 sm:p-6">
+    <section className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7">
       <div className="eyebrow mb-4">Upcoming recommendations</div>
       <ul className="divide-y divide-border">
         {items.map((item) => (
-          <li key={item.id} className="py-3 first:pt-0 last:pb-0">
+          <li key={item.id} className="py-3.5 first:pt-0 last:pb-0">
             <div className="flex items-start gap-3">
               <div className="flex w-12 shrink-0 flex-col items-center rounded-md border border-border bg-surface-2 px-2 py-1.5">
-                <span className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-foreground">
                   {item.day}
                 </span>
-                <span className="text-[10px] text-muted-foreground">{item.date}</span>
+                <span className="mt-0.5 text-[10px] text-muted-foreground">{item.date}</span>
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm leading-snug text-foreground">{item.action}</p>
                 <button
                   type="button"
                   onClick={() => toast(`Starting: ${item.cta.toLowerCase()}`)}
-                  className="mt-2 inline-flex h-7 items-center rounded-md border border-border-strong bg-surface-2 px-2.5 text-xs font-medium text-foreground transition-colors hover:bg-secondary"
+                  className="mt-2 inline-flex h-7 items-center rounded-md border border-border-strong bg-surface px-2.5 text-xs font-medium text-foreground shadow-xs transition-all duration-150 hover:bg-surface-2"
                 >
                   {item.cta}
                 </button>
