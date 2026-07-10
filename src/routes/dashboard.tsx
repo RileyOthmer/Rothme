@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useRef, useState } from "react";
+import { MessageCircle } from "lucide-react";
 import { Toaster, toast } from "sonner";
 
 import { getDashboardData } from "@/lib/dashboard-mock";
@@ -10,6 +11,8 @@ import { GrowthCallout } from "@/components/dashboard/GrowthCallout";
 import { PerformanceSummary } from "@/components/dashboard/PerformanceSummary";
 import { Checklist } from "@/components/dashboard/Checklist";
 import { UpcomingList } from "@/components/dashboard/UpcomingList";
+import { AssistantPanel } from "@/components/assistant/AssistantPanel";
+import { openAssistant } from "@/hooks/use-assistant";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
