@@ -1,20 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useRef, useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { Toaster, toast } from "sonner";
 
 import { getDashboardData } from "@/lib/dashboard-mock";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { getProfile } from "@/lib/profile.functions";
+import { AppHeader } from "@/components/layout/AppHeader";
 import { AISummary } from "@/components/dashboard/AISummary";
 import { HealthScore } from "@/components/dashboard/HealthScore";
 import { GrowthCallout } from "@/components/dashboard/GrowthCallout";
 import { PerformanceSummary } from "@/components/dashboard/PerformanceSummary";
 import { Checklist } from "@/components/dashboard/Checklist";
 import { UpcomingList } from "@/components/dashboard/UpcomingList";
-import { AssistantPanel } from "@/components/assistant/AssistantPanel";
-import { openAssistant } from "@/hooks/use-assistant";
 
-export const Route = createFileRoute("/dashboard")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Dashboard — Northstar" },
@@ -29,8 +29,23 @@ export const Route = createFileRoute("/dashboard")({
 });
 
 function DashboardPage() {
+  const router = useRouter();
+  const fetchProfile = useServerFn(getProfile);
+  const profileQuery = useQuery({
+    queryKey: ["profile"],
+    queryFn: () => fetchProfile(),
+  });
+
+  // If profile is loaded and user hasn't onboarded, send them to onboarding.
+  useEffect(() => {
+    if (profileQuery.data && !profileQuery.data.onboarded_at) {
+      router.navigate({ to: "/onboarding" });
+    }
+  }, [profileQuery.data, router]);
+
   const [nonce, setNonce] = useState(0);
-  const data = useMemo(() => getDashboardData("there"), [nonce]);
+  const firstName = profileQuery.data?.full_name?.split(" ")[0] ?? "there";
+  const data = useMemo(() => getDashboardData(firstName), [nonce, firstName]);
   const prioritiesRef = useRef<HTMLDivElement>(null);
 
   const scrollToPriorities = () => {
@@ -39,7 +54,7 @@ function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <DashboardHeader
+      <AppHeader
         onRefresh={() => {
           setNonce((n) => n + 1);
           toast("Refreshed your dashboard.");
@@ -97,18 +112,13 @@ function DashboardPage() {
         <p className="mt-14 text-center text-xs text-muted-foreground">
           Everything here is written in plain English. Nothing to Google.
         </p>
+
+        <p className="mt-6 text-center text-xs text-muted-foreground">
+          <Link to="/reports" className="underline underline-offset-4 hover:text-foreground">
+            View weekly reports
+          </Link>
+        </p>
       </main>
-
-      <button
-        type="button"
-        onClick={() => openAssistant({ threadKey: "general" })}
-        className="fixed bottom-6 right-6 z-40 inline-flex items-center gap-2 rounded-full border border-border-strong bg-primary px-4 py-2.5 text-sm font-medium text-primary-foreground shadow-md transition-all hover:shadow-lg"
-      >
-        <MessageCircle className="h-4 w-4" />
-        Ask your strategist
-      </button>
-
-      <AssistantPanel />
 
       <Toaster theme="light" position="bottom-right" />
     </div>
