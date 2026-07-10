@@ -25,6 +25,15 @@ export type UpcomingItem = {
   cta: string;
 };
 
+export type GrowthMetric = {
+  id: "revenue" | "leads" | "traffic";
+  label: string;
+  value: string;
+  deltaLabel: string;
+  direction: "up" | "down" | "flat";
+  plain: string;
+};
+
 export type DashboardData = {
   greetingName: string;
   health: {
@@ -34,10 +43,12 @@ export type DashboardData = {
     why: string;
     todo: string;
   };
+  businessSummary: string;
   aiSummary: {
     // Greeting is derived from time-of-day on the client (AISummary component)
     // to avoid SSR/locale hydration mismatches.
-    paragraph: string;
+    headline: string;
+    body: string;
     recommendations: { id: string; text: string; cta: string }[];
   };
   priorities: PriorityItem[];
@@ -46,6 +57,7 @@ export type DashboardData = {
     why: string[];
     delta: number;
   };
+  growthMetrics: GrowthMetric[];
   performance: PerformanceRow[];
   tasks: { id: string; title: string }[];
   upcoming: UpcomingItem[];
