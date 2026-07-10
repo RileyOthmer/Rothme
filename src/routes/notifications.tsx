@@ -7,7 +7,7 @@ import { useNotifications } from "@/hooks/use-notifications";
 export const Route = createFileRoute("/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications — Northstar" },
+      { title: "Notifications — Velora" },
       {
         name: "description",
         content:

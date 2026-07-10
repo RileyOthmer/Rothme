@@ -60,11 +60,11 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 export const Route = createFileRoute("/design")({
   head: () => ({
     meta: [
-      { title: "Design system — Northstar" },
+      { title: "Design system — Velora" },
       {
         name: "description",
         content:
-          "Living reference for the Northstar design system: tokens, typography, and every reusable component in light and dark mode.",
+          "Living reference for the Velora design system: tokens, typography, and every reusable component in light and dark mode.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -130,7 +130,7 @@ function DesignPage() {
 
       <footer className="border-t border-border py-8">
         <div className="mx-auto max-w-6xl px-4 text-xs text-muted-foreground sm:px-6">
-          Northstar design system · Living reference
+          Velora design system · Living reference
         </div>
       </footer>
     </div>

@@ -42,9 +42,9 @@ export const DEFAULT_PREFS: NotificationPrefs = {
 // Persistence keys
 // -----------------------------------------------------------------------------
 
-const PREFS_KEY = "northstar.notifications.prefs.v1";
-const READ_KEY = "northstar.notifications.read.v1";
-const DISMISSED_KEY = "northstar.notifications.dismissed.v1";
+const PREFS_KEY = "velora.notifications.prefs.v1";
+const READ_KEY = "velora.notifications.read.v1";
+const DISMISSED_KEY = "velora.notifications.dismissed.v1";
 
 // -----------------------------------------------------------------------------
 // Shared subscription store — every consumer stays in sync

@@ -17,7 +17,7 @@ import { Checklist } from "@/components/dashboard/Checklist";
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Dashboard — Northstar" },
+      { title: "Dashboard — Velora" },
       {
         name: "description",
         content:
@@ -83,7 +83,7 @@ function DashboardPage() {
             Do these today and you're set.
           </p>
           <Checklist
-            storageKey="northstar.priorities"
+            storageKey="velora.priorities"
             items={data.priorities.map((p) => ({
               id: p.id,
               title: p.title,

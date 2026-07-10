@@ -18,7 +18,7 @@ import {
 export const Route = createFileRoute("/_authenticated/settings/connections")({
   head: () => ({
     meta: [
-      { title: "Connections — Northstar" },
+      { title: "Connections — Velora" },
       { name: "robots", content: "noindex" },
     ],
   }),

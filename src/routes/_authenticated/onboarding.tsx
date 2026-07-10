@@ -22,7 +22,7 @@ import {
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
     meta: [
-      { title: "Get set up — Northstar" },
+      { title: "Get set up — Velora" },
       { name: "robots", content: "noindex" },
     ],
   }),

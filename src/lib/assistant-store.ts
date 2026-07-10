@@ -1,6 +1,6 @@
 import type { UIMessage } from "ai";
 
-const STORAGE_KEY = "northstar.assistant.threads.v1";
+const STORAGE_KEY = "velora.assistant.threads.v1";
 
 export type AssistantThread = {
   id: string;

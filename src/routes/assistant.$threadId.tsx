@@ -17,7 +17,7 @@ import {
 export const Route = createFileRoute("/assistant/$threadId")({
   head: () => ({
     meta: [
-      { title: "Strategist — Northstar" },
+      { title: "Strategist — Velora" },
       {
         name: "description",
         content:
