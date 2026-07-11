@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import type { UIMessage } from "ai";
-import { Plus, Trash2 } from "lucide-react";
+import { Pin, PinOff, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { AssistantChat } from "@/components/assistant/AssistantChat";
@@ -10,6 +10,7 @@ import {
   loadThreads,
   newThreadId,
   saveThreads,
+  sortThreads,
   titleFromMessages,
   type AssistantThread,
 } from "@/lib/assistant-store";
