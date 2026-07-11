@@ -7,6 +7,7 @@ export type AssistantThread = {
   title: string;
   updatedAt: number;
   messages: UIMessage[];
+  pinned?: boolean;
 };
 
 function isBrowser() {
@@ -49,4 +50,12 @@ export function titleFromMessages(messages: UIMessage[]): string {
   if (!text) return "New conversation";
   const words = text.split(/\s+/).slice(0, 7).join(" ");
   return words.length < text.length ? `${words}…` : words;
+}
+
+/** Sort: pinned first (by updatedAt desc), then rest (by updatedAt desc). */
+export function sortThreads(threads: AssistantThread[]): AssistantThread[] {
+  return [...threads].sort((a, b) => {
+    if (!!b.pinned !== !!a.pinned) return b.pinned ? 1 : -1;
+    return b.updatedAt - a.updatedAt;
+  });
 }

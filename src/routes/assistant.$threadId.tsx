@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import type { UIMessage } from "ai";
-import { Plus, Trash2 } from "lucide-react";
+import { Pin, PinOff, Plus, Trash2 } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { AssistantChat } from "@/components/assistant/AssistantChat";
@@ -10,6 +10,7 @@ import {
   loadThreads,
   newThreadId,
   saveThreads,
+  sortThreads,
   titleFromMessages,
   type AssistantThread,
 } from "@/lib/assistant-store";
@@ -41,7 +42,7 @@ function AssistantThreadPage() {
   }, []);
 
   const visibleThreads = useMemo(
-    () => threads.filter((t) => !t.id.startsWith("panel:")),
+    () => sortThreads(threads.filter((t) => !t.id.startsWith("panel:"))),
     [threads],
   );
 
@@ -61,6 +62,7 @@ function AssistantThreadPage() {
           title: existing?.title || titleFromMessages(messages),
           updatedAt: Date.now(),
           messages,
+          pinned: existing?.pinned ?? false,
         };
         const updated = [next, ...rest];
         saveThreads(updated);
@@ -69,6 +71,17 @@ function AssistantThreadPage() {
     },
     [hydrated, threadId],
   );
+
+  const togglePin = (id: string) => {
+    setThreads((prev) => {
+      const updated = prev.map((t) =>
+        t.id === id ? { ...t, pinned: !t.pinned } : t,
+      );
+      saveThreads(updated);
+      return updated;
+    });
+  };
+
 
   const startNew = () => {
     const id = newThreadId();
@@ -150,8 +163,26 @@ function AssistantThreadPage() {
                         : "text-muted-foreground hover:text-foreground")
                     }
                   >
+                    {t.pinned && (
+                      <Pin className="mr-1 inline h-3 w-3 text-foreground/70" />
+                    )}
                     {t.title}
                   </Link>
+                  <button
+                    type="button"
+                    aria-label={t.pinned ? "Unpin conversation" : "Pin conversation"}
+                    onClick={() => togglePin(t.id)}
+                    className={
+                      "grid h-7 w-7 place-items-center rounded-md text-muted-foreground transition-opacity hover:bg-surface-2 hover:text-foreground " +
+                      (t.pinned ? "opacity-100" : "opacity-0 group-hover:opacity-100")
+                    }
+                  >
+                    {t.pinned ? (
+                      <PinOff className="h-3.5 w-3.5" />
+                    ) : (
+                      <Pin className="h-3.5 w-3.5" />
+                    )}
+                  </button>
                   <button
                     type="button"
                     aria-label="Delete conversation"
