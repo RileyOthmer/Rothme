@@ -42,7 +42,7 @@ function AssistantThreadPage() {
   }, []);
 
   const visibleThreads = useMemo(
-    () => threads.filter((t) => !t.id.startsWith("panel:")),
+    () => sortThreads(threads.filter((t) => !t.id.startsWith("panel:"))),
     [threads],
   );
 
@@ -62,6 +62,7 @@ function AssistantThreadPage() {
           title: existing?.title || titleFromMessages(messages),
           updatedAt: Date.now(),
           messages,
+          pinned: existing?.pinned ?? false,
         };
         const updated = [next, ...rest];
         saveThreads(updated);
@@ -70,6 +71,17 @@ function AssistantThreadPage() {
     },
     [hydrated, threadId],
   );
+
+  const togglePin = (id: string) => {
+    setThreads((prev) => {
+      const updated = prev.map((t) =>
+        t.id === id ? { ...t, pinned: !t.pinned } : t,
+      );
+      saveThreads(updated);
+      return updated;
+    });
+  };
+
 
   const startNew = () => {
     const id = newThreadId();
