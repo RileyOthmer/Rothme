@@ -77,7 +77,7 @@ function ReportsPage() {
                           {payload.status}
                         </span>
                       </div>
-                      <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{payload.summary}</p>
+                      <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{payload.businessSummary ?? payload.summary ?? ""}</p>
                     </div>
                     <div className="shrink-0 text-right">
                       <div className="text-lg font-semibold">{payload.score}</div>
