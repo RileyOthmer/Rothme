@@ -26,6 +26,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authenticated/reports.$id'
+import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
 
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
@@ -113,6 +114,12 @@ const AuthenticatedReportsIdRoute = AuthenticatedReportsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedReportsRoute,
 } as any)
+const ApiPublicHooksGenerateWeeklyReportsRoute =
+  ApiPublicHooksGenerateWeeklyReportsRouteImport.update({
+    id: '/api/public/hooks/generate-weekly-reports',
+    path: '/api/public/hooks/generate-weekly-reports',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -131,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -149,6 +157,7 @@ export interface FileRoutesByTo {
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -169,6 +178,7 @@ export interface FileRoutesById {
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -189,6 +199,7 @@ export interface FileRouteTypes {
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/profile'
+    | '/api/public/hooks/generate-weekly-reports'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -207,6 +218,7 @@ export interface FileRouteTypes {
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/profile'
+    | '/api/public/hooks/generate-weekly-reports'
   id:
     | '__root__'
     | '/'
@@ -226,6 +238,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reports/$id'
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/profile'
+    | '/api/public/hooks/generate-weekly-reports'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -237,6 +250,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   ApiChatRoute: typeof ApiChatRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
+  ApiPublicHooksGenerateWeeklyReportsRoute: typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -360,6 +374,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsIdRouteImport
       parentRoute: typeof AuthenticatedReportsRoute
     }
+    '/api/public/hooks/generate-weekly-reports': {
+      id: '/api/public/hooks/generate-weekly-reports'
+      path: '/api/public/hooks/generate-weekly-reports'
+      fullPath: '/api/public/hooks/generate-weekly-reports'
+      preLoaderRoute: typeof ApiPublicHooksGenerateWeeklyReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -426,6 +447,8 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   ApiChatRoute: ApiChatRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
+  ApiPublicHooksGenerateWeeklyReportsRoute:
+    ApiPublicHooksGenerateWeeklyReportsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

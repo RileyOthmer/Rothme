@@ -183,3 +183,16 @@
   font-weight: 500;
   color: var(--color-muted-foreground);
 }
+
+/* Print styles — used by the "Download PDF" button on weekly reports.
+   Native browser Save-as-PDF gives a clean, dependency-free export. */
+@media print {
+  @page { margin: 18mm 16mm; }
+  html, body { background: #fff !important; color: #000 !important; }
+  .print\:hidden { display: none !important; }
+  .report-print { max-width: none !important; }
+  .report-print h1, .report-print h2, .report-print h3 { color: #000 !important; }
+  .report-print section { break-inside: avoid; page-break-inside: avoid; }
+  .report-print li { break-inside: avoid; }
+  a { color: inherit !important; text-decoration: none !important; }
+}
