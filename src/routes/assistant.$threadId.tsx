@@ -163,8 +163,26 @@ function AssistantThreadPage() {
                         : "text-muted-foreground hover:text-foreground")
                     }
                   >
+                    {t.pinned && (
+                      <Pin className="mr-1 inline h-3 w-3 text-foreground/70" />
+                    )}
                     {t.title}
                   </Link>
+                  <button
+                    type="button"
+                    aria-label={t.pinned ? "Unpin conversation" : "Pin conversation"}
+                    onClick={() => togglePin(t.id)}
+                    className={
+                      "grid h-7 w-7 place-items-center rounded-md text-muted-foreground transition-opacity hover:bg-surface-2 hover:text-foreground " +
+                      (t.pinned ? "opacity-100" : "opacity-0 group-hover:opacity-100")
+                    }
+                  >
+                    {t.pinned ? (
+                      <PinOff className="h-3.5 w-3.5" />
+                    ) : (
+                      <Pin className="h-3.5 w-3.5" />
+                    )}
+                  </button>
                   <button
                     type="button"
                     aria-label="Delete conversation"
