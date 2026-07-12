@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw } from "lucide-react";
+import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target } from "lucide-react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,6 +15,7 @@ import {
 
 const NAV = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/goals", label: "Goals", icon: Target },
   { to: "/reports", label: "Reports", icon: FileText },
   { to: "/settings/profile", label: "Settings", icon: SettingsIcon },
 ] as const;

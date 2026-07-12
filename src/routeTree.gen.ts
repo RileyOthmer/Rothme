@@ -22,6 +22,7 @@ import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threa
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
@@ -92,6 +93,11 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedGoalsRoute = AuthenticatedGoalsRouteImport.update({
+  id: '/goals',
+  path: '/goals',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/goals': typeof AuthenticatedGoalsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/reports': typeof AuthenticatedReportsRouteWithChildren
   '/api/chat': typeof ApiChatRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/goals': typeof AuthenticatedGoalsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/reports': typeof AuthenticatedReportsRouteWithChildren
   '/api/chat': typeof ApiChatRoute
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRouteWithChildren
   '/api/chat': typeof ApiChatRoute
@@ -189,6 +198,7 @@ export interface FileRouteTypes {
     | '/design'
     | '/notifications'
     | '/dashboard'
+    | '/goals'
     | '/onboarding'
     | '/reports'
     | '/api/chat'
@@ -208,6 +218,7 @@ export interface FileRouteTypes {
     | '/design'
     | '/notifications'
     | '/dashboard'
+    | '/goals'
     | '/onboarding'
     | '/reports'
     | '/api/chat'
@@ -228,6 +239,7 @@ export interface FileRouteTypes {
     | '/design'
     | '/notifications'
     | '/_authenticated/dashboard'
+    | '/_authenticated/goals'
     | '/_authenticated/onboarding'
     | '/_authenticated/reports'
     | '/api/chat'
@@ -346,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/goals': {
+      id: '/_authenticated/goals'
+      path: '/goals'
+      fullPath: '/goals'
+      preLoaderRoute: typeof AuthenticatedGoalsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -397,6 +416,7 @@ const AuthenticatedReportsRouteWithChildren =
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRouteWithChildren
   AuthenticatedSettingsConnectionsRoute: typeof AuthenticatedSettingsConnectionsRoute
@@ -405,6 +425,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRouteWithChildren,
   AuthenticatedSettingsConnectionsRoute: AuthenticatedSettingsConnectionsRoute,
