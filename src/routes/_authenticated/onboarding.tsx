@@ -27,6 +27,7 @@ import {
   getReferralSource,
   getTimezone,
 } from "@/lib/anon-analytics";
+import { saveDashboardPrefs } from "@/features/dashboard/preferences";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
