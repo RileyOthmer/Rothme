@@ -1,131 +1,58 @@
+# Velora Plugin Architecture — Build Plan
 
-# Collaboration v1
+This is a large, foundational change. Shipping it all at once produces a shallow shell across 28 platforms. I want to build it in layers so each layer is real (works end-to-end for at least one plugin) before the next lands.
 
-Build a lean, opinionated collaboration layer around Velora's existing dashboard, reports, and goals. Everything is one-click where possible; admins control who can do what.
+## The core principle
 
-## Scope
+The core app never imports a platform. Everything platform-specific lives in a **plugin manifest** (database row) + **plugin runtime** (generic executor that reads the manifest). Adding Instagram = inserting rows. No code changes.
 
-Ship these nine capabilities as a single coherent feature:
+This is the same shape as the Universal Integration Engine you already approved — I'll extend that foundation instead of forking a parallel system.
 
-1. **Organizations** — every user belongs to at least one; solo users get a personal org auto-created on first login.
-2. **Team Members** — invite by email, remove, transfer ownership.
-3. **Roles** — three fixed roles: `owner`, `admin`, `member`. No custom roles in v1 (keeps it simple).
-4. **Permissions** — enforced in the database via a security-definer `has_org_role()` helper + RLS. Client hides UI it can't use.
-5. **Comments** — attach to any dashboard card, report, or goal (polymorphic: `subject_type` + `subject_id`).
-6. **Mentions** — `@name` picker in the comment composer; creates notifications for the mentioned user.
-7. **Shared Dashboards** — the dashboard, reports, and goals become org-scoped by default. Anyone in the org sees the same data. A "Personal / Team" switch in the header toggles between the user's personal org and their team org.
-8. **Task Assignments** — a Decision or Recommendation can be assigned to a member with a due date; shows on their "My tasks" list.
-9. **Activity Feed** — one denormalized `activity_events` table records every meaningful action (invited, joined, commented, assigned, approved, changed goal). Feed lives at `/team`.
-10. **Approval Requests** — any member can propose an action (e.g. "increase Meta Ads budget by 20%"); admins/owners approve or reject in one click.
+## Phased delivery
 
-Cut from v1 (explicitly): custom roles, per-object ACLs, real-time typing indicators, threaded comments, file uploads in comments, email digests of activity.
+### Phase 1 — Plugin Kernel (this turn)
+The bones. Nothing platform-specific.
 
-## Data model
+- `plugins` table: name, slug, version, developer, description, status (installed/enabled/disabled), health_score, api_version, permissions[], declared_modules[], manifest jsonb
+- `plugin_installations` table: per-org install state, config, secrets (encrypted), enabled flags
+- `plugin_health` table: rolling online/offline, latency, last_sync, last_error
+- `plugin_events` table: install/enable/disable/error audit
+- Generic executor `runPluginAction(plugin, module, action, input)` that dispatches based on manifest (auth type, endpoint, mapping) — reuses the endpoint + KPI-mapper engine already built
+- Permission registry: plugin declares scopes, core enforces them
+- **Plugin Manager UI** at `/settings/plugins`: list, status badges, health %, Install/Enable/Disable/Delete/Configure/Verify/Test buttons wired to the executor
+- **Marketplace tab** (same page): Installed / Available / Updates — reads from `plugin_registry` seed rows
 
-New tables (all under `public`, RLS on, GRANT to `authenticated` + `service_role`):
+### Phase 2 — First real plugin end-to-end
+Prove the kernel by installing **one** plugin (Instagram) with all 11 modules (Auth, Publishing, Analytics, Messaging, Comments, Media, Webhook, Scheduler, Settings, Error, Health) declared in manifest — no core changes needed. Verify KPIs flow to AI Engine automatically via the existing KPI mapper.
 
-- `organizations` — id, name, slug, created_by, created_at.
-- `org_memberships` — org_id, user_id, role (`owner`|`admin`|`member`), invited_by, joined_at. PK (org_id, user_id).
-- `org_invites` — id, org_id, email, role, invited_by, token, expires_at, accepted_at.
-- `comments` — id, org_id, subject_type (`decision`|`report`|`goal`|`dashboard`), subject_id, author_id, body, created_at.
-- `mentions` — comment_id, mentioned_user_id (fanout table for fast unread queries).
-- `tasks` — id, org_id, title, description, assignee_id, assigner_id, subject_type, subject_id, due_date, status (`open`|`done`|`cancelled`), created_at.
-- `approval_requests` — id, org_id, requester_id, title, rationale, subject_type, subject_id, status (`pending`|`approved`|`rejected`), decided_by, decided_at, decision_note, created_at.
-- `activity_events` — id, org_id, actor_id, verb (`invited`|`joined`|`commented`|`mentioned`|`assigned`|`completed_task`|`requested_approval`|`approved`|`rejected`|`updated_goal`), subject_type, subject_id, summary (denormalized plain-English sentence), created_at.
+### Phase 3 — AI auto-registration
+When a plugin enables, its mapped KPIs auto-register with the AI Engine's context (already partially wired via `platform_kpi_mappings`). Extend so AI queries can enumerate available KPIs per org without hardcoded platform list.
 
-Existing `profiles`, `metric_snapshots`, `weekly_reports`, `account_connections` gain an `org_id` column and org-scoped RLS. Migration backfills each row into the owner's personal org.
+### Phase 4 — Remaining 27 plugin manifests
+Seed rows only — no code. Each becomes installable from the Marketplace tab. Tester + Health work for all of them via the generic executor.
 
-Security helper:
+### Phase 5 — Advanced (only if requested)
+- Hot-reload without redeploy (already true for manifests; UI polish)
+- Version history / rollback
+- Compatibility matrix
+- External plugin submission flow
 
-```sql
-create or replace function public.has_org_role(_org uuid, _user uuid, _min_role text)
-returns boolean language sql stable security definer set search_path = public as $$
-  select exists (
-    select 1 from public.org_memberships m
-    where m.org_id = _org and m.user_id = _user
-      and case _min_role
-        when 'owner'  then m.role = 'owner'
-        when 'admin'  then m.role in ('owner','admin')
-        else true
-      end
-  );
-$$;
-```
+## What Phase 1 delivers today
 
-RLS pattern for every org-scoped table:
-- SELECT: `has_org_role(org_id, auth.uid(), 'member')`
-- INSERT/UPDATE/DELETE: `has_org_role(org_id, auth.uid(), 'admin')` for admin-only actions; member for own comments/tasks.
+- Migration: `plugins`, `plugin_installations`, `plugin_health`, `plugin_events`, `plugin_registry` with GRANTs + RLS + admin-only policies via `has_role`
+- Server functions: `listPlugins`, `installPlugin`, `enablePlugin`, `disablePlugin`, `deletePlugin`, `configurePlugin`, `verifyPlugin`, `testPluginModule`, `getPluginHealth`
+- Route: `/settings/plugins` (admin-gated) with Manager + Marketplace tabs, plugin cards, config drawer, tester panel, health panel
+- Seed: registry rows for all 28 platforms with declared modules + permissions (manifest bodies empty until Phase 2 fills Instagram)
+- Zero platform-specific code in `src/` — the core stays clean
 
-## Server functions
+## Technical notes (for reference)
 
-Under `src/lib/collab/*.functions.ts`, all `.middleware([requireSupabaseAuth])`:
+- Extends existing `platform_integrations` + `platform_kpi_mappings` — plugins are the new outer envelope, integrations become the "installed instance" of a plugin per org
+- Reuses `INTEGRATION_ENCRYPTION_KEY` for plugin secret storage
+- All plugin actions go through one executor → uniform logging, retry, rate-limit, health tracking
+- Marketplace is a DB table, not an external service — you own the catalog
 
-- `listMyOrgs`, `getActiveOrg`, `setActiveOrg` (stored in `profiles.active_org_id`).
-- `inviteMember`, `revokeInvite`, `acceptInvite`, `removeMember`, `updateMemberRole`.
-- `listComments`, `postComment` (parses `@handle` → mentions), `deleteComment`.
-- `listTasks`, `createTask`, `updateTaskStatus`, `assignTask`.
-- `listApprovals`, `requestApproval`, `decideApproval`.
-- `listActivity` (paged).
+## Confirm before I build
 
-Every write also inserts one `activity_events` row via a shared helper — the feed is never derived on read.
-
-## UI surfaces
-
-Three new routes plus small additions to existing pages:
-
-- `/team` — Members tab · Invites tab · Activity feed tab · Approvals tab. Admin-only controls are hidden for members.
-- `/team/settings` — org name, transfer ownership, delete org (owner only).
-- `/tasks` — "My tasks" (assigned to me) + "Assigned by me". Inline complete/reassign.
-
-Existing pages gain a compact **CommentThread** component (collapsed by default under each Decision card, Goal card, and Report). The dashboard gets an org switcher in `AppHeader` (dropdown next to the account menu). Decision cards get an "Assign" and "Request approval" button next to "I'll do this".
-
-Mention picker: lightweight — types `@`, opens a popover listing org members, arrow keys to pick. No rich text editor; plain text + rendered `@name` chips.
-
-## Files
-
-New:
-- `supabase/migrations/<ts>_collab.sql` — all tables, RLS, helper, backfill.
-- `src/features/collab/types.ts`
-- `src/features/collab/OrgSwitcher.tsx`
-- `src/features/collab/MembersTable.tsx`
-- `src/features/collab/InviteDialog.tsx`
-- `src/features/collab/CommentThread.tsx`
-- `src/features/collab/MentionPicker.tsx`
-- `src/features/collab/ActivityFeed.tsx`
-- `src/features/collab/TaskList.tsx`
-- `src/features/collab/ApprovalList.tsx`
-- `src/lib/collab/orgs.functions.ts`
-- `src/lib/collab/members.functions.ts`
-- `src/lib/collab/comments.functions.ts`
-- `src/lib/collab/tasks.functions.ts`
-- `src/lib/collab/approvals.functions.ts`
-- `src/lib/collab/activity.functions.ts`
-- `src/routes/_authenticated/team.tsx`
-- `src/routes/_authenticated/team.settings.tsx`
-- `src/routes/_authenticated/tasks.tsx`
-- `src/routes/invite.$token.tsx` (public — accept invite; prompts sign-in if needed)
-
-Edited:
-- `src/components/layout/AppHeader.tsx` — add Team + Tasks nav + OrgSwitcher.
-- `src/features/decisions/DecisionCard.tsx` — Assign / Request approval / Comments trigger.
-- `src/features/goals/GoalCard.tsx` — Comments trigger.
-- `src/routes/_authenticated/reports.$id.tsx` — Comments panel.
-
-## Guardrails
-
-- Admins-only actions gated in both server functions (`has_org_role(..., 'admin')`) and UI (hidden buttons).
-- Every org-scoped table's RLS is scoped through `has_org_role()` — never through direct membership subqueries (avoids the recursion class of bugs).
-- Invitations use a signed random token; expires in 7 days; accepting requires being signed in as the invited email OR any signed-in user if the invite has no email lock (v1: email-locked only).
-- Personal org is never deletable and never invitable — enforced by a boolean `is_personal` column.
-- Activity feed writes go through one helper; if it fails, the action still succeeds (fire-and-forget insert, logged server-side).
-
-## Build order
-
-1. Migration: tables + RLS + `has_org_role` + backfill personal orgs + `active_org_id` on profiles.
-2. Org switcher + `/team` Members tab + invite/accept flow.
-3. Comments + mentions on Decisions, Goals, Reports.
-4. Tasks + assignment on Decisions; `/tasks` route.
-5. Approvals on Decisions; Approvals tab.
-6. Activity feed tab.
-
-Ship as one PR — the feature only makes sense whole.
+Reply **"go"** to build Phase 1 as scoped above.
+Reply with edits if you want to change scope (e.g. "skip marketplace tab", "start with Facebook not Instagram", "combine phases 1+2").
