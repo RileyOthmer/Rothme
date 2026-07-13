@@ -265,8 +265,8 @@ export function GenericHeatmap({
           <div key={x} className="truncate text-center text-[10px] text-muted-foreground">{x}</div>
         ))}
         {yLabels.map((y, yi) => (
-          <>
-            <div key={`l-${y}`} className="truncate pr-1 text-right text-[10px] text-muted-foreground">{y}</div>
+          <FragmentRow key={y}>
+            <div className="truncate pr-1 text-right text-[10px] text-muted-foreground">{y}</div>
             {xLabels.map((_, xi) => {
               const v = data[yi]?.[xi] ?? 0;
               const alpha = v / max;
@@ -278,7 +278,7 @@ export function GenericHeatmap({
                 />
               );
             })}
-          </>
+          </FragmentRow>
         ))}
       </div>
     </div>
