@@ -86,6 +86,10 @@ function AnalyticsPage() {
           </div>
         </header>
 
+        <AnalyticsHubNav />
+
+
+
 
         {groups.map(([category, metrics]) => (
           <section key={category} className="space-y-4">
