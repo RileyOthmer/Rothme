@@ -1,7 +1,5 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/analytics")({
-  beforeLoad: () => {
-    throw redirect({ to: "/analytics/overview" });
-  },
+  component: () => <Outlet />,
 });
