@@ -29,6 +29,7 @@ import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
+import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics.index'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as AuthenticatedSettingsPluginsRouteImport } from './routes/_authenticated/settings.plugins'
 import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_authenticated/settings.developer'
@@ -154,6 +155,12 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAnalyticsIndexRoute =
+  AuthenticatedAnalyticsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
 const AuthenticatedSettingsProfileRoute =
   AuthenticatedSettingsProfileRouteImport.update({
     id: '/settings/profile',
@@ -348,6 +355,7 @@ export interface FileRoutesByFullPath {
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesByTo {
@@ -356,7 +364,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
-  '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
@@ -394,6 +401,7 @@ export interface FileRoutesByTo {
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesById {
@@ -442,6 +450,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/_authenticated/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRouteTypes {
@@ -490,6 +499,7 @@ export interface FileRouteTypes {
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
+    | '/analytics/'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -498,7 +508,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/design'
     | '/notifications'
-    | '/analytics'
     | '/dashboard'
     | '/goals'
     | '/insights'
@@ -536,6 +545,7 @@ export interface FileRouteTypes {
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
+    | '/analytics'
     | '/api/public/hooks/generate-weekly-reports'
   id:
     | '__root__'
@@ -583,6 +593,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/developer'
     | '/_authenticated/settings/plugins'
     | '/_authenticated/settings/profile'
+    | '/_authenticated/analytics/'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesById: FileRoutesById
 }
@@ -740,6 +751,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/analytics'
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/analytics/': {
+      id: '/_authenticated/analytics/'
+      path: '/'
+      fullPath: '/analytics/'
+      preLoaderRoute: typeof AuthenticatedAnalyticsIndexRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
     }
     '/_authenticated/settings/profile': {
       id: '/_authenticated/settings/profile'
@@ -939,6 +957,7 @@ interface AuthenticatedAnalyticsRouteChildren {
   AuthenticatedAnalyticsSeoRoute: typeof AuthenticatedAnalyticsSeoRoute
   AuthenticatedAnalyticsUnifiedRoute: typeof AuthenticatedAnalyticsUnifiedRoute
   AuthenticatedAnalyticsWebsiteRoute: typeof AuthenticatedAnalyticsWebsiteRoute
+  AuthenticatedAnalyticsIndexRoute: typeof AuthenticatedAnalyticsIndexRoute
 }
 
 const AuthenticatedAnalyticsRouteChildren: AuthenticatedAnalyticsRouteChildren =
@@ -966,6 +985,7 @@ const AuthenticatedAnalyticsRouteChildren: AuthenticatedAnalyticsRouteChildren =
     AuthenticatedAnalyticsSeoRoute: AuthenticatedAnalyticsSeoRoute,
     AuthenticatedAnalyticsUnifiedRoute: AuthenticatedAnalyticsUnifiedRoute,
     AuthenticatedAnalyticsWebsiteRoute: AuthenticatedAnalyticsWebsiteRoute,
+    AuthenticatedAnalyticsIndexRoute: AuthenticatedAnalyticsIndexRoute,
   }
 
 const AuthenticatedAnalyticsRouteWithChildren =
