@@ -16,6 +16,17 @@ import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { updateProfile } from "@/lib/profile.functions";
+import {
+  trackOnboardingEvent,
+  upsertOnboardingResponse,
+} from "@/lib/onboarding-analytics.functions";
+import {
+  getAnonId,
+  getCountryFromLocale,
+  getDeviceType,
+  getReferralSource,
+  getTimezone,
+} from "@/lib/anon-analytics";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
