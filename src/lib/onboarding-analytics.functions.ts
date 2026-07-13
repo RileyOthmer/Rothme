@@ -66,7 +66,7 @@ export const upsertOnboardingResponse = createServerFn({ method: "POST" })
 
     const { error } = await context.supabase
       .from("onboarding_responses")
-      .upsert(row, { onConflict: "anon_id" });
+      .upsert(row as never, { onConflict: "anon_id" });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
