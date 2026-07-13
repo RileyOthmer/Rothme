@@ -32,6 +32,7 @@ import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authentica
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authenticated/reports.$id'
+import { Route as AuthenticatedAnalyticsChartsRouteImport } from './routes/_authenticated/analytics.charts'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
 
@@ -151,6 +152,12 @@ const AuthenticatedReportsIdRoute = AuthenticatedReportsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedReportsRoute,
 } as any)
+const AuthenticatedAnalyticsChartsRoute =
+  AuthenticatedAnalyticsChartsRouteImport.update({
+    id: '/charts',
+    path: '/charts',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
 const AuthenticatedAnalyticsMetricRoute =
   AuthenticatedAnalyticsMetricRouteImport.update({
     id: '/$metric',
@@ -185,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
+  '/analytics/charts': typeof AuthenticatedAnalyticsChartsRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
@@ -211,6 +219,7 @@ export interface FileRoutesByTo {
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
+  '/analytics/charts': typeof AuthenticatedAnalyticsChartsRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
@@ -239,6 +248,7 @@ export interface FileRoutesById {
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/_authenticated/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
+  '/_authenticated/analytics/charts': typeof AuthenticatedAnalyticsChartsRoute
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/settings/notifications'
     | '/analytics/$metric'
+    | '/analytics/charts'
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/profile'
@@ -293,6 +304,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/settings/notifications'
     | '/analytics/$metric'
+    | '/analytics/charts'
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/profile'
@@ -320,6 +332,7 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/settings/notifications'
     | '/_authenticated/analytics/$metric'
+    | '/_authenticated/analytics/charts'
     | '/_authenticated/reports/$id'
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/profile'
@@ -502,6 +515,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsIdRouteImport
       parentRoute: typeof AuthenticatedReportsRoute
     }
+    '/_authenticated/analytics/charts': {
+      id: '/_authenticated/analytics/charts'
+      path: '/charts'
+      fullPath: '/analytics/charts'
+      preLoaderRoute: typeof AuthenticatedAnalyticsChartsRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
     '/_authenticated/analytics/$metric': {
       id: '/_authenticated/analytics/$metric'
       path: '/$metric'
@@ -521,11 +541,13 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAnalyticsRouteChildren {
   AuthenticatedAnalyticsMetricRoute: typeof AuthenticatedAnalyticsMetricRoute
+  AuthenticatedAnalyticsChartsRoute: typeof AuthenticatedAnalyticsChartsRoute
 }
 
 const AuthenticatedAnalyticsRouteChildren: AuthenticatedAnalyticsRouteChildren =
   {
     AuthenticatedAnalyticsMetricRoute: AuthenticatedAnalyticsMetricRoute,
+    AuthenticatedAnalyticsChartsRoute: AuthenticatedAnalyticsChartsRoute,
   }
 
 const AuthenticatedAnalyticsRouteWithChildren =

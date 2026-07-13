@@ -67,8 +67,18 @@ function AnalyticsPage() {
               Compared to the previous {range} days. Tap any card for the full story.
             </p>
           </div>
-          <RangePicker value={range as RangeDays} onChange={setRange} />
+          <div className="flex items-center gap-3">
+            <Link
+              to="/analytics/charts"
+              search={{ range: range as RangeDays }}
+              className="text-xs font-medium text-primary underline-offset-4 hover:underline"
+            >
+              View charts →
+            </Link>
+            <RangePicker value={range as RangeDays} onChange={setRange} />
+          </div>
         </header>
+
 
         {groups.map(([category, metrics]) => (
           <section key={category} className="space-y-4">
