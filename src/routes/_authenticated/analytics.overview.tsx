@@ -29,7 +29,7 @@ const searchSchema = z.object({
   platforms: fallback(z.array(z.enum(platformIds)), [] as PlatformId[]).default([]),
 });
 
-export const Route = createFileRoute("/_authenticated/analytics/executive")({
+export const Route = createFileRoute("/_authenticated/analytics/overview")({
   head: () => ({
     meta: [
       { title: "Executive dashboard — Velora Analytics" },
