@@ -90,6 +90,7 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
               Refresh
             </button>
           ) : null}
+          <OrgSwitcher />
           <ThemeToggle />
           <DropdownMenu>
             <DropdownMenuTrigger
