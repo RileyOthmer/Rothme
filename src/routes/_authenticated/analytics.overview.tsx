@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { fallback } from "@tanstack/zod-adapter";
@@ -9,6 +9,7 @@ import { AnalyticsHubNav } from "@/features/analytics/AnalyticsHubNav";
 import { PlatformSelector } from "@/features/analytics/PlatformSelector";
 import { ExecutiveDateFilter } from "@/features/analytics/ExecutiveDateFilter";
 import { AiInsightsStrip } from "@/features/analytics/AiInsightsStrip";
+import { ModeSwitcher, type AnalyticsMode } from "@/features/analytics/ModeSwitcher";
 import { ChartFrame } from "@/features/analytics/charts/ChartFrame";
 import {
   GenericAreaChart, GenericBarChart, GenericLineChart, GenericPieChart,
@@ -32,17 +33,18 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/_authenticated/analytics/overview")({
   head: () => ({
     meta: [
-      { title: "Executive dashboard — Velora Analytics" },
+      { title: "Overview — Velora Analytics Center" },
       { name: "description", content: "The complete cross-platform executive view: KPIs, growth, platform mix, and an AI strategist summary — all in one glance." },
     ],
   }),
   validateSearch: (s) => searchSchema.parse(s),
-  component: ExecutivePage,
+  component: OverviewPage,
 });
 
-function ExecutivePage() {
+function OverviewPage() {
   const { range, from, to, platforms } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
+  const [mode, setMode] = useState<AnalyticsMode>("unified");
 
   const dates = useMemo(
     () => rangeToDates(range as RangePreset, { from: from || undefined, to: to || undefined }),
