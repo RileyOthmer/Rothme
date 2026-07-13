@@ -836,6 +836,229 @@ export type Database = {
         }
         Relationships: []
       }
+      plugin_events: {
+        Row: {
+          actor: string | null
+          created_at: string
+          event_type: string
+          id: string
+          installation_id: string | null
+          latency_ms: number | null
+          message: string | null
+          module: string | null
+          payload: Json | null
+          plugin_slug: string
+          status_code: number | null
+          success: boolean | null
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          installation_id?: string | null
+          latency_ms?: number | null
+          message?: string | null
+          module?: string | null
+          payload?: Json | null
+          plugin_slug: string
+          status_code?: number | null
+          success?: boolean | null
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          installation_id?: string | null
+          latency_ms?: number | null
+          message?: string | null
+          module?: string | null
+          payload?: Json | null
+          plugin_slug?: string
+          status_code?: number | null
+          success?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plugin_events_installation_id_fkey"
+            columns: ["installation_id"]
+            isOneToOne: false
+            referencedRelation: "plugin_installations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plugin_health: {
+        Row: {
+          auth_ok: boolean
+          avg_latency_ms: number | null
+          health_score: number
+          installation_id: string
+          last_error_at: string | null
+          last_error_message: string | null
+          last_success_at: string | null
+          online: boolean
+          rate_limit_remaining: number | null
+          updated_at: string
+          webhook_ok: boolean
+        }
+        Insert: {
+          auth_ok?: boolean
+          avg_latency_ms?: number | null
+          health_score?: number
+          installation_id: string
+          last_error_at?: string | null
+          last_error_message?: string | null
+          last_success_at?: string | null
+          online?: boolean
+          rate_limit_remaining?: number | null
+          updated_at?: string
+          webhook_ok?: boolean
+        }
+        Update: {
+          auth_ok?: boolean
+          avg_latency_ms?: number | null
+          health_score?: number
+          installation_id?: string
+          last_error_at?: string | null
+          last_error_message?: string | null
+          last_success_at?: string | null
+          online?: boolean
+          rate_limit_remaining?: number | null
+          updated_at?: string
+          webhook_ok?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plugin_health_installation_id_fkey"
+            columns: ["installation_id"]
+            isOneToOne: true
+            referencedRelation: "plugin_installations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plugin_installations: {
+        Row: {
+          config: Json
+          created_at: string
+          enabled_modules: string[]
+          granted_permissions: string[]
+          id: string
+          installed_by: string | null
+          last_verified_at: string | null
+          org_id: string
+          plugin_slug: string
+          secrets_ciphertext: string | null
+          status: string
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          enabled_modules?: string[]
+          granted_permissions?: string[]
+          id?: string
+          installed_by?: string | null
+          last_verified_at?: string | null
+          org_id: string
+          plugin_slug: string
+          secrets_ciphertext?: string | null
+          status?: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          enabled_modules?: string[]
+          granted_permissions?: string[]
+          id?: string
+          installed_by?: string | null
+          last_verified_at?: string | null
+          org_id?: string
+          plugin_slug?: string
+          secrets_ciphertext?: string | null
+          status?: string
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plugin_installations_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plugin_installations_plugin_slug_fkey"
+            columns: ["plugin_slug"]
+            isOneToOne: false
+            referencedRelation: "plugin_registry"
+            referencedColumns: ["slug"]
+          },
+        ]
+      }
+      plugin_registry: {
+        Row: {
+          api_version: string | null
+          category: string | null
+          created_at: string
+          declared_modules: string[]
+          declared_permissions: string[]
+          description: string | null
+          developer: string
+          docs_url: string | null
+          icon: string | null
+          id: string
+          is_official: boolean
+          manifest: Json
+          name: string
+          slug: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          api_version?: string | null
+          category?: string | null
+          created_at?: string
+          declared_modules?: string[]
+          declared_permissions?: string[]
+          description?: string | null
+          developer?: string
+          docs_url?: string | null
+          icon?: string | null
+          id?: string
+          is_official?: boolean
+          manifest?: Json
+          name: string
+          slug: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          api_version?: string | null
+          category?: string | null
+          created_at?: string
+          declared_modules?: string[]
+          declared_permissions?: string[]
+          description?: string | null
+          developer?: string
+          docs_url?: string | null
+          icon?: string | null
+          id?: string
+          is_official?: boolean
+          manifest?: Json
+          name?: string
+          slug?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           active_org_id: string | null
