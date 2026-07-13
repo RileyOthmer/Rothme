@@ -69,11 +69,17 @@ function AnalyticsPage() {
           </div>
           <div className="flex items-center gap-3">
             <Link
+              to="/analytics/unified"
+              className="text-xs font-medium text-primary underline-offset-4 hover:underline"
+            >
+              Unified view →
+            </Link>
+            <Link
               to="/analytics/charts"
               search={{ range: range as RangeDays }}
               className="text-xs font-medium text-primary underline-offset-4 hover:underline"
             >
-              View charts →
+              Charts →
             </Link>
             <RangePicker value={range as RangeDays} onChange={setRange} />
           </div>
