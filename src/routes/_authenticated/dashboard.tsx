@@ -1,7 +1,7 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
 
 import { getProfile } from "@/lib/profile.functions";
@@ -9,6 +9,12 @@ import { AppHeader } from "@/components/layout/AppHeader";
 import { DecisionCenter } from "@/features/decisions/DecisionCenter";
 import { HealthScoreCard } from "@/features/health/HealthScoreCard";
 import { getSeedHealthScore } from "@/features/health/seed";
+import { DashboardWidget, WIDGETS } from "@/features/dashboard/DashboardWidget";
+import {
+  loadDashboardPrefs,
+  type DashboardPrefs,
+  type WidgetId,
+} from "@/features/dashboard/preferences";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
@@ -24,6 +30,10 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: DashboardPage,
 });
 
+const DEFAULT_ORDER: WidgetId[] = [
+  "ai", "analytics", "scheduling", "inbox", "accounts", "collab",
+];
+
 function DashboardPage() {
   const router = useRouter();
   const fetchProfile = useServerFn(getProfile);
@@ -31,6 +41,11 @@ function DashboardPage() {
     queryKey: ["profile"],
     queryFn: () => fetchProfile(),
   });
+
+  const [prefs, setPrefs] = useState<DashboardPrefs | null>(null);
+  useEffect(() => {
+    setPrefs(loadDashboardPrefs());
+  }, []);
 
   useEffect(() => {
     if (profileQuery.data && !profileQuery.data.onboarded_at) {
@@ -41,15 +56,44 @@ function DashboardPage() {
   const firstName = profileQuery.data?.full_name?.split(" ")[0] ?? "there";
   const health = getSeedHealthScore();
 
+  const order = prefs?.priority ?? DEFAULT_ORDER;
+  const primary = order[0];
+  const primaryMeta = WIDGETS[primary];
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <AppHeader />
 
-      <main className="mx-auto max-w-3xl space-y-10 px-4 py-10 sm:px-6 sm:py-14">
+      <main className="mx-auto max-w-5xl space-y-10 px-4 py-10 sm:px-6 sm:py-14">
+        <section>
+          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+            Welcome back, {firstName}
+          </p>
+          <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">
+            {prefs
+              ? `Your workspace, tuned for ${primaryMeta.title.toLowerCase()}.`
+              : "Your workspace."}
+          </h1>
+          <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+            {prefs
+              ? "The tools you told us matter most are pinned to the top. Everything else is one click away."
+              : "Start by connecting an account or asking Velora anything."}
+          </p>
+        </section>
+
         <HealthScoreCard score={health} />
+
+        <section aria-labelledby="widgets-heading" className="space-y-4">
+          <h2 id="widgets-heading" className="sr-only">Recommended for you</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {order.map((id, i) => (
+              <DashboardWidget key={id} widgetId={id} primary={i === 0} />
+            ))}
+          </div>
+        </section>
+
         <DecisionCenter firstName={firstName} hasConnections={true} />
       </main>
-
 
       <Toaster position="bottom-right" />
     </div>
