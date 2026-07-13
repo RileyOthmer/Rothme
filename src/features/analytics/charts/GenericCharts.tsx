@@ -201,17 +201,7 @@ export function GenericTreemap({
       <Treemap
         data={data} dataKey="size" nameKey="name"
         stroke="hsl(var(--background))"
-        content={({ x, y, width, height, name, payload }: any) => (
-          <g>
-            <rect x={x} y={y} width={width} height={height}
-              style={{ fill: payload?.color ?? "hsl(var(--primary))", stroke: "hsl(var(--background))", strokeWidth: 2 }} />
-            {width > 60 && height > 24 && (
-              <text x={x + 6} y={y + 16} fill="hsl(var(--primary-foreground))" fontSize={11} fontWeight={500}>
-                {name}
-              </text>
-            )}
-          </g>
-        )}
+        content={<TreemapCell />}
       />
     </ResponsiveContainer>
   );
