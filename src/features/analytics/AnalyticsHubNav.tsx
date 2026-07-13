@@ -1,25 +1,25 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import { Sparkles } from "lucide-react";
 
-type NavItem = {
-  label: string;
-  to?: string;
-  soon?: boolean;
-};
+type NavItem = { label: string; to: string };
 
 const ITEMS: NavItem[] = [
-  { label: "Overview",   to: "/analytics" },
-  { label: "Executive",  to: "/analytics/executive" },
-  { label: "Platforms",  to: "/analytics/unified" },
-  { label: "Charts",     to: "/analytics/charts" },
-  { label: "Campaigns",  soon: true },
-  { label: "Content",    soon: true },
-  { label: "Audience",   soon: true },
-  { label: "Ads",        soon: true },
-  { label: "Revenue",    soon: true },
-  { label: "AI Insights", soon: true },
-  { label: "Custom",     soon: true },
+  { label: "Overview",     to: "/analytics/overview" },
+  { label: "Platforms",    to: "/analytics/platforms" },
+  { label: "Campaigns",    to: "/analytics/campaigns" },
+  { label: "Content",      to: "/analytics/content" },
+  { label: "Audience",     to: "/analytics/audience" },
+  { label: "Advertising",  to: "/analytics/advertising" },
+  { label: "Revenue",      to: "/analytics/revenue" },
+  { label: "SEO",          to: "/analytics/seo" },
+  { label: "Website",      to: "/analytics/website" },
+  { label: "Competitor",   to: "/analytics/competitor" },
+  { label: "Custom",       to: "/analytics/custom" },
+  { label: "AI Insights",  to: "/analytics/ai-insights" },
+  { label: "Reports",      to: "/analytics/reports" },
+  { label: "Forecasting",  to: "/analytics/forecasting" },
+  { label: "Alerts",       to: "/analytics/alerts" },
+  { label: "Developer",    to: "/analytics/developer" },
 ];
 
 export function AnalyticsHubNav() {
@@ -27,25 +27,11 @@ export function AnalyticsHubNav() {
   return (
     <nav className="scrollbar-none -mx-4 flex gap-1 overflow-x-auto border-b border-border/60 px-4 pb-1">
       {ITEMS.map((item) => {
-        if (item.soon) {
-          return (
-            <span
-              key={item.label}
-              className="inline-flex shrink-0 items-center gap-1 rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground/60"
-              title="Available in the next phase"
-            >
-              {item.label}
-              <Sparkles className="h-3 w-3 opacity-60" />
-            </span>
-          );
-        }
-        const active =
-          item.to === pathname ||
-          (item.to && item.to !== "/analytics" && pathname.startsWith(item.to));
+        const active = pathname === item.to || pathname.startsWith(item.to + "/");
         return (
           <Link
-            key={item.label}
-            to={item.to!}
+            key={item.to}
+            to={item.to}
             className={cn(
               "shrink-0 rounded-md px-3 py-1.5 text-xs font-medium transition-colors",
               active

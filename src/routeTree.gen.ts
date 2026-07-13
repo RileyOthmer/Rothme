@@ -29,14 +29,30 @@ import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
+import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics.index'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as AuthenticatedSettingsPluginsRouteImport } from './routes/_authenticated/settings.plugins'
 import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_authenticated/settings.developer'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authenticated/reports.$id'
+import { Route as AuthenticatedAnalyticsWebsiteRouteImport } from './routes/_authenticated/analytics.website'
 import { Route as AuthenticatedAnalyticsUnifiedRouteImport } from './routes/_authenticated/analytics.unified'
-import { Route as AuthenticatedAnalyticsExecutiveRouteImport } from './routes/_authenticated/analytics.executive'
+import { Route as AuthenticatedAnalyticsSeoRouteImport } from './routes/_authenticated/analytics.seo'
+import { Route as AuthenticatedAnalyticsRevenueRouteImport } from './routes/_authenticated/analytics.revenue'
+import { Route as AuthenticatedAnalyticsReportsRouteImport } from './routes/_authenticated/analytics.reports'
+import { Route as AuthenticatedAnalyticsPlatformsRouteImport } from './routes/_authenticated/analytics.platforms'
+import { Route as AuthenticatedAnalyticsOverviewRouteImport } from './routes/_authenticated/analytics.overview'
+import { Route as AuthenticatedAnalyticsForecastingRouteImport } from './routes/_authenticated/analytics.forecasting'
+import { Route as AuthenticatedAnalyticsDeveloperRouteImport } from './routes/_authenticated/analytics.developer'
+import { Route as AuthenticatedAnalyticsCustomRouteImport } from './routes/_authenticated/analytics.custom'
+import { Route as AuthenticatedAnalyticsContentRouteImport } from './routes/_authenticated/analytics.content'
+import { Route as AuthenticatedAnalyticsCompetitorRouteImport } from './routes/_authenticated/analytics.competitor'
 import { Route as AuthenticatedAnalyticsChartsRouteImport } from './routes/_authenticated/analytics.charts'
+import { Route as AuthenticatedAnalyticsCampaignsRouteImport } from './routes/_authenticated/analytics.campaigns'
+import { Route as AuthenticatedAnalyticsAudienceRouteImport } from './routes/_authenticated/analytics.audience'
+import { Route as AuthenticatedAnalyticsAlertsRouteImport } from './routes/_authenticated/analytics.alerts'
+import { Route as AuthenticatedAnalyticsAiInsightsRouteImport } from './routes/_authenticated/analytics.ai-insights'
+import { Route as AuthenticatedAnalyticsAdvertisingRouteImport } from './routes/_authenticated/analytics.advertising'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
 
@@ -139,6 +155,12 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAnalyticsIndexRoute =
+  AuthenticatedAnalyticsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
 const AuthenticatedSettingsProfileRoute =
   AuthenticatedSettingsProfileRouteImport.update({
     id: '/settings/profile',
@@ -168,22 +190,112 @@ const AuthenticatedReportsIdRoute = AuthenticatedReportsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedReportsRoute,
 } as any)
+const AuthenticatedAnalyticsWebsiteRoute =
+  AuthenticatedAnalyticsWebsiteRouteImport.update({
+    id: '/website',
+    path: '/website',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
 const AuthenticatedAnalyticsUnifiedRoute =
   AuthenticatedAnalyticsUnifiedRouteImport.update({
     id: '/unified',
     path: '/unified',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
   } as any)
-const AuthenticatedAnalyticsExecutiveRoute =
-  AuthenticatedAnalyticsExecutiveRouteImport.update({
-    id: '/executive',
-    path: '/executive',
+const AuthenticatedAnalyticsSeoRoute =
+  AuthenticatedAnalyticsSeoRouteImport.update({
+    id: '/seo',
+    path: '/seo',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsRevenueRoute =
+  AuthenticatedAnalyticsRevenueRouteImport.update({
+    id: '/revenue',
+    path: '/revenue',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsReportsRoute =
+  AuthenticatedAnalyticsReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsPlatformsRoute =
+  AuthenticatedAnalyticsPlatformsRouteImport.update({
+    id: '/platforms',
+    path: '/platforms',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsOverviewRoute =
+  AuthenticatedAnalyticsOverviewRouteImport.update({
+    id: '/overview',
+    path: '/overview',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsForecastingRoute =
+  AuthenticatedAnalyticsForecastingRouteImport.update({
+    id: '/forecasting',
+    path: '/forecasting',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsDeveloperRoute =
+  AuthenticatedAnalyticsDeveloperRouteImport.update({
+    id: '/developer',
+    path: '/developer',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsCustomRoute =
+  AuthenticatedAnalyticsCustomRouteImport.update({
+    id: '/custom',
+    path: '/custom',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsContentRoute =
+  AuthenticatedAnalyticsContentRouteImport.update({
+    id: '/content',
+    path: '/content',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsCompetitorRoute =
+  AuthenticatedAnalyticsCompetitorRouteImport.update({
+    id: '/competitor',
+    path: '/competitor',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
   } as any)
 const AuthenticatedAnalyticsChartsRoute =
   AuthenticatedAnalyticsChartsRouteImport.update({
     id: '/charts',
     path: '/charts',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsCampaignsRoute =
+  AuthenticatedAnalyticsCampaignsRouteImport.update({
+    id: '/campaigns',
+    path: '/campaigns',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsAudienceRoute =
+  AuthenticatedAnalyticsAudienceRouteImport.update({
+    id: '/audience',
+    path: '/audience',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsAlertsRoute =
+  AuthenticatedAnalyticsAlertsRouteImport.update({
+    id: '/alerts',
+    path: '/alerts',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsAiInsightsRoute =
+  AuthenticatedAnalyticsAiInsightsRouteImport.update({
+    id: '/ai-insights',
+    path: '/ai-insights',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedAnalyticsAdvertisingRoute =
+  AuthenticatedAnalyticsAdvertisingRouteImport.update({
+    id: '/advertising',
+    path: '/advertising',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
   } as any)
 const AuthenticatedAnalyticsMetricRoute =
@@ -220,14 +332,30 @@ export interface FileRoutesByFullPath {
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
+  '/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
+  '/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
+  '/analytics/alerts': typeof AuthenticatedAnalyticsAlertsRoute
+  '/analytics/audience': typeof AuthenticatedAnalyticsAudienceRoute
+  '/analytics/campaigns': typeof AuthenticatedAnalyticsCampaignsRoute
   '/analytics/charts': typeof AuthenticatedAnalyticsChartsRoute
-  '/analytics/executive': typeof AuthenticatedAnalyticsExecutiveRoute
+  '/analytics/competitor': typeof AuthenticatedAnalyticsCompetitorRoute
+  '/analytics/content': typeof AuthenticatedAnalyticsContentRoute
+  '/analytics/custom': typeof AuthenticatedAnalyticsCustomRoute
+  '/analytics/developer': typeof AuthenticatedAnalyticsDeveloperRoute
+  '/analytics/forecasting': typeof AuthenticatedAnalyticsForecastingRoute
+  '/analytics/overview': typeof AuthenticatedAnalyticsOverviewRoute
+  '/analytics/platforms': typeof AuthenticatedAnalyticsPlatformsRoute
+  '/analytics/reports': typeof AuthenticatedAnalyticsReportsRoute
+  '/analytics/revenue': typeof AuthenticatedAnalyticsRevenueRoute
+  '/analytics/seo': typeof AuthenticatedAnalyticsSeoRoute
   '/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
+  '/analytics/website': typeof AuthenticatedAnalyticsWebsiteRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesByTo {
@@ -236,7 +364,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
-  '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
@@ -251,14 +378,30 @@ export interface FileRoutesByTo {
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
+  '/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
+  '/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
+  '/analytics/alerts': typeof AuthenticatedAnalyticsAlertsRoute
+  '/analytics/audience': typeof AuthenticatedAnalyticsAudienceRoute
+  '/analytics/campaigns': typeof AuthenticatedAnalyticsCampaignsRoute
   '/analytics/charts': typeof AuthenticatedAnalyticsChartsRoute
-  '/analytics/executive': typeof AuthenticatedAnalyticsExecutiveRoute
+  '/analytics/competitor': typeof AuthenticatedAnalyticsCompetitorRoute
+  '/analytics/content': typeof AuthenticatedAnalyticsContentRoute
+  '/analytics/custom': typeof AuthenticatedAnalyticsCustomRoute
+  '/analytics/developer': typeof AuthenticatedAnalyticsDeveloperRoute
+  '/analytics/forecasting': typeof AuthenticatedAnalyticsForecastingRoute
+  '/analytics/overview': typeof AuthenticatedAnalyticsOverviewRoute
+  '/analytics/platforms': typeof AuthenticatedAnalyticsPlatformsRoute
+  '/analytics/reports': typeof AuthenticatedAnalyticsReportsRoute
+  '/analytics/revenue': typeof AuthenticatedAnalyticsRevenueRoute
+  '/analytics/seo': typeof AuthenticatedAnalyticsSeoRoute
   '/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
+  '/analytics/website': typeof AuthenticatedAnalyticsWebsiteRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesById {
@@ -284,14 +427,30 @@ export interface FileRoutesById {
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/_authenticated/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
+  '/_authenticated/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
+  '/_authenticated/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
+  '/_authenticated/analytics/alerts': typeof AuthenticatedAnalyticsAlertsRoute
+  '/_authenticated/analytics/audience': typeof AuthenticatedAnalyticsAudienceRoute
+  '/_authenticated/analytics/campaigns': typeof AuthenticatedAnalyticsCampaignsRoute
   '/_authenticated/analytics/charts': typeof AuthenticatedAnalyticsChartsRoute
-  '/_authenticated/analytics/executive': typeof AuthenticatedAnalyticsExecutiveRoute
+  '/_authenticated/analytics/competitor': typeof AuthenticatedAnalyticsCompetitorRoute
+  '/_authenticated/analytics/content': typeof AuthenticatedAnalyticsContentRoute
+  '/_authenticated/analytics/custom': typeof AuthenticatedAnalyticsCustomRoute
+  '/_authenticated/analytics/developer': typeof AuthenticatedAnalyticsDeveloperRoute
+  '/_authenticated/analytics/forecasting': typeof AuthenticatedAnalyticsForecastingRoute
+  '/_authenticated/analytics/overview': typeof AuthenticatedAnalyticsOverviewRoute
+  '/_authenticated/analytics/platforms': typeof AuthenticatedAnalyticsPlatformsRoute
+  '/_authenticated/analytics/reports': typeof AuthenticatedAnalyticsReportsRoute
+  '/_authenticated/analytics/revenue': typeof AuthenticatedAnalyticsRevenueRoute
+  '/_authenticated/analytics/seo': typeof AuthenticatedAnalyticsSeoRoute
   '/_authenticated/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
+  '/_authenticated/analytics/website': typeof AuthenticatedAnalyticsWebsiteRoute
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/_authenticated/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRouteTypes {
@@ -317,14 +476,30 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/settings/notifications'
     | '/analytics/$metric'
+    | '/analytics/advertising'
+    | '/analytics/ai-insights'
+    | '/analytics/alerts'
+    | '/analytics/audience'
+    | '/analytics/campaigns'
     | '/analytics/charts'
-    | '/analytics/executive'
+    | '/analytics/competitor'
+    | '/analytics/content'
+    | '/analytics/custom'
+    | '/analytics/developer'
+    | '/analytics/forecasting'
+    | '/analytics/overview'
+    | '/analytics/platforms'
+    | '/analytics/reports'
+    | '/analytics/revenue'
+    | '/analytics/seo'
     | '/analytics/unified'
+    | '/analytics/website'
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
+    | '/analytics/'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -333,7 +508,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/design'
     | '/notifications'
-    | '/analytics'
     | '/dashboard'
     | '/goals'
     | '/insights'
@@ -348,14 +522,30 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/settings/notifications'
     | '/analytics/$metric'
+    | '/analytics/advertising'
+    | '/analytics/ai-insights'
+    | '/analytics/alerts'
+    | '/analytics/audience'
+    | '/analytics/campaigns'
     | '/analytics/charts'
-    | '/analytics/executive'
+    | '/analytics/competitor'
+    | '/analytics/content'
+    | '/analytics/custom'
+    | '/analytics/developer'
+    | '/analytics/forecasting'
+    | '/analytics/overview'
+    | '/analytics/platforms'
+    | '/analytics/reports'
+    | '/analytics/revenue'
+    | '/analytics/seo'
     | '/analytics/unified'
+    | '/analytics/website'
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
+    | '/analytics'
     | '/api/public/hooks/generate-weekly-reports'
   id:
     | '__root__'
@@ -380,14 +570,30 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/settings/notifications'
     | '/_authenticated/analytics/$metric'
+    | '/_authenticated/analytics/advertising'
+    | '/_authenticated/analytics/ai-insights'
+    | '/_authenticated/analytics/alerts'
+    | '/_authenticated/analytics/audience'
+    | '/_authenticated/analytics/campaigns'
     | '/_authenticated/analytics/charts'
-    | '/_authenticated/analytics/executive'
+    | '/_authenticated/analytics/competitor'
+    | '/_authenticated/analytics/content'
+    | '/_authenticated/analytics/custom'
+    | '/_authenticated/analytics/developer'
+    | '/_authenticated/analytics/forecasting'
+    | '/_authenticated/analytics/overview'
+    | '/_authenticated/analytics/platforms'
+    | '/_authenticated/analytics/reports'
+    | '/_authenticated/analytics/revenue'
+    | '/_authenticated/analytics/seo'
     | '/_authenticated/analytics/unified'
+    | '/_authenticated/analytics/website'
     | '/_authenticated/reports/$id'
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/developer'
     | '/_authenticated/settings/plugins'
     | '/_authenticated/settings/profile'
+    | '/_authenticated/analytics/'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesById: FileRoutesById
 }
@@ -546,6 +752,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/analytics/': {
+      id: '/_authenticated/analytics/'
+      path: '/'
+      fullPath: '/analytics/'
+      preLoaderRoute: typeof AuthenticatedAnalyticsIndexRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
     '/_authenticated/settings/profile': {
       id: '/_authenticated/settings/profile'
       path: '/settings/profile'
@@ -581,6 +794,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsIdRouteImport
       parentRoute: typeof AuthenticatedReportsRoute
     }
+    '/_authenticated/analytics/website': {
+      id: '/_authenticated/analytics/website'
+      path: '/website'
+      fullPath: '/analytics/website'
+      preLoaderRoute: typeof AuthenticatedAnalyticsWebsiteRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
     '/_authenticated/analytics/unified': {
       id: '/_authenticated/analytics/unified'
       path: '/unified'
@@ -588,11 +808,74 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsUnifiedRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
     }
-    '/_authenticated/analytics/executive': {
-      id: '/_authenticated/analytics/executive'
-      path: '/executive'
-      fullPath: '/analytics/executive'
-      preLoaderRoute: typeof AuthenticatedAnalyticsExecutiveRouteImport
+    '/_authenticated/analytics/seo': {
+      id: '/_authenticated/analytics/seo'
+      path: '/seo'
+      fullPath: '/analytics/seo'
+      preLoaderRoute: typeof AuthenticatedAnalyticsSeoRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/revenue': {
+      id: '/_authenticated/analytics/revenue'
+      path: '/revenue'
+      fullPath: '/analytics/revenue'
+      preLoaderRoute: typeof AuthenticatedAnalyticsRevenueRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/reports': {
+      id: '/_authenticated/analytics/reports'
+      path: '/reports'
+      fullPath: '/analytics/reports'
+      preLoaderRoute: typeof AuthenticatedAnalyticsReportsRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/platforms': {
+      id: '/_authenticated/analytics/platforms'
+      path: '/platforms'
+      fullPath: '/analytics/platforms'
+      preLoaderRoute: typeof AuthenticatedAnalyticsPlatformsRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/overview': {
+      id: '/_authenticated/analytics/overview'
+      path: '/overview'
+      fullPath: '/analytics/overview'
+      preLoaderRoute: typeof AuthenticatedAnalyticsOverviewRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/forecasting': {
+      id: '/_authenticated/analytics/forecasting'
+      path: '/forecasting'
+      fullPath: '/analytics/forecasting'
+      preLoaderRoute: typeof AuthenticatedAnalyticsForecastingRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/developer': {
+      id: '/_authenticated/analytics/developer'
+      path: '/developer'
+      fullPath: '/analytics/developer'
+      preLoaderRoute: typeof AuthenticatedAnalyticsDeveloperRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/custom': {
+      id: '/_authenticated/analytics/custom'
+      path: '/custom'
+      fullPath: '/analytics/custom'
+      preLoaderRoute: typeof AuthenticatedAnalyticsCustomRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/content': {
+      id: '/_authenticated/analytics/content'
+      path: '/content'
+      fullPath: '/analytics/content'
+      preLoaderRoute: typeof AuthenticatedAnalyticsContentRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/competitor': {
+      id: '/_authenticated/analytics/competitor'
+      path: '/competitor'
+      fullPath: '/analytics/competitor'
+      preLoaderRoute: typeof AuthenticatedAnalyticsCompetitorRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
     }
     '/_authenticated/analytics/charts': {
@@ -600,6 +883,41 @@ declare module '@tanstack/react-router' {
       path: '/charts'
       fullPath: '/analytics/charts'
       preLoaderRoute: typeof AuthenticatedAnalyticsChartsRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/campaigns': {
+      id: '/_authenticated/analytics/campaigns'
+      path: '/campaigns'
+      fullPath: '/analytics/campaigns'
+      preLoaderRoute: typeof AuthenticatedAnalyticsCampaignsRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/audience': {
+      id: '/_authenticated/analytics/audience'
+      path: '/audience'
+      fullPath: '/analytics/audience'
+      preLoaderRoute: typeof AuthenticatedAnalyticsAudienceRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/alerts': {
+      id: '/_authenticated/analytics/alerts'
+      path: '/alerts'
+      fullPath: '/analytics/alerts'
+      preLoaderRoute: typeof AuthenticatedAnalyticsAlertsRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/ai-insights': {
+      id: '/_authenticated/analytics/ai-insights'
+      path: '/ai-insights'
+      fullPath: '/analytics/ai-insights'
+      preLoaderRoute: typeof AuthenticatedAnalyticsAiInsightsRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/analytics/advertising': {
+      id: '/_authenticated/analytics/advertising'
+      path: '/advertising'
+      fullPath: '/analytics/advertising'
+      preLoaderRoute: typeof AuthenticatedAnalyticsAdvertisingRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
     }
     '/_authenticated/analytics/$metric': {
@@ -621,17 +939,53 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAnalyticsRouteChildren {
   AuthenticatedAnalyticsMetricRoute: typeof AuthenticatedAnalyticsMetricRoute
+  AuthenticatedAnalyticsAdvertisingRoute: typeof AuthenticatedAnalyticsAdvertisingRoute
+  AuthenticatedAnalyticsAiInsightsRoute: typeof AuthenticatedAnalyticsAiInsightsRoute
+  AuthenticatedAnalyticsAlertsRoute: typeof AuthenticatedAnalyticsAlertsRoute
+  AuthenticatedAnalyticsAudienceRoute: typeof AuthenticatedAnalyticsAudienceRoute
+  AuthenticatedAnalyticsCampaignsRoute: typeof AuthenticatedAnalyticsCampaignsRoute
   AuthenticatedAnalyticsChartsRoute: typeof AuthenticatedAnalyticsChartsRoute
-  AuthenticatedAnalyticsExecutiveRoute: typeof AuthenticatedAnalyticsExecutiveRoute
+  AuthenticatedAnalyticsCompetitorRoute: typeof AuthenticatedAnalyticsCompetitorRoute
+  AuthenticatedAnalyticsContentRoute: typeof AuthenticatedAnalyticsContentRoute
+  AuthenticatedAnalyticsCustomRoute: typeof AuthenticatedAnalyticsCustomRoute
+  AuthenticatedAnalyticsDeveloperRoute: typeof AuthenticatedAnalyticsDeveloperRoute
+  AuthenticatedAnalyticsForecastingRoute: typeof AuthenticatedAnalyticsForecastingRoute
+  AuthenticatedAnalyticsOverviewRoute: typeof AuthenticatedAnalyticsOverviewRoute
+  AuthenticatedAnalyticsPlatformsRoute: typeof AuthenticatedAnalyticsPlatformsRoute
+  AuthenticatedAnalyticsReportsRoute: typeof AuthenticatedAnalyticsReportsRoute
+  AuthenticatedAnalyticsRevenueRoute: typeof AuthenticatedAnalyticsRevenueRoute
+  AuthenticatedAnalyticsSeoRoute: typeof AuthenticatedAnalyticsSeoRoute
   AuthenticatedAnalyticsUnifiedRoute: typeof AuthenticatedAnalyticsUnifiedRoute
+  AuthenticatedAnalyticsWebsiteRoute: typeof AuthenticatedAnalyticsWebsiteRoute
+  AuthenticatedAnalyticsIndexRoute: typeof AuthenticatedAnalyticsIndexRoute
 }
 
 const AuthenticatedAnalyticsRouteChildren: AuthenticatedAnalyticsRouteChildren =
   {
     AuthenticatedAnalyticsMetricRoute: AuthenticatedAnalyticsMetricRoute,
+    AuthenticatedAnalyticsAdvertisingRoute:
+      AuthenticatedAnalyticsAdvertisingRoute,
+    AuthenticatedAnalyticsAiInsightsRoute:
+      AuthenticatedAnalyticsAiInsightsRoute,
+    AuthenticatedAnalyticsAlertsRoute: AuthenticatedAnalyticsAlertsRoute,
+    AuthenticatedAnalyticsAudienceRoute: AuthenticatedAnalyticsAudienceRoute,
+    AuthenticatedAnalyticsCampaignsRoute: AuthenticatedAnalyticsCampaignsRoute,
     AuthenticatedAnalyticsChartsRoute: AuthenticatedAnalyticsChartsRoute,
-    AuthenticatedAnalyticsExecutiveRoute: AuthenticatedAnalyticsExecutiveRoute,
+    AuthenticatedAnalyticsCompetitorRoute:
+      AuthenticatedAnalyticsCompetitorRoute,
+    AuthenticatedAnalyticsContentRoute: AuthenticatedAnalyticsContentRoute,
+    AuthenticatedAnalyticsCustomRoute: AuthenticatedAnalyticsCustomRoute,
+    AuthenticatedAnalyticsDeveloperRoute: AuthenticatedAnalyticsDeveloperRoute,
+    AuthenticatedAnalyticsForecastingRoute:
+      AuthenticatedAnalyticsForecastingRoute,
+    AuthenticatedAnalyticsOverviewRoute: AuthenticatedAnalyticsOverviewRoute,
+    AuthenticatedAnalyticsPlatformsRoute: AuthenticatedAnalyticsPlatformsRoute,
+    AuthenticatedAnalyticsReportsRoute: AuthenticatedAnalyticsReportsRoute,
+    AuthenticatedAnalyticsRevenueRoute: AuthenticatedAnalyticsRevenueRoute,
+    AuthenticatedAnalyticsSeoRoute: AuthenticatedAnalyticsSeoRoute,
     AuthenticatedAnalyticsUnifiedRoute: AuthenticatedAnalyticsUnifiedRoute,
+    AuthenticatedAnalyticsWebsiteRoute: AuthenticatedAnalyticsWebsiteRoute,
+    AuthenticatedAnalyticsIndexRoute: AuthenticatedAnalyticsIndexRoute,
   }
 
 const AuthenticatedAnalyticsRouteWithChildren =
@@ -723,13 +1077,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

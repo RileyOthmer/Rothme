@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { fallback } from "@tanstack/zod-adapter";
@@ -9,6 +9,7 @@ import { AnalyticsHubNav } from "@/features/analytics/AnalyticsHubNav";
 import { PlatformSelector } from "@/features/analytics/PlatformSelector";
 import { ExecutiveDateFilter } from "@/features/analytics/ExecutiveDateFilter";
 import { AiInsightsStrip } from "@/features/analytics/AiInsightsStrip";
+import { ModeSwitcher, type AnalyticsMode } from "@/features/analytics/ModeSwitcher";
 import { ChartFrame } from "@/features/analytics/charts/ChartFrame";
 import {
   GenericAreaChart, GenericBarChart, GenericLineChart, GenericPieChart,
@@ -29,20 +30,21 @@ const searchSchema = z.object({
   platforms: fallback(z.array(z.enum(platformIds)), [] as PlatformId[]).default([]),
 });
 
-export const Route = createFileRoute("/_authenticated/analytics/executive")({
+export const Route = createFileRoute("/_authenticated/analytics/overview")({
   head: () => ({
     meta: [
-      { title: "Executive dashboard — Velora Analytics" },
+      { title: "Overview — Velora Analytics Center" },
       { name: "description", content: "The complete cross-platform executive view: KPIs, growth, platform mix, and an AI strategist summary — all in one glance." },
     ],
   }),
   validateSearch: (s) => searchSchema.parse(s),
-  component: ExecutivePage,
+  component: OverviewPage,
 });
 
-function ExecutivePage() {
+function OverviewPage() {
   const { range, from, to, platforms } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
+  const [mode, setMode] = useState<AnalyticsMode>("unified");
 
   const dates = useMemo(
     () => rangeToDates(range as RangePreset, { from: from || undefined, to: to || undefined }),
@@ -112,6 +114,15 @@ function ExecutivePage() {
         </div>
 
         <AnalyticsHubNav />
+
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <ModeSwitcher value={mode} onChange={setMode} disabledModes={["comparison"]} />
+          <p className="text-xs text-muted-foreground">
+            {mode === "unified" && "Every connected platform merged into one view."}
+            {mode === "platform" && "Native metrics only — pick a platform above."}
+            {mode === "comparison" && "Side-by-side comparison — ships in Phase 2."}
+          </p>
+        </div>
 
         {/* KPI cards */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
