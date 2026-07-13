@@ -27,6 +27,7 @@ import {
   getReferralSource,
   getTimezone,
 } from "@/lib/anon-analytics";
+import { saveDashboardPrefs } from "@/features/dashboard/preferences";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   head: () => ({
@@ -280,6 +281,12 @@ function OnboardingPage() {
           data: { anonId, eventType: "onboarding_completed", stepId: "done" },
         }).catch(() => {});
       }
+      saveDashboardPrefs({
+        goals: answers.goals,
+        aiFeatures: answers.ai,
+        frustrations: answers.frustrations,
+        platforms: answers.platforms,
+      });
       return saveProfile({ data: { mark_onboarded: true } });
     },
     onSuccess: () => {
