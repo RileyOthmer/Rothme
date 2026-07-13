@@ -2,10 +2,10 @@
 // Real numbers will replace this once MetricSnapshot ingestion goes live.
 
 import {
-  SiInstagram, SiFacebook, SiTiktok, SiThreads, SiX, SiLinkedin,
-  SiPinterest, SiYoutube, SiGoogle, SiBluesky, SiMastodon,
-} from "@icons-pack/react-simple-icons";
-import type { ComponentType } from "react";
+  Instagram, Facebook, Music2, MessageCircle, Twitter, Linkedin,
+  Youtube, MapPin, Cloud, AtSign, PinIcon,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export type PlatformId =
   | "instagram" | "facebook" | "tiktok" | "threads" | "x" | "linkedin"
@@ -15,21 +15,21 @@ export type Platform = {
   id: PlatformId;
   label: string;
   color: string;
-  Icon: ComponentType<{ className?: string; size?: number }>;
+  Icon: LucideIcon;
 };
 
 export const PLATFORMS: Platform[] = [
-  { id: "instagram", label: "Instagram",              color: "hsl(340 82% 60%)", Icon: SiInstagram },
-  { id: "facebook",  label: "Facebook",               color: "hsl(220 82% 60%)", Icon: SiFacebook },
-  { id: "tiktok",    label: "TikTok",                 color: "hsl(180 82% 45%)", Icon: SiTiktok },
-  { id: "threads",   label: "Threads",                color: "hsl(0 0% 20%)",    Icon: SiThreads },
-  { id: "x",         label: "X",                      color: "hsl(0 0% 40%)",    Icon: SiX },
-  { id: "linkedin",  label: "LinkedIn",               color: "hsl(210 82% 45%)", Icon: SiLinkedin },
-  { id: "pinterest", label: "Pinterest",              color: "hsl(355 82% 55%)", Icon: SiPinterest },
-  { id: "youtube",   label: "YouTube",                color: "hsl(0 82% 58%)",   Icon: SiYoutube },
-  { id: "gbp",       label: "Google Business",        color: "hsl(150 62% 45%)", Icon: SiGoogle },
-  { id: "bluesky",   label: "Bluesky",                color: "hsl(200 82% 55%)", Icon: SiBluesky },
-  { id: "mastodon",  label: "Mastodon",               color: "hsl(260 62% 55%)", Icon: SiMastodon },
+  { id: "instagram", label: "Instagram",          color: "hsl(340 82% 60%)", Icon: Instagram },
+  { id: "facebook",  label: "Facebook",           color: "hsl(220 82% 60%)", Icon: Facebook },
+  { id: "tiktok",    label: "TikTok",             color: "hsl(180 82% 45%)", Icon: Music2 },
+  { id: "threads",   label: "Threads",            color: "hsl(0 0% 20%)",    Icon: MessageCircle },
+  { id: "x",         label: "X",                  color: "hsl(0 0% 40%)",    Icon: Twitter },
+  { id: "linkedin",  label: "LinkedIn",           color: "hsl(210 82% 45%)", Icon: Linkedin },
+  { id: "pinterest", label: "Pinterest",          color: "hsl(355 82% 55%)", Icon: PinIcon },
+  { id: "youtube",   label: "YouTube",            color: "hsl(0 82% 58%)",   Icon: Youtube },
+  { id: "gbp",       label: "Google Business",    color: "hsl(150 62% 45%)", Icon: MapPin },
+  { id: "bluesky",   label: "Bluesky",            color: "hsl(200 82% 55%)", Icon: Cloud },
+  { id: "mastodon",  label: "Mastodon",           color: "hsl(260 62% 55%)", Icon: AtSign },
 ];
 
 export const PLATFORM_MAP: Record<PlatformId, Platform> = Object.fromEntries(
