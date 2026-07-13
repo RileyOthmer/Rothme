@@ -1,69 +1,64 @@
-# Enterprise Analytics Engine — Build Plan
+# Enterprise Analytics Center — Phased Plan
 
-Another huge scope (9 sub-hubs × 12+ chart types × 11 platforms × comparison + AI + custom dashboards + 4 export formats). Shipping it all at once produces a hollow shell. I want to build in layers that each work end-to-end.
+The scope you listed (16 sub-hubs, ~30 chart types, 25 platforms, 3 modes, custom dashboards, AI insights, report builder, forecasting, alerts, developer mode, real-time) is roughly 3–4 months of work for a full team. Shipping it in one turn would produce a shell that looks impressive and breaks on click.
 
-## The core principle (matches the rest of Velora)
+I'll build it phase-by-phase, each phase leaving the app in a working, premium state. The Executive Dashboard from the previous turn becomes **Overview** — the entry point to everything below.
 
-Analytics is **plugin-driven and data-driven**. Zero platform-specific components in the core:
+**Non-negotiables carried across every phase**
+- Zero hardcoded platform names — everything reads from `plugin_registry` / `plugin_installations`. Adding a plugin adds it everywhere.
+- Every chart is a generic primitive (`<Line>`, `<Bar>`, `<Area>`, `<StackedArea>`, `<Pie>`, `<Donut>`, `<Treemap>`, `<Heatmap>`, `<Funnel>`, `<Radar>`, `<Gauge>`, `<Geo>`, `<KpiCard>`, `<Table>`) with hover, fullscreen, PNG + CSV export, dark/light.
+- All KPI logic goes through the existing Unified Data Engine (`getMetrics`, `MetricSnapshot`) — never a provider SDK in a component.
+- AI answers 4 questions in order (What happened / Why / What to do / Confidence). Structured JSON, Zod-validated, refuses on low data.
 
-- Every platform's metrics come from `metric_snapshots` (already exists) + `platform_kpi_mappings` (already exists via Dev Center).
-- The Analytics UI reads *what KPIs a plugin exposes* from the DB and renders the matching cards/charts generically.
-- Adding a new platform to analytics = installing its plugin + mapping its KPIs. No code changes.
+---
 
-This also means: platform-specific dashboards (Instagram followers/reach/etc., TikTok watch time, YouTube retention) are **not hardcoded** — they're rendered from each plugin's KPI mapping.
+## Phase 1 — Analytics Center shell + Chart Library (this turn)
 
-## Phased delivery
+**Deliverables**
+- Rename Analytics tab → **Analytics Center**. Left rail with all 16 sub-hubs; unbuilt ones show a "Coming in Phase N" empty state with the planned KPIs listed — no dead links.
+- Move existing Executive Dashboard → **Overview** (`/analytics/overview`), no behavior change.
+- Global `PlatformSelector` (already exists) + global `DateFilter` presets: Today, Yesterday, 7d, 30d, 90d, This Month, Last Month, Quarter, Year, Custom — persisted in URL search params so links/refreshes preserve state.
+- **Chart library v1** in `src/features/analytics/charts/`: add Spline, Horizontal Bar, Stacked Bar, Treemap, Heatmap, Calendar Heatmap, Funnel, Radar, Gauge, Scatter, Bubble, Geo (world), Table, Pivot Table, Scorecard, Progress. Each: hover tooltip, fullscreen, PNG + CSV export, empty state, loading skeleton.
+- **Analytics Modes** switcher (Unified / Platform / Comparison) — Unified and Platform wired; Comparison ships in Phase 2.
 
-### Phase 1 — Analytics Hub shell + Executive Dashboard + Platform Selector (this turn)
+## Phase 2 — Platform, Campaign, Content, Audience, Ad, Revenue sub-hubs
 
-- `/analytics` becomes the hub with sub-nav for the 9 sections
-- Platform selector (All + 11 platforms) reads from installed plugins — greyed-out for non-installed, live for installed
-- **Executive Dashboard**: KPI cards with period-over-period deltas, a growth line chart, a platform-comparison bar chart, a source pie chart, an AI summary strip
-- **Date filters**: Today / Yesterday / 7 / 30 / 90 / YTD / Custom (via Popover + Calendar)
-- Generic chart primitives (Line, Bar, Area, StackedArea, Pie, Donut, KpiCard) built on Recharts (already in the stack) with hover tooltips, fullscreen, PNG + CSV export, dark/light mode
-- Reads live `metric_snapshots` where present; falls back to the existing mock generator when a platform has no rows yet, clearly badged "Sample data"
-- **AI Insights** hook: uses the existing `strategist-prompt` + Lovable AI Gateway to summarize the visible date range for the visible platform
+Each sub-hub is a layout of chart primitives fed by KPI metadata from the plugin registry — no bespoke platform code. Comparison Mode goes live: pick 2–N slices (platform × platform, campaign × campaign, period × period, organic × paid) and every chart re-renders side-by-side.
 
-Delivers a real, shippable analytics experience end-to-end for at least one platform.
+Content Analytics gets the post-level table (thumbnail, caption, all metrics, sortable, virtualized).
 
-### Phase 2 — Platform Analytics + Content/Audience/Ad/Revenue sub-hubs
-- Per-platform dashboard rendered from KPI mapping metadata (no hardcoded platform components)
-- Content Analytics: top posts table, engagement scatter, best-posting-times heatmap
-- Audience Analytics: demographics donut, geography choropleth (react-simple-maps), growth area chart
-- Ad Analytics: campaign bar/bubble, spend vs ROAS scatter, funnel
-- Revenue Analytics: revenue area, source breakdown, LTV bar
+## Phase 3 — Custom Dashboards + Report Builder
 
-### Phase 3 — Comparison Mode + Custom Reports
-- Side-by-side compare (any two platforms / campaigns / periods)
-- Report builder: pick KPIs + charts + date range → save as named report
-- Export pipeline: CSV (browser Blob), PDF (server route → pdfkit), Excel (xlsx), PowerPoint (pptxgenjs)
+- Drag/resize/duplicate/share/pin/hide widgets, saved as `dashboards` + `dashboard_widgets` in DB. React Grid Layout under the hood.
+- Report Builder: pick charts → date range → filters → branding → export **PDF, XLSX, CSV, PPTX** server-side.
 
-### Phase 4 — Custom Dashboards
-- Drag-and-drop widget grid (react-grid-layout), resize, hide, save layouts per user, multiple named dashboards
+## Phase 4 — AI Insights, Forecasting, Alerts, Developer Mode
 
-### Phase 5 — Realtime + Enterprise polish
-- Live update via Supabase realtime on `metric_snapshots`
-- Cached aggregates for large datasets
-- Scheduled report delivery via existing weekly-reports pipeline
+- AI Insights hub with 4-question strategist across every KPI + auto-generated narratives on every chart ("Explain this").
+- Forecasting: 30/60/90-day projections per KPI (Holt-Winters server-side).
+- Alerts: threshold + anomaly rules, notifications via existing bell.
+- Developer Analytics: per-chart drawer showing mapped API fields, raw JSON sample, formula, last sync, endpoint — reads existing `platform_endpoints` + `platform_kpi_mappings`.
 
-## What Phase 1 delivers today
+## Phase 5 — SEO, Website, Competitor + Realtime
 
-**Files**
-- `src/routes/_authenticated/analytics.tsx` — becomes the hub (currently a stub); adds sub-nav for the 9 sections. Existing `analytics.unified.tsx`, `analytics.charts.tsx`, `analytics.$metric.tsx` stay as leaves under it.
-- `src/routes/_authenticated/analytics.executive.tsx` — Executive Dashboard leaf
-- `src/features/analytics/PlatformSelector.tsx` — reads installed plugins
-- `src/features/analytics/DateRangeFilter.tsx` — Today / Yesterday / 7 / 30 / 90 / YTD / Custom
-- `src/features/analytics/charts/` — `KpiCard`, `LineChart`, `BarChart`, `AreaChart`, `StackedAreaChart`, `PieChart`, `DonutChart` (all with export/fullscreen)
-- `src/features/analytics/AiInsightsStrip.tsx`
-- `src/lib/analytics/analytics.functions.ts` — `getExecutiveSummary({ platforms, from, to })` server fn that reads `metric_snapshots` + falls back to mocks per-platform
-- No new tables — reuses existing `metric_snapshots`, `platform_kpi_mappings`, `plugin_installations`
+- SEO/Website read GA4 + Search Console via existing plugin contract.
+- Competitor Analytics behind an "Add competitor" flow (manual URLs + optional Semrush connector).
+- Realtime: Supabase channel on `metric_snapshots` → live KPI/chart updates + toast on threshold breach.
 
-**Guardrails I'll hold**
-- Zero hardcoded platform names inside components — everything comes from `plugin_registry` / `plugin_installations`
-- Every chart passes chart-type prop + data prop; no bespoke chart per platform
-- All exports (CSV/PNG in Phase 1) work client-side; PDF/XLSX/PPT come in Phase 3
+---
 
-## Confirm
+## Technical
 
-Reply **"go"** to build Phase 1 as scoped.
-Reply with edits to change scope (e.g. "skip AI strip", "start with Platform Analytics not Executive", "combine phases 1+2").
+- Routes: `src/routes/_authenticated/analytics.tsx` becomes a layout with a persistent left rail; children are `analytics.overview.tsx`, `analytics.platforms.tsx`, `analytics.campaigns.tsx`, … `analytics.developer.tsx`.
+- URL state via `validateSearch` (zod) on the layout so filters persist across sub-hubs.
+- Charts: keep Recharts for line/bar/area/pie; add `@nivo/heatmap`, `@nivo/treemap`, `@nivo/geo`, `@nivo/calendar`, `@nivo/radar` for the specialty charts (all support dark mode, SSR-safe with dynamic import).
+- Data: all reads go through `getMetrics` from the Data Engine. Missing data → skeleton + "Connect a plugin" CTA, never fake numbers labeled as real.
+- Custom dashboards: `react-grid-layout` + new tables `dashboards`, `dashboard_widgets` (Phase 3 migration).
+- Exports: PNG via `html-to-image`, CSV inline, PDF via `pdf-lib`, XLSX via `xlsx`, PPTX via `pptxgenjs` (Phase 3).
+- Realtime: `ALTER PUBLICATION supabase_realtime ADD TABLE metric_snapshots` (Phase 5).
+
+---
+
+## What I'm asking
+
+Confirm **"go Phase 1"** and I'll ship the shell + chart library this turn. Or tell me which phase matters most and I'll reorder (e.g. many teams want Custom Dashboards + Report Builder before the specialty sub-hubs).
