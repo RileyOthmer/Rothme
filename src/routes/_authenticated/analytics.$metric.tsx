@@ -95,7 +95,7 @@ function MetricDetail() {
         <header className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-              {CATEGORY_LABEL[metric.category]}
+              {CATEGORY_LABEL[metric.category as keyof typeof CATEGORY_LABEL]}
             </p>
             <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
               {metric.label}
@@ -106,7 +106,7 @@ function MetricDetail() {
           </div>
           <RangePicker
             value={range as RangeDays}
-            onChange={(r) => navigate({ search: (prev) => ({ ...prev, range: r }), replace: true })}
+            onChange={(r) => navigate({ search: () => ({ range: r }), replace: true })}
           />
         </header>
 

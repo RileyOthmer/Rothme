@@ -28,9 +28,11 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticated/insights'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authenticated/reports.$id'
+import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
 
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -127,6 +129,11 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedSettingsProfileRoute =
   AuthenticatedSettingsProfileRouteImport.update({
     id: '/settings/profile',
@@ -144,6 +151,12 @@ const AuthenticatedReportsIdRoute = AuthenticatedReportsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedReportsRoute,
 } as any)
+const AuthenticatedAnalyticsMetricRoute =
+  AuthenticatedAnalyticsMetricRouteImport.update({
+    id: '/$metric',
+    path: '/$metric',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
 const ApiPublicHooksGenerateWeeklyReportsRoute =
   ApiPublicHooksGenerateWeeklyReportsRouteImport.update({
     id: '/api/public/hooks/generate-weekly-reports',
@@ -157,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
+  '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
@@ -170,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
+  '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
@@ -181,6 +196,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
+  '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
@@ -194,6 +210,7 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
+  '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
@@ -207,6 +224,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
+  '/_authenticated/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
@@ -220,6 +238,7 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
+  '/_authenticated/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
@@ -233,6 +252,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/design'
     | '/notifications'
+    | '/analytics'
     | '/dashboard'
     | '/goals'
     | '/insights'
@@ -246,6 +266,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/settings/notifications'
+    | '/analytics/$metric'
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/profile'
@@ -257,6 +278,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/design'
     | '/notifications'
+    | '/analytics'
     | '/dashboard'
     | '/goals'
     | '/insights'
@@ -270,6 +292,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/settings/notifications'
+    | '/analytics/$metric'
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/profile'
@@ -282,6 +305,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/design'
     | '/notifications'
+    | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
     | '/_authenticated/goals'
     | '/_authenticated/insights'
@@ -295,6 +319,7 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/invite/$token'
     | '/settings/notifications'
+    | '/_authenticated/analytics/$metric'
     | '/_authenticated/reports/$id'
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/profile'
@@ -449,6 +474,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/analytics': {
+      id: '/_authenticated/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings/profile': {
       id: '/_authenticated/settings/profile'
       path: '/settings/profile'
@@ -470,6 +502,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsIdRouteImport
       parentRoute: typeof AuthenticatedReportsRoute
     }
+    '/_authenticated/analytics/$metric': {
+      id: '/_authenticated/analytics/$metric'
+      path: '/$metric'
+      fullPath: '/analytics/$metric'
+      preLoaderRoute: typeof AuthenticatedAnalyticsMetricRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
     '/api/public/hooks/generate-weekly-reports': {
       id: '/api/public/hooks/generate-weekly-reports'
       path: '/api/public/hooks/generate-weekly-reports'
@@ -479,6 +518,20 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedAnalyticsRouteChildren {
+  AuthenticatedAnalyticsMetricRoute: typeof AuthenticatedAnalyticsMetricRoute
+}
+
+const AuthenticatedAnalyticsRouteChildren: AuthenticatedAnalyticsRouteChildren =
+  {
+    AuthenticatedAnalyticsMetricRoute: AuthenticatedAnalyticsMetricRoute,
+  }
+
+const AuthenticatedAnalyticsRouteWithChildren =
+  AuthenticatedAnalyticsRoute._addFileChildren(
+    AuthenticatedAnalyticsRouteChildren,
+  )
 
 interface AuthenticatedReportsRouteChildren {
   AuthenticatedReportsIdRoute: typeof AuthenticatedReportsIdRoute
@@ -492,6 +545,7 @@ const AuthenticatedReportsRouteWithChildren =
   AuthenticatedReportsRoute._addFileChildren(AuthenticatedReportsRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
@@ -504,6 +558,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,

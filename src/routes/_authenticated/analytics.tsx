@@ -39,7 +39,8 @@ function AnalyticsPage() {
   const navigate = useNavigate({ from: Route.fullPath });
 
   const setRange = (r: RangeDays) =>
-    navigate({ search: (prev) => ({ ...prev, range: r }), replace: true });
+    navigate({ search: () => ({ range: r }), replace: true });
+
 
   const groups = useMemo(() => {
     const map = new Map<MetricCategory, typeof METRICS>();
