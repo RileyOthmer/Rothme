@@ -191,6 +191,22 @@ export function GenericFunnelChart({
   );
 }
 
+function TreemapCell(props: any) {
+  const { x, y, width, height, name, payload } = props;
+  const fill = payload?.color ?? "hsl(var(--primary))";
+  return (
+    <g>
+      <rect x={x} y={y} width={width} height={height}
+        style={{ fill, stroke: "hsl(var(--background))", strokeWidth: 2 }} />
+      {width > 60 && height > 24 && (
+        <text x={x + 6} y={y + 16} fill="hsl(var(--primary-foreground))" fontSize={11} fontWeight={500}>
+          {name}
+        </text>
+      )}
+    </g>
+  );
+}
+
 export function GenericTreemap({
   data,
 }: {
