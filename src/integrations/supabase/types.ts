@@ -279,6 +279,84 @@ export type Database = {
           },
         ]
       }
+      onboarding_events: {
+        Row: {
+          anon_id: string
+          created_at: string
+          event_type: string
+          id: string
+          step_id: string | null
+        }
+        Insert: {
+          anon_id: string
+          created_at?: string
+          event_type: string
+          id?: string
+          step_id?: string | null
+        }
+        Update: {
+          anon_id?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          step_id?: string | null
+        }
+        Relationships: []
+      }
+      onboarding_responses: {
+        Row: {
+          ai_features: string[]
+          anon_id: string
+          cadence: string | null
+          completed: boolean
+          connected_platforms: string[]
+          country: string | null
+          created_at: string
+          device_type: string | null
+          frustrations: string[]
+          goals: string[]
+          platforms: string[]
+          referral_source: string | null
+          timezone: string | null
+          updated_at: string
+          user_type: string[]
+        }
+        Insert: {
+          ai_features?: string[]
+          anon_id: string
+          cadence?: string | null
+          completed?: boolean
+          connected_platforms?: string[]
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          frustrations?: string[]
+          goals?: string[]
+          platforms?: string[]
+          referral_source?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_type?: string[]
+        }
+        Update: {
+          ai_features?: string[]
+          anon_id?: string
+          cadence?: string | null
+          completed?: boolean
+          connected_platforms?: string[]
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          frustrations?: string[]
+          goals?: string[]
+          platforms?: string[]
+          referral_source?: string | null
+          timezone?: string | null
+          updated_at?: string
+          user_type?: string[]
+        }
+        Relationships: []
+      }
       org_invites: {
         Row: {
           accepted_at: string | null

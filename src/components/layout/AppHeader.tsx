@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target, Users, CheckSquare } from "lucide-react";
+import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target, Users, CheckSquare, BarChart3 } from "lucide-react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { OrgSwitcher } from "@/features/collab/OrgSwitcher";
@@ -20,6 +20,7 @@ const NAV = [
   { to: "/reports", label: "Reports", icon: FileText },
   { to: "/tasks", label: "Tasks", icon: CheckSquare },
   { to: "/team", label: "Team", icon: Users },
+  { to: "/insights", label: "Insights", icon: BarChart3 },
   { to: "/settings/profile", label: "Settings", icon: SettingsIcon },
 ] as const;
 
