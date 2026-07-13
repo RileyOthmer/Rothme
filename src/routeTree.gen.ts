@@ -16,10 +16,13 @@ import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SettingsNotificationsRouteImport } from './routes/settings.notifications'
+import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthForgotRouteImport } from './routes/auth.forgot'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
+import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
@@ -63,6 +66,11 @@ const SettingsNotificationsRoute = SettingsNotificationsRouteImport.update({
   path: '/settings/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const InviteTokenRoute = InviteTokenRouteImport.update({
+  id: '/invite/$token',
+  path: '/invite/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -82,6 +90,16 @@ const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedTeamRoute = AuthenticatedTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedTasksRoute = AuthenticatedTasksRouteImport.update({
+  id: '/tasks',
+  path: '/tasks',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   id: '/reports',
@@ -137,10 +155,13 @@ export interface FileRoutesByFullPath {
   '/goals': typeof AuthenticatedGoalsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/reports': typeof AuthenticatedReportsRouteWithChildren
+  '/tasks': typeof AuthenticatedTasksRoute
+  '/team': typeof AuthenticatedTeamRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
@@ -157,10 +178,13 @@ export interface FileRoutesByTo {
   '/goals': typeof AuthenticatedGoalsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/reports': typeof AuthenticatedReportsRouteWithChildren
+  '/tasks': typeof AuthenticatedTasksRoute
+  '/team': typeof AuthenticatedTeamRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
@@ -179,10 +203,13 @@ export interface FileRoutesById {
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRouteWithChildren
+  '/_authenticated/tasks': typeof AuthenticatedTasksRoute
+  '/_authenticated/team': typeof AuthenticatedTeamRoute
   '/api/chat': typeof ApiChatRoute
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
@@ -201,10 +228,13 @@ export interface FileRouteTypes {
     | '/goals'
     | '/onboarding'
     | '/reports'
+    | '/tasks'
+    | '/team'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/auth/forgot'
     | '/auth/reset-password'
+    | '/invite/$token'
     | '/settings/notifications'
     | '/reports/$id'
     | '/settings/connections'
@@ -221,10 +251,13 @@ export interface FileRouteTypes {
     | '/goals'
     | '/onboarding'
     | '/reports'
+    | '/tasks'
+    | '/team'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/auth/forgot'
     | '/auth/reset-password'
+    | '/invite/$token'
     | '/settings/notifications'
     | '/reports/$id'
     | '/settings/connections'
@@ -242,10 +275,13 @@ export interface FileRouteTypes {
     | '/_authenticated/goals'
     | '/_authenticated/onboarding'
     | '/_authenticated/reports'
+    | '/_authenticated/tasks'
+    | '/_authenticated/team'
     | '/api/chat'
     | '/assistant/$threadId'
     | '/auth/forgot'
     | '/auth/reset-password'
+    | '/invite/$token'
     | '/settings/notifications'
     | '/_authenticated/reports/$id'
     | '/_authenticated/settings/connections'
@@ -261,6 +297,7 @@ export interface RootRouteChildren {
   DesignRoute: typeof DesignRoute
   NotificationsRoute: typeof NotificationsRoute
   ApiChatRoute: typeof ApiChatRoute
+  InviteTokenRoute: typeof InviteTokenRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
   ApiPublicHooksGenerateWeeklyReportsRoute: typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
@@ -316,6 +353,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsNotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/invite/$token': {
+      id: '/invite/$token'
+      path: '/invite/$token'
+      fullPath: '/invite/$token'
+      preLoaderRoute: typeof InviteTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/reset-password': {
       id: '/auth/reset-password'
       path: '/reset-password'
@@ -343,6 +387,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/chat'
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/team': {
+      id: '/_authenticated/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AuthenticatedTeamRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/tasks': {
+      id: '/_authenticated/tasks'
+      path: '/tasks'
+      fullPath: '/tasks'
+      preLoaderRoute: typeof AuthenticatedTasksRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/reports': {
       id: '/_authenticated/reports'
@@ -419,6 +477,8 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRouteWithChildren
+  AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
+  AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
   AuthenticatedSettingsConnectionsRoute: typeof AuthenticatedSettingsConnectionsRoute
   AuthenticatedSettingsProfileRoute: typeof AuthenticatedSettingsProfileRoute
 }
@@ -428,6 +488,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRouteWithChildren,
+  AuthenticatedTasksRoute: AuthenticatedTasksRoute,
+  AuthenticatedTeamRoute: AuthenticatedTeamRoute,
   AuthenticatedSettingsConnectionsRoute: AuthenticatedSettingsConnectionsRoute,
   AuthenticatedSettingsProfileRoute: AuthenticatedSettingsProfileRoute,
 }
@@ -467,6 +529,7 @@ const rootRouteChildren: RootRouteChildren = {
   DesignRoute: DesignRoute,
   NotificationsRoute: NotificationsRoute,
   ApiChatRoute: ApiChatRoute,
+  InviteTokenRoute: InviteTokenRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
   ApiPublicHooksGenerateWeeklyReportsRoute:
     ApiPublicHooksGenerateWeeklyReportsRoute,
