@@ -181,6 +181,68 @@ export type Database = {
           },
         ]
       }
+      media_assets: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          created_by: string
+          duration_seconds: number | null
+          filename: string | null
+          height: number | null
+          id: string
+          kind: string
+          mime_type: string | null
+          org_id: string
+          size_bytes: number | null
+          tags: string[] | null
+          thumbnail_url: string | null
+          url: string
+          width: number | null
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          created_by: string
+          duration_seconds?: number | null
+          filename?: string | null
+          height?: number | null
+          id?: string
+          kind: string
+          mime_type?: string | null
+          org_id: string
+          size_bytes?: number | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          url: string
+          width?: number | null
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          created_by?: string
+          duration_seconds?: number | null
+          filename?: string | null
+          height?: number | null
+          id?: string
+          kind?: string
+          mime_type?: string | null
+          org_id?: string
+          size_bytes?: number | null
+          tags?: string[] | null
+          thumbnail_url?: string | null
+          url?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_assets_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentions: {
         Row: {
           comment_id: string
@@ -1058,6 +1120,153 @@ export type Database = {
           version?: string
         }
         Relationships: []
+      }
+      post_schedules: {
+        Row: {
+          attempts: number
+          created_at: string
+          error: string | null
+          external_id: string | null
+          external_url: string | null
+          id: string
+          platform_id: string
+          post_id: string
+          published_at: string | null
+          scheduled_at: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          error?: string | null
+          external_id?: string | null
+          external_url?: string | null
+          id?: string
+          platform_id: string
+          post_id: string
+          published_at?: string | null
+          scheduled_at: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          error?: string | null
+          external_id?: string | null
+          external_url?: string | null
+          id?: string
+          platform_id?: string
+          post_id?: string
+          published_at?: string | null
+          scheduled_at?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_schedules_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_variants: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          media_ids: string[] | null
+          platform_id: string
+          platform_meta: Json | null
+          post_id: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          media_ids?: string[] | null
+          platform_id: string
+          platform_meta?: Json | null
+          post_id: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          media_ids?: string[] | null
+          platform_id?: string
+          platform_meta?: Json | null
+          post_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_variants_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          ai_meta: Json | null
+          approval_status: string
+          body: string
+          campaign_id: string | null
+          created_at: string
+          created_by: string
+          id: string
+          org_id: string
+          status: string
+          tags: string[] | null
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          ai_meta?: Json | null
+          approval_status?: string
+          body?: string
+          campaign_id?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          org_id: string
+          status?: string
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          ai_meta?: Json | null
+          approval_status?: string
+          body?: string
+          campaign_id?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          org_id?: string
+          status?: string
+          tags?: string[] | null
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

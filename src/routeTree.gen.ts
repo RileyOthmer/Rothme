@@ -24,6 +24,7 @@ import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as AuthenticatedTeamRouteImport } from './routes/_authenticated/team'
 import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/tasks'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedPublishingRouteImport } from './routes/_authenticated/publishing'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticated/insights'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
@@ -35,6 +36,12 @@ import { Route as AuthenticatedSettingsPluginsRouteImport } from './routes/_auth
 import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_authenticated/settings.developer'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authenticated/reports.$id'
+import { Route as AuthenticatedPublishingQueueRouteImport } from './routes/_authenticated/publishing.queue'
+import { Route as AuthenticatedPublishingMediaRouteImport } from './routes/_authenticated/publishing.media'
+import { Route as AuthenticatedPublishingDraftsRouteImport } from './routes/_authenticated/publishing.drafts'
+import { Route as AuthenticatedPublishingComposeRouteImport } from './routes/_authenticated/publishing.compose'
+import { Route as AuthenticatedPublishingCalendarRouteImport } from './routes/_authenticated/publishing.calendar'
+import { Route as AuthenticatedPublishingApprovalsRouteImport } from './routes/_authenticated/publishing.approvals'
 import { Route as AuthenticatedAnalyticsWebsiteRouteImport } from './routes/_authenticated/analytics.website'
 import { Route as AuthenticatedAnalyticsUnifiedRouteImport } from './routes/_authenticated/analytics.unified'
 import { Route as AuthenticatedAnalyticsSeoRouteImport } from './routes/_authenticated/analytics.seo'
@@ -55,6 +62,7 @@ import { Route as AuthenticatedAnalyticsAiInsightsRouteImport } from './routes/_
 import { Route as AuthenticatedAnalyticsAdvertisingRouteImport } from './routes/_authenticated/analytics.advertising'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
+import { Route as ApiPublicCronPublishRouteImport } from './routes/api/public/cron/publish'
 
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
@@ -130,6 +138,11 @@ const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
   path: '/reports',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPublishingRoute = AuthenticatedPublishingRouteImport.update({
+  id: '/publishing',
+  path: '/publishing',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -190,6 +203,42 @@ const AuthenticatedReportsIdRoute = AuthenticatedReportsIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => AuthenticatedReportsRoute,
 } as any)
+const AuthenticatedPublishingQueueRoute =
+  AuthenticatedPublishingQueueRouteImport.update({
+    id: '/queue',
+    path: '/queue',
+    getParentRoute: () => AuthenticatedPublishingRoute,
+  } as any)
+const AuthenticatedPublishingMediaRoute =
+  AuthenticatedPublishingMediaRouteImport.update({
+    id: '/media',
+    path: '/media',
+    getParentRoute: () => AuthenticatedPublishingRoute,
+  } as any)
+const AuthenticatedPublishingDraftsRoute =
+  AuthenticatedPublishingDraftsRouteImport.update({
+    id: '/drafts',
+    path: '/drafts',
+    getParentRoute: () => AuthenticatedPublishingRoute,
+  } as any)
+const AuthenticatedPublishingComposeRoute =
+  AuthenticatedPublishingComposeRouteImport.update({
+    id: '/compose',
+    path: '/compose',
+    getParentRoute: () => AuthenticatedPublishingRoute,
+  } as any)
+const AuthenticatedPublishingCalendarRoute =
+  AuthenticatedPublishingCalendarRouteImport.update({
+    id: '/calendar',
+    path: '/calendar',
+    getParentRoute: () => AuthenticatedPublishingRoute,
+  } as any)
+const AuthenticatedPublishingApprovalsRoute =
+  AuthenticatedPublishingApprovalsRouteImport.update({
+    id: '/approvals',
+    path: '/approvals',
+    getParentRoute: () => AuthenticatedPublishingRoute,
+  } as any)
 const AuthenticatedAnalyticsWebsiteRoute =
   AuthenticatedAnalyticsWebsiteRouteImport.update({
     id: '/website',
@@ -310,6 +359,11 @@ const ApiPublicHooksGenerateWeeklyReportsRoute =
     path: '/api/public/hooks/generate-weekly-reports',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronPublishRoute = ApiPublicCronPublishRouteImport.update({
+  id: '/api/public/cron/publish',
+  path: '/api/public/cron/publish',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -322,6 +376,7 @@ export interface FileRoutesByFullPath {
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/reports': typeof AuthenticatedReportsRouteWithChildren
   '/tasks': typeof AuthenticatedTasksRoute
   '/team': typeof AuthenticatedTeamRoute
@@ -350,12 +405,19 @@ export interface FileRoutesByFullPath {
   '/analytics/seo': typeof AuthenticatedAnalyticsSeoRoute
   '/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
   '/analytics/website': typeof AuthenticatedAnalyticsWebsiteRoute
+  '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
+  '/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
+  '/publishing/compose': typeof AuthenticatedPublishingComposeRoute
+  '/publishing/drafts': typeof AuthenticatedPublishingDraftsRoute
+  '/publishing/media': typeof AuthenticatedPublishingMediaRoute
+  '/publishing/queue': typeof AuthenticatedPublishingQueueRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
+  '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesByTo {
@@ -368,6 +430,7 @@ export interface FileRoutesByTo {
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/reports': typeof AuthenticatedReportsRouteWithChildren
   '/tasks': typeof AuthenticatedTasksRoute
   '/team': typeof AuthenticatedTeamRoute
@@ -396,12 +459,19 @@ export interface FileRoutesByTo {
   '/analytics/seo': typeof AuthenticatedAnalyticsSeoRoute
   '/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
   '/analytics/website': typeof AuthenticatedAnalyticsWebsiteRoute
+  '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
+  '/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
+  '/publishing/compose': typeof AuthenticatedPublishingComposeRoute
+  '/publishing/drafts': typeof AuthenticatedPublishingDraftsRoute
+  '/publishing/media': typeof AuthenticatedPublishingMediaRoute
+  '/publishing/queue': typeof AuthenticatedPublishingQueueRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
+  '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesById {
@@ -417,6 +487,7 @@ export interface FileRoutesById {
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/_authenticated/reports': typeof AuthenticatedReportsRouteWithChildren
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
   '/_authenticated/team': typeof AuthenticatedTeamRoute
@@ -445,12 +516,19 @@ export interface FileRoutesById {
   '/_authenticated/analytics/seo': typeof AuthenticatedAnalyticsSeoRoute
   '/_authenticated/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
   '/_authenticated/analytics/website': typeof AuthenticatedAnalyticsWebsiteRoute
+  '/_authenticated/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
+  '/_authenticated/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
+  '/_authenticated/publishing/compose': typeof AuthenticatedPublishingComposeRoute
+  '/_authenticated/publishing/drafts': typeof AuthenticatedPublishingDraftsRoute
+  '/_authenticated/publishing/media': typeof AuthenticatedPublishingMediaRoute
+  '/_authenticated/publishing/queue': typeof AuthenticatedPublishingQueueRoute
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/_authenticated/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
+  '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRouteTypes {
@@ -466,6 +544,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/insights'
     | '/onboarding'
+    | '/publishing'
     | '/reports'
     | '/tasks'
     | '/team'
@@ -494,12 +573,19 @@ export interface FileRouteTypes {
     | '/analytics/seo'
     | '/analytics/unified'
     | '/analytics/website'
+    | '/publishing/approvals'
+    | '/publishing/calendar'
+    | '/publishing/compose'
+    | '/publishing/drafts'
+    | '/publishing/media'
+    | '/publishing/queue'
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
     | '/analytics/'
+    | '/api/public/cron/publish'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -512,6 +598,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/insights'
     | '/onboarding'
+    | '/publishing'
     | '/reports'
     | '/tasks'
     | '/team'
@@ -540,12 +627,19 @@ export interface FileRouteTypes {
     | '/analytics/seo'
     | '/analytics/unified'
     | '/analytics/website'
+    | '/publishing/approvals'
+    | '/publishing/calendar'
+    | '/publishing/compose'
+    | '/publishing/drafts'
+    | '/publishing/media'
+    | '/publishing/queue'
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
     | '/analytics'
+    | '/api/public/cron/publish'
     | '/api/public/hooks/generate-weekly-reports'
   id:
     | '__root__'
@@ -560,6 +654,7 @@ export interface FileRouteTypes {
     | '/_authenticated/goals'
     | '/_authenticated/insights'
     | '/_authenticated/onboarding'
+    | '/_authenticated/publishing'
     | '/_authenticated/reports'
     | '/_authenticated/tasks'
     | '/_authenticated/team'
@@ -588,12 +683,19 @@ export interface FileRouteTypes {
     | '/_authenticated/analytics/seo'
     | '/_authenticated/analytics/unified'
     | '/_authenticated/analytics/website'
+    | '/_authenticated/publishing/approvals'
+    | '/_authenticated/publishing/calendar'
+    | '/_authenticated/publishing/compose'
+    | '/_authenticated/publishing/drafts'
+    | '/_authenticated/publishing/media'
+    | '/_authenticated/publishing/queue'
     | '/_authenticated/reports/$id'
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/developer'
     | '/_authenticated/settings/plugins'
     | '/_authenticated/settings/profile'
     | '/_authenticated/analytics/'
+    | '/api/public/cron/publish'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesById: FileRoutesById
 }
@@ -607,6 +709,7 @@ export interface RootRouteChildren {
   ApiChatRoute: typeof ApiChatRoute
   InviteTokenRoute: typeof InviteTokenRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
+  ApiPublicCronPublishRoute: typeof ApiPublicCronPublishRoute
   ApiPublicHooksGenerateWeeklyReportsRoute: typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 
@@ -717,6 +820,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedReportsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/publishing': {
+      id: '/_authenticated/publishing'
+      path: '/publishing'
+      fullPath: '/publishing'
+      preLoaderRoute: typeof AuthenticatedPublishingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
       path: '/onboarding'
@@ -793,6 +903,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/reports/$id'
       preLoaderRoute: typeof AuthenticatedReportsIdRouteImport
       parentRoute: typeof AuthenticatedReportsRoute
+    }
+    '/_authenticated/publishing/queue': {
+      id: '/_authenticated/publishing/queue'
+      path: '/queue'
+      fullPath: '/publishing/queue'
+      preLoaderRoute: typeof AuthenticatedPublishingQueueRouteImport
+      parentRoute: typeof AuthenticatedPublishingRoute
+    }
+    '/_authenticated/publishing/media': {
+      id: '/_authenticated/publishing/media'
+      path: '/media'
+      fullPath: '/publishing/media'
+      preLoaderRoute: typeof AuthenticatedPublishingMediaRouteImport
+      parentRoute: typeof AuthenticatedPublishingRoute
+    }
+    '/_authenticated/publishing/drafts': {
+      id: '/_authenticated/publishing/drafts'
+      path: '/drafts'
+      fullPath: '/publishing/drafts'
+      preLoaderRoute: typeof AuthenticatedPublishingDraftsRouteImport
+      parentRoute: typeof AuthenticatedPublishingRoute
+    }
+    '/_authenticated/publishing/compose': {
+      id: '/_authenticated/publishing/compose'
+      path: '/compose'
+      fullPath: '/publishing/compose'
+      preLoaderRoute: typeof AuthenticatedPublishingComposeRouteImport
+      parentRoute: typeof AuthenticatedPublishingRoute
+    }
+    '/_authenticated/publishing/calendar': {
+      id: '/_authenticated/publishing/calendar'
+      path: '/calendar'
+      fullPath: '/publishing/calendar'
+      preLoaderRoute: typeof AuthenticatedPublishingCalendarRouteImport
+      parentRoute: typeof AuthenticatedPublishingRoute
+    }
+    '/_authenticated/publishing/approvals': {
+      id: '/_authenticated/publishing/approvals'
+      path: '/approvals'
+      fullPath: '/publishing/approvals'
+      preLoaderRoute: typeof AuthenticatedPublishingApprovalsRouteImport
+      parentRoute: typeof AuthenticatedPublishingRoute
     }
     '/_authenticated/analytics/website': {
       id: '/_authenticated/analytics/website'
@@ -934,6 +1086,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksGenerateWeeklyReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/publish': {
+      id: '/api/public/cron/publish'
+      path: '/api/public/cron/publish'
+      fullPath: '/api/public/cron/publish'
+      preLoaderRoute: typeof ApiPublicCronPublishRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -993,6 +1152,31 @@ const AuthenticatedAnalyticsRouteWithChildren =
     AuthenticatedAnalyticsRouteChildren,
   )
 
+interface AuthenticatedPublishingRouteChildren {
+  AuthenticatedPublishingApprovalsRoute: typeof AuthenticatedPublishingApprovalsRoute
+  AuthenticatedPublishingCalendarRoute: typeof AuthenticatedPublishingCalendarRoute
+  AuthenticatedPublishingComposeRoute: typeof AuthenticatedPublishingComposeRoute
+  AuthenticatedPublishingDraftsRoute: typeof AuthenticatedPublishingDraftsRoute
+  AuthenticatedPublishingMediaRoute: typeof AuthenticatedPublishingMediaRoute
+  AuthenticatedPublishingQueueRoute: typeof AuthenticatedPublishingQueueRoute
+}
+
+const AuthenticatedPublishingRouteChildren: AuthenticatedPublishingRouteChildren =
+  {
+    AuthenticatedPublishingApprovalsRoute:
+      AuthenticatedPublishingApprovalsRoute,
+    AuthenticatedPublishingCalendarRoute: AuthenticatedPublishingCalendarRoute,
+    AuthenticatedPublishingComposeRoute: AuthenticatedPublishingComposeRoute,
+    AuthenticatedPublishingDraftsRoute: AuthenticatedPublishingDraftsRoute,
+    AuthenticatedPublishingMediaRoute: AuthenticatedPublishingMediaRoute,
+    AuthenticatedPublishingQueueRoute: AuthenticatedPublishingQueueRoute,
+  }
+
+const AuthenticatedPublishingRouteWithChildren =
+  AuthenticatedPublishingRoute._addFileChildren(
+    AuthenticatedPublishingRouteChildren,
+  )
+
 interface AuthenticatedReportsRouteChildren {
   AuthenticatedReportsIdRoute: typeof AuthenticatedReportsIdRoute
 }
@@ -1010,6 +1194,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedPublishingRoute: typeof AuthenticatedPublishingRouteWithChildren
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRouteWithChildren
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
@@ -1025,6 +1210,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedPublishingRoute: AuthenticatedPublishingRouteWithChildren,
   AuthenticatedReportsRoute: AuthenticatedReportsRouteWithChildren,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
@@ -1071,6 +1257,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiChatRoute: ApiChatRoute,
   InviteTokenRoute: InviteTokenRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
+  ApiPublicCronPublishRoute: ApiPublicCronPublishRoute,
   ApiPublicHooksGenerateWeeklyReportsRoute:
     ApiPublicHooksGenerateWeeklyReportsRoute,
 }
