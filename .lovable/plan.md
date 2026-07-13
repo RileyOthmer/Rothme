@@ -1,58 +1,69 @@
-# Velora Plugin Architecture — Build Plan
+# Enterprise Analytics Engine — Build Plan
 
-This is a large, foundational change. Shipping it all at once produces a shallow shell across 28 platforms. I want to build it in layers so each layer is real (works end-to-end for at least one plugin) before the next lands.
+Another huge scope (9 sub-hubs × 12+ chart types × 11 platforms × comparison + AI + custom dashboards + 4 export formats). Shipping it all at once produces a hollow shell. I want to build in layers that each work end-to-end.
 
-## The core principle
+## The core principle (matches the rest of Velora)
 
-The core app never imports a platform. Everything platform-specific lives in a **plugin manifest** (database row) + **plugin runtime** (generic executor that reads the manifest). Adding Instagram = inserting rows. No code changes.
+Analytics is **plugin-driven and data-driven**. Zero platform-specific components in the core:
 
-This is the same shape as the Universal Integration Engine you already approved — I'll extend that foundation instead of forking a parallel system.
+- Every platform's metrics come from `metric_snapshots` (already exists) + `platform_kpi_mappings` (already exists via Dev Center).
+- The Analytics UI reads *what KPIs a plugin exposes* from the DB and renders the matching cards/charts generically.
+- Adding a new platform to analytics = installing its plugin + mapping its KPIs. No code changes.
+
+This also means: platform-specific dashboards (Instagram followers/reach/etc., TikTok watch time, YouTube retention) are **not hardcoded** — they're rendered from each plugin's KPI mapping.
 
 ## Phased delivery
 
-### Phase 1 — Plugin Kernel (this turn)
-The bones. Nothing platform-specific.
+### Phase 1 — Analytics Hub shell + Executive Dashboard + Platform Selector (this turn)
 
-- `plugins` table: name, slug, version, developer, description, status (installed/enabled/disabled), health_score, api_version, permissions[], declared_modules[], manifest jsonb
-- `plugin_installations` table: per-org install state, config, secrets (encrypted), enabled flags
-- `plugin_health` table: rolling online/offline, latency, last_sync, last_error
-- `plugin_events` table: install/enable/disable/error audit
-- Generic executor `runPluginAction(plugin, module, action, input)` that dispatches based on manifest (auth type, endpoint, mapping) — reuses the endpoint + KPI-mapper engine already built
-- Permission registry: plugin declares scopes, core enforces them
-- **Plugin Manager UI** at `/settings/plugins`: list, status badges, health %, Install/Enable/Disable/Delete/Configure/Verify/Test buttons wired to the executor
-- **Marketplace tab** (same page): Installed / Available / Updates — reads from `plugin_registry` seed rows
+- `/analytics` becomes the hub with sub-nav for the 9 sections
+- Platform selector (All + 11 platforms) reads from installed plugins — greyed-out for non-installed, live for installed
+- **Executive Dashboard**: KPI cards with period-over-period deltas, a growth line chart, a platform-comparison bar chart, a source pie chart, an AI summary strip
+- **Date filters**: Today / Yesterday / 7 / 30 / 90 / YTD / Custom (via Popover + Calendar)
+- Generic chart primitives (Line, Bar, Area, StackedArea, Pie, Donut, KpiCard) built on Recharts (already in the stack) with hover tooltips, fullscreen, PNG + CSV export, dark/light mode
+- Reads live `metric_snapshots` where present; falls back to the existing mock generator when a platform has no rows yet, clearly badged "Sample data"
+- **AI Insights** hook: uses the existing `strategist-prompt` + Lovable AI Gateway to summarize the visible date range for the visible platform
 
-### Phase 2 — First real plugin end-to-end
-Prove the kernel by installing **one** plugin (Instagram) with all 11 modules (Auth, Publishing, Analytics, Messaging, Comments, Media, Webhook, Scheduler, Settings, Error, Health) declared in manifest — no core changes needed. Verify KPIs flow to AI Engine automatically via the existing KPI mapper.
+Delivers a real, shippable analytics experience end-to-end for at least one platform.
 
-### Phase 3 — AI auto-registration
-When a plugin enables, its mapped KPIs auto-register with the AI Engine's context (already partially wired via `platform_kpi_mappings`). Extend so AI queries can enumerate available KPIs per org without hardcoded platform list.
+### Phase 2 — Platform Analytics + Content/Audience/Ad/Revenue sub-hubs
+- Per-platform dashboard rendered from KPI mapping metadata (no hardcoded platform components)
+- Content Analytics: top posts table, engagement scatter, best-posting-times heatmap
+- Audience Analytics: demographics donut, geography choropleth (react-simple-maps), growth area chart
+- Ad Analytics: campaign bar/bubble, spend vs ROAS scatter, funnel
+- Revenue Analytics: revenue area, source breakdown, LTV bar
 
-### Phase 4 — Remaining 27 plugin manifests
-Seed rows only — no code. Each becomes installable from the Marketplace tab. Tester + Health work for all of them via the generic executor.
+### Phase 3 — Comparison Mode + Custom Reports
+- Side-by-side compare (any two platforms / campaigns / periods)
+- Report builder: pick KPIs + charts + date range → save as named report
+- Export pipeline: CSV (browser Blob), PDF (server route → pdfkit), Excel (xlsx), PowerPoint (pptxgenjs)
 
-### Phase 5 — Advanced (only if requested)
-- Hot-reload without redeploy (already true for manifests; UI polish)
-- Version history / rollback
-- Compatibility matrix
-- External plugin submission flow
+### Phase 4 — Custom Dashboards
+- Drag-and-drop widget grid (react-grid-layout), resize, hide, save layouts per user, multiple named dashboards
+
+### Phase 5 — Realtime + Enterprise polish
+- Live update via Supabase realtime on `metric_snapshots`
+- Cached aggregates for large datasets
+- Scheduled report delivery via existing weekly-reports pipeline
 
 ## What Phase 1 delivers today
 
-- Migration: `plugins`, `plugin_installations`, `plugin_health`, `plugin_events`, `plugin_registry` with GRANTs + RLS + admin-only policies via `has_role`
-- Server functions: `listPlugins`, `installPlugin`, `enablePlugin`, `disablePlugin`, `deletePlugin`, `configurePlugin`, `verifyPlugin`, `testPluginModule`, `getPluginHealth`
-- Route: `/settings/plugins` (admin-gated) with Manager + Marketplace tabs, plugin cards, config drawer, tester panel, health panel
-- Seed: registry rows for all 28 platforms with declared modules + permissions (manifest bodies empty until Phase 2 fills Instagram)
-- Zero platform-specific code in `src/` — the core stays clean
+**Files**
+- `src/routes/_authenticated/analytics.tsx` — becomes the hub (currently a stub); adds sub-nav for the 9 sections. Existing `analytics.unified.tsx`, `analytics.charts.tsx`, `analytics.$metric.tsx` stay as leaves under it.
+- `src/routes/_authenticated/analytics.executive.tsx` — Executive Dashboard leaf
+- `src/features/analytics/PlatformSelector.tsx` — reads installed plugins
+- `src/features/analytics/DateRangeFilter.tsx` — Today / Yesterday / 7 / 30 / 90 / YTD / Custom
+- `src/features/analytics/charts/` — `KpiCard`, `LineChart`, `BarChart`, `AreaChart`, `StackedAreaChart`, `PieChart`, `DonutChart` (all with export/fullscreen)
+- `src/features/analytics/AiInsightsStrip.tsx`
+- `src/lib/analytics/analytics.functions.ts` — `getExecutiveSummary({ platforms, from, to })` server fn that reads `metric_snapshots` + falls back to mocks per-platform
+- No new tables — reuses existing `metric_snapshots`, `platform_kpi_mappings`, `plugin_installations`
 
-## Technical notes (for reference)
+**Guardrails I'll hold**
+- Zero hardcoded platform names inside components — everything comes from `plugin_registry` / `plugin_installations`
+- Every chart passes chart-type prop + data prop; no bespoke chart per platform
+- All exports (CSV/PNG in Phase 1) work client-side; PDF/XLSX/PPT come in Phase 3
 
-- Extends existing `platform_integrations` + `platform_kpi_mappings` — plugins are the new outer envelope, integrations become the "installed instance" of a plugin per org
-- Reuses `INTEGRATION_ENCRYPTION_KEY` for plugin secret storage
-- All plugin actions go through one executor → uniform logging, retry, rate-limit, health tracking
-- Marketplace is a DB table, not an external service — you own the catalog
+## Confirm
 
-## Confirm before I build
-
-Reply **"go"** to build Phase 1 as scoped above.
-Reply with edits if you want to change scope (e.g. "skip marketplace tab", "start with Facebook not Instagram", "combine phases 1+2").
+Reply **"go"** to build Phase 1 as scoped.
+Reply with edits to change scope (e.g. "skip AI strip", "start with Platform Analytics not Executive", "combine phases 1+2").
