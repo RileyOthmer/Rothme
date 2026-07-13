@@ -44,7 +44,8 @@ export function MarketingFunnel() {
                 position="center"
                 fill="white"
                 stroke="none"
-                dataKey={(entry: { value: number }) => entry.value.toLocaleString()}
+                dataKey="value"
+                formatter={(v: number) => v.toLocaleString()}
                 style={{ fontSize: 12, fontWeight: 600 }}
               />
               {rows.map((r) => (
