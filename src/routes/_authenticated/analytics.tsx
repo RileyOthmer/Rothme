@@ -77,6 +77,8 @@ function AnalyticsPage() {
             </Link>
             <RangePicker value={range as RangeDays} onChange={setRange} />
           </div>
+        </header>
+
 
         {groups.map(([category, metrics]) => (
           <section key={category} className="space-y-4">
