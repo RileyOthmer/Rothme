@@ -115,6 +115,15 @@ function OverviewPage() {
 
         <AnalyticsHubNav />
 
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <ModeSwitcher value={mode} onChange={setMode} disabledModes={["comparison"]} />
+          <p className="text-xs text-muted-foreground">
+            {mode === "unified" && "Every connected platform merged into one view."}
+            {mode === "platform" && "Native metrics only — pick a platform above."}
+            {mode === "comparison" && "Side-by-side comparison — ships in Phase 2."}
+          </p>
+        </div>
+
         {/* KPI cards */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
           {kpis.map((k) => {
