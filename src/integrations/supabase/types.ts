@@ -466,6 +466,158 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_endpoints: {
+        Row: {
+          auth_override: Json
+          body: string | null
+          created_at: string
+          example_response: Json | null
+          headers: Json
+          http_method: string
+          id: string
+          last_status: number | null
+          last_tested_at: string | null
+          name: string
+          pagination: Json
+          parser: Json
+          path: string
+          platform_id: string
+          query_params: Json
+          rate_limit: Json
+          updated_at: string
+          validation: Json
+        }
+        Insert: {
+          auth_override?: Json
+          body?: string | null
+          created_at?: string
+          example_response?: Json | null
+          headers?: Json
+          http_method?: string
+          id?: string
+          last_status?: number | null
+          last_tested_at?: string | null
+          name: string
+          pagination?: Json
+          parser?: Json
+          path?: string
+          platform_id: string
+          query_params?: Json
+          rate_limit?: Json
+          updated_at?: string
+          validation?: Json
+        }
+        Update: {
+          auth_override?: Json
+          body?: string | null
+          created_at?: string
+          example_response?: Json | null
+          headers?: Json
+          http_method?: string
+          id?: string
+          last_status?: number | null
+          last_tested_at?: string | null
+          name?: string
+          pagination?: Json
+          parser?: Json
+          path?: string
+          platform_id?: string
+          query_params?: Json
+          rate_limit?: Json
+          updated_at?: string
+          validation?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_endpoints_platform_id_fkey"
+            columns: ["platform_id"]
+            isOneToOne: false
+            referencedRelation: "platforms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_field_mappings: {
+        Row: {
+          aggregation: string | null
+          calculation_formula: string | null
+          category: string | null
+          chart_type: string | null
+          confirmed: boolean
+          created_at: string
+          data_type: string
+          description: string | null
+          display_name: string | null
+          endpoint_id: string | null
+          example_value: Json | null
+          formatting: string | null
+          id: string
+          json_path: string
+          platform_id: string
+          unit: string | null
+          updated_at: string
+          validation: Json
+          velora_kpi: string
+        }
+        Insert: {
+          aggregation?: string | null
+          calculation_formula?: string | null
+          category?: string | null
+          chart_type?: string | null
+          confirmed?: boolean
+          created_at?: string
+          data_type?: string
+          description?: string | null
+          display_name?: string | null
+          endpoint_id?: string | null
+          example_value?: Json | null
+          formatting?: string | null
+          id?: string
+          json_path?: string
+          platform_id: string
+          unit?: string | null
+          updated_at?: string
+          validation?: Json
+          velora_kpi: string
+        }
+        Update: {
+          aggregation?: string | null
+          calculation_formula?: string | null
+          category?: string | null
+          chart_type?: string | null
+          confirmed?: boolean
+          created_at?: string
+          data_type?: string
+          description?: string | null
+          display_name?: string | null
+          endpoint_id?: string | null
+          example_value?: Json | null
+          formatting?: string | null
+          id?: string
+          json_path?: string
+          platform_id?: string
+          unit?: string | null
+          updated_at?: string
+          validation?: Json
+          velora_kpi?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_field_mappings_endpoint_id_fkey"
+            columns: ["endpoint_id"]
+            isOneToOne: false
+            referencedRelation: "platform_endpoints"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "platform_field_mappings_platform_id_fkey"
+            columns: ["platform_id"]
+            isOneToOne: false
+            referencedRelation: "platforms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_integration_logs: {
         Row: {
           actor: string | null
@@ -593,6 +745,96 @@ export type Database = {
             referencedColumns: ["platform"]
           },
         ]
+      }
+      platforms: {
+        Row: {
+          api_version: string | null
+          auth_type: string
+          authorization_url: string | null
+          base_url: string | null
+          category: string | null
+          created_at: string
+          created_by: string | null
+          default_headers: Json
+          description: string | null
+          enabled: boolean
+          id: string
+          logo_url: string | null
+          name: string
+          notes: string | null
+          rate_limit: Json
+          redirect_uri: string | null
+          refresh_url: string | null
+          retry_count: number
+          scopes: string[]
+          secrets_ciphertext: string | null
+          slug: string
+          status: string
+          timeout_ms: number
+          token_url: string | null
+          updated_at: string
+          verified: boolean
+          webhook_endpoint: string | null
+        }
+        Insert: {
+          api_version?: string | null
+          auth_type?: string
+          authorization_url?: string | null
+          base_url?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_headers?: Json
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          logo_url?: string | null
+          name: string
+          notes?: string | null
+          rate_limit?: Json
+          redirect_uri?: string | null
+          refresh_url?: string | null
+          retry_count?: number
+          scopes?: string[]
+          secrets_ciphertext?: string | null
+          slug: string
+          status?: string
+          timeout_ms?: number
+          token_url?: string | null
+          updated_at?: string
+          verified?: boolean
+          webhook_endpoint?: string | null
+        }
+        Update: {
+          api_version?: string | null
+          auth_type?: string
+          authorization_url?: string | null
+          base_url?: string | null
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_headers?: Json
+          description?: string | null
+          enabled?: boolean
+          id?: string
+          logo_url?: string | null
+          name?: string
+          notes?: string | null
+          rate_limit?: Json
+          redirect_uri?: string | null
+          refresh_url?: string | null
+          retry_count?: number
+          scopes?: string[]
+          secrets_ciphertext?: string | null
+          slug?: string
+          status?: string
+          timeout_ms?: number
+          token_url?: string | null
+          updated_at?: string
+          verified?: boolean
+          webhook_endpoint?: string | null
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
