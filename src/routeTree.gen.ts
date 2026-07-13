@@ -35,6 +35,7 @@ import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_au
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authenticated/reports.$id'
 import { Route as AuthenticatedAnalyticsUnifiedRouteImport } from './routes/_authenticated/analytics.unified'
+import { Route as AuthenticatedAnalyticsExecutiveRouteImport } from './routes/_authenticated/analytics.executive'
 import { Route as AuthenticatedAnalyticsChartsRouteImport } from './routes/_authenticated/analytics.charts'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
@@ -173,6 +174,12 @@ const AuthenticatedAnalyticsUnifiedRoute =
     path: '/unified',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
   } as any)
+const AuthenticatedAnalyticsExecutiveRoute =
+  AuthenticatedAnalyticsExecutiveRouteImport.update({
+    id: '/executive',
+    path: '/executive',
+    getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
 const AuthenticatedAnalyticsChartsRoute =
   AuthenticatedAnalyticsChartsRouteImport.update({
     id: '/charts',
@@ -214,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/analytics/charts': typeof AuthenticatedAnalyticsChartsRoute
+  '/analytics/executive': typeof AuthenticatedAnalyticsExecutiveRoute
   '/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
@@ -244,6 +252,7 @@ export interface FileRoutesByTo {
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/analytics/charts': typeof AuthenticatedAnalyticsChartsRoute
+  '/analytics/executive': typeof AuthenticatedAnalyticsExecutiveRoute
   '/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
@@ -276,6 +285,7 @@ export interface FileRoutesById {
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/_authenticated/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/_authenticated/analytics/charts': typeof AuthenticatedAnalyticsChartsRoute
+  '/_authenticated/analytics/executive': typeof AuthenticatedAnalyticsExecutiveRoute
   '/_authenticated/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
@@ -308,6 +318,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/analytics/$metric'
     | '/analytics/charts'
+    | '/analytics/executive'
     | '/analytics/unified'
     | '/reports/$id'
     | '/settings/connections'
@@ -338,6 +349,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/analytics/$metric'
     | '/analytics/charts'
+    | '/analytics/executive'
     | '/analytics/unified'
     | '/reports/$id'
     | '/settings/connections'
@@ -369,6 +381,7 @@ export interface FileRouteTypes {
     | '/settings/notifications'
     | '/_authenticated/analytics/$metric'
     | '/_authenticated/analytics/charts'
+    | '/_authenticated/analytics/executive'
     | '/_authenticated/analytics/unified'
     | '/_authenticated/reports/$id'
     | '/_authenticated/settings/connections'
@@ -575,6 +588,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsUnifiedRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
     }
+    '/_authenticated/analytics/executive': {
+      id: '/_authenticated/analytics/executive'
+      path: '/executive'
+      fullPath: '/analytics/executive'
+      preLoaderRoute: typeof AuthenticatedAnalyticsExecutiveRouteImport
+      parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
     '/_authenticated/analytics/charts': {
       id: '/_authenticated/analytics/charts'
       path: '/charts'
@@ -602,6 +622,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAnalyticsRouteChildren {
   AuthenticatedAnalyticsMetricRoute: typeof AuthenticatedAnalyticsMetricRoute
   AuthenticatedAnalyticsChartsRoute: typeof AuthenticatedAnalyticsChartsRoute
+  AuthenticatedAnalyticsExecutiveRoute: typeof AuthenticatedAnalyticsExecutiveRoute
   AuthenticatedAnalyticsUnifiedRoute: typeof AuthenticatedAnalyticsUnifiedRoute
 }
 
@@ -609,6 +630,7 @@ const AuthenticatedAnalyticsRouteChildren: AuthenticatedAnalyticsRouteChildren =
   {
     AuthenticatedAnalyticsMetricRoute: AuthenticatedAnalyticsMetricRoute,
     AuthenticatedAnalyticsChartsRoute: AuthenticatedAnalyticsChartsRoute,
+    AuthenticatedAnalyticsExecutiveRoute: AuthenticatedAnalyticsExecutiveRoute,
     AuthenticatedAnalyticsUnifiedRoute: AuthenticatedAnalyticsUnifiedRoute,
   }
 

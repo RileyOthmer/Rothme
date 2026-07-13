@@ -3,6 +3,7 @@ import { z } from "zod";
 import { useMemo } from "react";
 
 import { AppHeader } from "@/components/layout/AppHeader";
+import { AnalyticsHubNav } from "@/features/analytics/AnalyticsHubNav";
 import { KpiCard } from "@/features/analytics/KpiCard";
 import { RangePicker } from "@/features/analytics/RangePicker";
 import {
@@ -84,6 +85,10 @@ function AnalyticsPage() {
             <RangePicker value={range as RangeDays} onChange={setRange} />
           </div>
         </header>
+
+        <AnalyticsHubNav />
+
+
 
 
         {groups.map(([category, metrics]) => (
