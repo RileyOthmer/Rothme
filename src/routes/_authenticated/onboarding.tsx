@@ -165,14 +165,32 @@ function loadAnswers(): Answers {
 function OnboardingPage() {
   const navigate = useNavigate();
   const saveProfile = useServerFn(updateProfile);
+  const track = useServerFn(trackOnboardingEvent);
+  const upsertResponse = useServerFn(upsertOnboardingResponse);
 
   const [answers, setAnswers] = useState<Answers>(emptyAnswers);
   const [hydrated, setHydrated] = useState(false);
+  const [anonId, setAnonId] = useState<string>("");
 
   useEffect(() => {
     setAnswers(loadAnswers());
+    const id = getAnonId();
+    setAnonId(id);
     setHydrated(true);
-  }, []);
+    // Fire-and-forget start event + environment upsert (no PII).
+    void track({
+      data: { anonId: id, eventType: "onboarding_started", stepId: "welcome" },
+    }).catch(() => {});
+    void upsertResponse({
+      data: {
+        anonId: id,
+        country: getCountryFromLocale(),
+        timezone: getTimezone(),
+        deviceType: getDeviceType(),
+        referralSource: getReferralSource(),
+      },
+    }).catch(() => {});
+  }, [track, upsertResponse]);
 
   useEffect(() => {
     if (!hydrated) return;
@@ -185,15 +203,51 @@ function OnboardingPage() {
 
   const stepId = STEPS[answers.stepIndex] ?? "welcome";
   const isQuestion = ["describe","goals","platforms","cadence","frustrations","ai","connect"].includes(stepId);
-  const totalQuestionSteps = 7; // for the progress indicator
+  const totalQuestionSteps = 7;
   const currentQuestionNumber = useMemo(() => {
     const idx = ["describe","goals","platforms","cadence","frustrations","ai","connect"].indexOf(stepId);
     return idx >= 0 ? idx + 1 : 0;
   }, [stepId]);
 
+  // Track step_viewed whenever the visible step changes.
+  useEffect(() => {
+    if (!hydrated || !anonId) return;
+    void track({
+      data: { anonId, eventType: "step_viewed", stepId },
+    }).catch(() => {});
+  }, [stepId, hydrated, anonId, track]);
+
+  const persistAnswers = useCallback(
+    (a: Answers) => {
+      if (!anonId) return;
+      void upsertResponse({
+        data: {
+          anonId,
+          userType: a.describe,
+          goals: a.goals,
+          platforms: a.platforms,
+          cadence: a.cadence,
+          frustrations: a.frustrations,
+          aiFeatures: a.ai,
+          connectedPlatforms: a.connected,
+        },
+      }).catch(() => {});
+    },
+    [anonId, upsertResponse],
+  );
+
   const goNext = useCallback(() => {
-    setAnswers((a) => ({ ...a, stepIndex: Math.min(a.stepIndex + 1, STEPS.length - 1) }));
-  }, []);
+    setAnswers((a) => {
+      const curId = STEPS[a.stepIndex];
+      if (anonId && curId) {
+        void track({
+          data: { anonId, eventType: "step_completed", stepId: curId },
+        }).catch(() => {});
+      }
+      persistAnswers(a);
+      return { ...a, stepIndex: Math.min(a.stepIndex + 1, STEPS.length - 1) };
+    });
+  }, [anonId, track, persistAnswers]);
   const goBack = useCallback(() => {
     setAnswers((a) => ({ ...a, stepIndex: Math.max(a.stepIndex - 1, 0) }));
   }, []);
@@ -207,7 +261,27 @@ function OnboardingPage() {
   }, []);
 
   const finish = useMutation({
-    mutationFn: () => saveProfile({ data: { mark_onboarded: true } }),
+    mutationFn: async () => {
+      if (anonId) {
+        await upsertResponse({
+          data: {
+            anonId,
+            userType: answers.describe,
+            goals: answers.goals,
+            platforms: answers.platforms,
+            cadence: answers.cadence,
+            frustrations: answers.frustrations,
+            aiFeatures: answers.ai,
+            connectedPlatforms: answers.connected,
+            completed: true,
+          },
+        }).catch(() => {});
+        await track({
+          data: { anonId, eventType: "onboarding_completed", stepId: "done" },
+        }).catch(() => {});
+      }
+      return saveProfile({ data: { mark_onboarded: true } });
+    },
     onSuccess: () => {
       try { window.localStorage.removeItem(STORAGE_KEY); } catch { /* ignore */ }
       navigate({ to: "/dashboard", replace: true });
