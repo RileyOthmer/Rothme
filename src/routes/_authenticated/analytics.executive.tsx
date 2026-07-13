@@ -102,11 +102,11 @@ function ExecutivePage() {
           <div className="flex flex-wrap items-center gap-2">
             <PlatformSelector
               value={platforms as PlatformId[]}
-              onChange={(v) => navigate({ search: (prev) => ({ ...prev, platforms: v }), replace: true })}
+              onChange={(v) => navigate({ search: (prev: any) => ({ ...prev, platforms: v }), replace: true })}
             />
             <ExecutiveDateFilter
               range={range as RangePreset} from={from} to={to}
-              onChange={(v) => navigate({ search: (prev) => ({ ...prev, ...v }), replace: true })}
+              onChange={(v) => navigate({ search: (prev: any) => ({ ...prev, ...v }), replace: true })}
             />
           </div>
         </div>

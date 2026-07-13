@@ -59,7 +59,7 @@ export function AiInsightsStrip({
           <p className="text-sm leading-relaxed">{data.summary}</p>
           {data.actions.length > 0 && (
             <ul className="space-y-1.5">
-              {data.actions.map((a, i) => (
+              {data.actions.map((a: string, i: number) => (
                 <li key={i} className="flex gap-2 text-sm">
                   <span className="mt-1 inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                   <span>{a}</span>
