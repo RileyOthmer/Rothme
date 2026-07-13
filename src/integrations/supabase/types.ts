@@ -466,6 +466,134 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_integration_logs: {
+        Row: {
+          actor: string | null
+          created_at: string
+          event_type: string
+          id: string
+          message: string | null
+          platform: string
+          request: Json | null
+          response: Json | null
+          status_code: number | null
+          success: boolean | null
+        }
+        Insert: {
+          actor?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          message?: string | null
+          platform: string
+          request?: Json | null
+          response?: Json | null
+          status_code?: number | null
+          success?: boolean | null
+        }
+        Update: {
+          actor?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          message?: string | null
+          platform?: string
+          request?: Json | null
+          response?: Json | null
+          status_code?: number | null
+          success?: boolean | null
+        }
+        Relationships: []
+      }
+      platform_integrations: {
+        Row: {
+          config: Json
+          created_at: string
+          display_name: string
+          enabled: boolean
+          last_tested_at: string | null
+          platform: string
+          secrets_ciphertext: string | null
+          status: string
+          status_message: string | null
+          updated_at: string
+          verified: boolean
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          display_name: string
+          enabled?: boolean
+          last_tested_at?: string | null
+          platform: string
+          secrets_ciphertext?: string | null
+          status?: string
+          status_message?: string | null
+          updated_at?: string
+          verified?: boolean
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          display_name?: string
+          enabled?: boolean
+          last_tested_at?: string | null
+          platform?: string
+          secrets_ciphertext?: string | null
+          status?: string
+          status_message?: string | null
+          updated_at?: string
+          verified?: boolean
+        }
+        Relationships: []
+      }
+      platform_kpi_mappings: {
+        Row: {
+          confirmed: boolean
+          created_at: string
+          data_type: string
+          description: string | null
+          external_field: string
+          id: string
+          internal_kpi: string
+          platform: string
+          update_frequency: string
+          updated_at: string
+        }
+        Insert: {
+          confirmed?: boolean
+          created_at?: string
+          data_type?: string
+          description?: string | null
+          external_field: string
+          id?: string
+          internal_kpi: string
+          platform: string
+          update_frequency?: string
+          updated_at?: string
+        }
+        Update: {
+          confirmed?: boolean
+          created_at?: string
+          data_type?: string
+          description?: string | null
+          external_field?: string
+          id?: string
+          internal_kpi?: string
+          platform?: string
+          update_frequency?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_kpi_mappings_platform_fkey"
+            columns: ["platform"]
+            isOneToOne: false
+            referencedRelation: "platform_integrations"
+            referencedColumns: ["platform"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           active_org_id: string | null
@@ -557,6 +685,27 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       weekly_reports: {
         Row: {
           created_at: string
@@ -597,6 +746,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_first_admin: { Args: never; Returns: boolean }
       ensure_personal_org: {
         Args: { _name: string; _user: string }
         Returns: string
@@ -605,9 +755,17 @@ export type Database = {
         Args: { _min_role: string; _org: string; _user: string }
         Returns: boolean
       }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
       is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
     }
     Enums: {
+      app_role: "admin" | "moderator" | "user"
       org_role: "owner" | "admin" | "member"
     }
     CompositeTypes: {
@@ -736,6 +894,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "moderator", "user"],
       org_role: ["owner", "admin", "member"],
     },
   },
