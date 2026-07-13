@@ -30,6 +30,7 @@ import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
+import { Route as AuthenticatedSettingsPluginsRouteImport } from './routes/_authenticated/settings.plugins'
 import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_authenticated/settings.developer'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authenticated/reports.$id'
@@ -143,6 +144,12 @@ const AuthenticatedSettingsProfileRoute =
     path: '/settings/profile',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSettingsPluginsRoute =
+  AuthenticatedSettingsPluginsRouteImport.update({
+    id: '/settings/plugins',
+    path: '/settings/plugins',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsDeveloperRoute =
   AuthenticatedSettingsDeveloperRouteImport.update({
     id: '/settings/developer',
@@ -211,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
+  '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
@@ -240,6 +248,7 @@ export interface FileRoutesByTo {
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
+  '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
@@ -271,6 +280,7 @@ export interface FileRoutesById {
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
+  '/_authenticated/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
@@ -302,6 +312,7 @@ export interface FileRouteTypes {
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/developer'
+    | '/settings/plugins'
     | '/settings/profile'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesByTo: FileRoutesByTo
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/reports/$id'
     | '/settings/connections'
     | '/settings/developer'
+    | '/settings/plugins'
     | '/settings/profile'
     | '/api/public/hooks/generate-weekly-reports'
   id:
@@ -361,6 +373,7 @@ export interface FileRouteTypes {
     | '/_authenticated/reports/$id'
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/developer'
+    | '/_authenticated/settings/plugins'
     | '/_authenticated/settings/profile'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesById: FileRoutesById
@@ -527,6 +540,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSettingsProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings/plugins': {
+      id: '/_authenticated/settings/plugins'
+      path: '/settings/plugins'
+      fullPath: '/settings/plugins'
+      preLoaderRoute: typeof AuthenticatedSettingsPluginsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings/developer': {
       id: '/_authenticated/settings/developer'
       path: '/settings/developer'
@@ -619,6 +639,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
   AuthenticatedSettingsConnectionsRoute: typeof AuthenticatedSettingsConnectionsRoute
   AuthenticatedSettingsDeveloperRoute: typeof AuthenticatedSettingsDeveloperRoute
+  AuthenticatedSettingsPluginsRoute: typeof AuthenticatedSettingsPluginsRoute
   AuthenticatedSettingsProfileRoute: typeof AuthenticatedSettingsProfileRoute
 }
 
@@ -633,6 +654,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
   AuthenticatedSettingsConnectionsRoute: AuthenticatedSettingsConnectionsRoute,
   AuthenticatedSettingsDeveloperRoute: AuthenticatedSettingsDeveloperRoute,
+  AuthenticatedSettingsPluginsRoute: AuthenticatedSettingsPluginsRoute,
   AuthenticatedSettingsProfileRoute: AuthenticatedSettingsProfileRoute,
 }
 
