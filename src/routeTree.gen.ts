@@ -36,6 +36,7 @@ import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDevCenterRouteImport } from './routes/_authenticated/dev-center'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
+import { Route as AuthenticatedOnboardingIndexRouteImport } from './routes/_authenticated/onboarding.index'
 import { Route as AuthenticatedDevCenterIndexRouteImport } from './routes/_authenticated/dev-center.index'
 import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics.index'
 import { Route as AuthenticatedSettingsSocialHealthRouteImport } from './routes/_authenticated/settings.social-health'
@@ -50,6 +51,17 @@ import { Route as AuthenticatedPublishingDraftsRouteImport } from './routes/_aut
 import { Route as AuthenticatedPublishingComposeRouteImport } from './routes/_authenticated/publishing.compose'
 import { Route as AuthenticatedPublishingCalendarRouteImport } from './routes/_authenticated/publishing.calendar'
 import { Route as AuthenticatedPublishingApprovalsRouteImport } from './routes/_authenticated/publishing.approvals'
+import { Route as AuthenticatedOnboardingWorkspaceBuildRouteImport } from './routes/_authenticated/onboarding.workspace-build'
+import { Route as AuthenticatedOnboardingWelcomeRouteImport } from './routes/_authenticated/onboarding.welcome'
+import { Route as AuthenticatedOnboardingWalkthroughRouteImport } from './routes/_authenticated/onboarding.walkthrough'
+import { Route as AuthenticatedOnboardingSubscriptionRouteImport } from './routes/_authenticated/onboarding.subscription'
+import { Route as AuthenticatedOnboardingMarketingPlanRouteImport } from './routes/_authenticated/onboarding.marketing-plan'
+import { Route as AuthenticatedOnboardingFirstSuccessRouteImport } from './routes/_authenticated/onboarding.first-success'
+import { Route as AuthenticatedOnboardingDiscoveryRouteImport } from './routes/_authenticated/onboarding.discovery'
+import { Route as AuthenticatedOnboardingConnectionsRouteImport } from './routes/_authenticated/onboarding.connections'
+import { Route as AuthenticatedOnboardingConfigurationRouteImport } from './routes/_authenticated/onboarding.configuration'
+import { Route as AuthenticatedOnboardingAnalysisRouteImport } from './routes/_authenticated/onboarding.analysis'
+import { Route as AuthenticatedOnboardingAiTrainingRouteImport } from './routes/_authenticated/onboarding.ai-training'
 import { Route as AuthenticatedDevCenterWebhooksRouteImport } from './routes/_authenticated/dev-center.webhooks'
 import { Route as AuthenticatedDevCenterSyncRouteImport } from './routes/_authenticated/dev-center.sync'
 import { Route as AuthenticatedDevCenterStatusRouteImport } from './routes/_authenticated/dev-center.status'
@@ -219,6 +231,12 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOnboardingIndexRoute =
+  AuthenticatedOnboardingIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
 const AuthenticatedDevCenterIndexRoute =
   AuthenticatedDevCenterIndexRouteImport.update({
     id: '/',
@@ -301,6 +319,72 @@ const AuthenticatedPublishingApprovalsRoute =
     id: '/approvals',
     path: '/approvals',
     getParentRoute: () => AuthenticatedPublishingRoute,
+  } as any)
+const AuthenticatedOnboardingWorkspaceBuildRoute =
+  AuthenticatedOnboardingWorkspaceBuildRouteImport.update({
+    id: '/workspace-build',
+    path: '/workspace-build',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingWelcomeRoute =
+  AuthenticatedOnboardingWelcomeRouteImport.update({
+    id: '/welcome',
+    path: '/welcome',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingWalkthroughRoute =
+  AuthenticatedOnboardingWalkthroughRouteImport.update({
+    id: '/walkthrough',
+    path: '/walkthrough',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingSubscriptionRoute =
+  AuthenticatedOnboardingSubscriptionRouteImport.update({
+    id: '/subscription',
+    path: '/subscription',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingMarketingPlanRoute =
+  AuthenticatedOnboardingMarketingPlanRouteImport.update({
+    id: '/marketing-plan',
+    path: '/marketing-plan',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingFirstSuccessRoute =
+  AuthenticatedOnboardingFirstSuccessRouteImport.update({
+    id: '/first-success',
+    path: '/first-success',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingDiscoveryRoute =
+  AuthenticatedOnboardingDiscoveryRouteImport.update({
+    id: '/discovery',
+    path: '/discovery',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingConnectionsRoute =
+  AuthenticatedOnboardingConnectionsRouteImport.update({
+    id: '/connections',
+    path: '/connections',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingConfigurationRoute =
+  AuthenticatedOnboardingConfigurationRouteImport.update({
+    id: '/configuration',
+    path: '/configuration',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingAnalysisRoute =
+  AuthenticatedOnboardingAnalysisRouteImport.update({
+    id: '/analysis',
+    path: '/analysis',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingAiTrainingRoute =
+  AuthenticatedOnboardingAiTrainingRouteImport.update({
+    id: '/ai-training',
+    path: '/ai-training',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
   } as any)
 const AuthenticatedDevCenterWebhooksRoute =
   AuthenticatedDevCenterWebhooksRouteImport.update({
@@ -519,7 +603,7 @@ export interface FileRoutesByFullPath {
   '/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
-  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/onboarding': typeof AuthenticatedOnboardingRouteWithChildren
   '/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/reports': typeof AuthenticatedReportsRouteWithChildren
   '/tasks': typeof AuthenticatedTasksRoute
@@ -563,6 +647,17 @@ export interface FileRoutesByFullPath {
   '/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
   '/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
   '/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
+  '/onboarding/ai-training': typeof AuthenticatedOnboardingAiTrainingRoute
+  '/onboarding/analysis': typeof AuthenticatedOnboardingAnalysisRoute
+  '/onboarding/configuration': typeof AuthenticatedOnboardingConfigurationRoute
+  '/onboarding/connections': typeof AuthenticatedOnboardingConnectionsRoute
+  '/onboarding/discovery': typeof AuthenticatedOnboardingDiscoveryRoute
+  '/onboarding/first-success': typeof AuthenticatedOnboardingFirstSuccessRoute
+  '/onboarding/marketing-plan': typeof AuthenticatedOnboardingMarketingPlanRoute
+  '/onboarding/subscription': typeof AuthenticatedOnboardingSubscriptionRoute
+  '/onboarding/walkthrough': typeof AuthenticatedOnboardingWalkthroughRoute
+  '/onboarding/welcome': typeof AuthenticatedOnboardingWelcomeRoute
+  '/onboarding/workspace-build': typeof AuthenticatedOnboardingWorkspaceBuildRoute
   '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
   '/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
   '/publishing/compose': typeof AuthenticatedPublishingComposeRoute
@@ -577,6 +672,7 @@ export interface FileRoutesByFullPath {
   '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/dev-center/': typeof AuthenticatedDevCenterIndexRoute
+  '/onboarding/': typeof AuthenticatedOnboardingIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -592,7 +688,6 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
-  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/reports': typeof AuthenticatedReportsRouteWithChildren
   '/tasks': typeof AuthenticatedTasksRoute
@@ -636,6 +731,17 @@ export interface FileRoutesByTo {
   '/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
   '/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
   '/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
+  '/onboarding/ai-training': typeof AuthenticatedOnboardingAiTrainingRoute
+  '/onboarding/analysis': typeof AuthenticatedOnboardingAnalysisRoute
+  '/onboarding/configuration': typeof AuthenticatedOnboardingConfigurationRoute
+  '/onboarding/connections': typeof AuthenticatedOnboardingConnectionsRoute
+  '/onboarding/discovery': typeof AuthenticatedOnboardingDiscoveryRoute
+  '/onboarding/first-success': typeof AuthenticatedOnboardingFirstSuccessRoute
+  '/onboarding/marketing-plan': typeof AuthenticatedOnboardingMarketingPlanRoute
+  '/onboarding/subscription': typeof AuthenticatedOnboardingSubscriptionRoute
+  '/onboarding/walkthrough': typeof AuthenticatedOnboardingWalkthroughRoute
+  '/onboarding/welcome': typeof AuthenticatedOnboardingWelcomeRoute
+  '/onboarding/workspace-build': typeof AuthenticatedOnboardingWorkspaceBuildRoute
   '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
   '/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
   '/publishing/compose': typeof AuthenticatedPublishingComposeRoute
@@ -650,6 +756,7 @@ export interface FileRoutesByTo {
   '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/dev-center': typeof AuthenticatedDevCenterIndexRoute
+  '/onboarding': typeof AuthenticatedOnboardingIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -670,7 +777,7 @@ export interface FileRoutesById {
   '/_authenticated/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
-  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRouteWithChildren
   '/_authenticated/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/_authenticated/reports': typeof AuthenticatedReportsRouteWithChildren
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
@@ -714,6 +821,17 @@ export interface FileRoutesById {
   '/_authenticated/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
   '/_authenticated/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
   '/_authenticated/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
+  '/_authenticated/onboarding/ai-training': typeof AuthenticatedOnboardingAiTrainingRoute
+  '/_authenticated/onboarding/analysis': typeof AuthenticatedOnboardingAnalysisRoute
+  '/_authenticated/onboarding/configuration': typeof AuthenticatedOnboardingConfigurationRoute
+  '/_authenticated/onboarding/connections': typeof AuthenticatedOnboardingConnectionsRoute
+  '/_authenticated/onboarding/discovery': typeof AuthenticatedOnboardingDiscoveryRoute
+  '/_authenticated/onboarding/first-success': typeof AuthenticatedOnboardingFirstSuccessRoute
+  '/_authenticated/onboarding/marketing-plan': typeof AuthenticatedOnboardingMarketingPlanRoute
+  '/_authenticated/onboarding/subscription': typeof AuthenticatedOnboardingSubscriptionRoute
+  '/_authenticated/onboarding/walkthrough': typeof AuthenticatedOnboardingWalkthroughRoute
+  '/_authenticated/onboarding/welcome': typeof AuthenticatedOnboardingWelcomeRoute
+  '/_authenticated/onboarding/workspace-build': typeof AuthenticatedOnboardingWorkspaceBuildRoute
   '/_authenticated/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
   '/_authenticated/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
   '/_authenticated/publishing/compose': typeof AuthenticatedPublishingComposeRoute
@@ -728,6 +846,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/_authenticated/dev-center/': typeof AuthenticatedDevCenterIndexRoute
+  '/_authenticated/onboarding/': typeof AuthenticatedOnboardingIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -792,6 +911,17 @@ export interface FileRouteTypes {
     | '/dev-center/status'
     | '/dev-center/sync'
     | '/dev-center/webhooks'
+    | '/onboarding/ai-training'
+    | '/onboarding/analysis'
+    | '/onboarding/configuration'
+    | '/onboarding/connections'
+    | '/onboarding/discovery'
+    | '/onboarding/first-success'
+    | '/onboarding/marketing-plan'
+    | '/onboarding/subscription'
+    | '/onboarding/walkthrough'
+    | '/onboarding/welcome'
+    | '/onboarding/workspace-build'
     | '/publishing/approvals'
     | '/publishing/calendar'
     | '/publishing/compose'
@@ -806,6 +936,7 @@ export interface FileRouteTypes {
     | '/settings/social-health'
     | '/analytics/'
     | '/dev-center/'
+    | '/onboarding/'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
@@ -821,7 +952,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/goals'
     | '/insights'
-    | '/onboarding'
     | '/publishing'
     | '/reports'
     | '/tasks'
@@ -865,6 +995,17 @@ export interface FileRouteTypes {
     | '/dev-center/status'
     | '/dev-center/sync'
     | '/dev-center/webhooks'
+    | '/onboarding/ai-training'
+    | '/onboarding/analysis'
+    | '/onboarding/configuration'
+    | '/onboarding/connections'
+    | '/onboarding/discovery'
+    | '/onboarding/first-success'
+    | '/onboarding/marketing-plan'
+    | '/onboarding/subscription'
+    | '/onboarding/walkthrough'
+    | '/onboarding/welcome'
+    | '/onboarding/workspace-build'
     | '/publishing/approvals'
     | '/publishing/calendar'
     | '/publishing/compose'
@@ -879,6 +1020,7 @@ export interface FileRouteTypes {
     | '/settings/social-health'
     | '/analytics'
     | '/dev-center'
+    | '/onboarding'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
@@ -942,6 +1084,17 @@ export interface FileRouteTypes {
     | '/_authenticated/dev-center/status'
     | '/_authenticated/dev-center/sync'
     | '/_authenticated/dev-center/webhooks'
+    | '/_authenticated/onboarding/ai-training'
+    | '/_authenticated/onboarding/analysis'
+    | '/_authenticated/onboarding/configuration'
+    | '/_authenticated/onboarding/connections'
+    | '/_authenticated/onboarding/discovery'
+    | '/_authenticated/onboarding/first-success'
+    | '/_authenticated/onboarding/marketing-plan'
+    | '/_authenticated/onboarding/subscription'
+    | '/_authenticated/onboarding/walkthrough'
+    | '/_authenticated/onboarding/welcome'
+    | '/_authenticated/onboarding/workspace-build'
     | '/_authenticated/publishing/approvals'
     | '/_authenticated/publishing/calendar'
     | '/_authenticated/publishing/compose'
@@ -956,6 +1109,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/social-health'
     | '/_authenticated/analytics/'
     | '/_authenticated/dev-center/'
+    | '/_authenticated/onboarding/'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
@@ -1170,6 +1324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/onboarding/': {
+      id: '/_authenticated/onboarding/'
+      path: '/'
+      fullPath: '/onboarding/'
+      preLoaderRoute: typeof AuthenticatedOnboardingIndexRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
     '/_authenticated/dev-center/': {
       id: '/_authenticated/dev-center/'
       path: '/'
@@ -1267,6 +1428,83 @@ declare module '@tanstack/react-router' {
       fullPath: '/publishing/approvals'
       preLoaderRoute: typeof AuthenticatedPublishingApprovalsRouteImport
       parentRoute: typeof AuthenticatedPublishingRoute
+    }
+    '/_authenticated/onboarding/workspace-build': {
+      id: '/_authenticated/onboarding/workspace-build'
+      path: '/workspace-build'
+      fullPath: '/onboarding/workspace-build'
+      preLoaderRoute: typeof AuthenticatedOnboardingWorkspaceBuildRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/welcome': {
+      id: '/_authenticated/onboarding/welcome'
+      path: '/welcome'
+      fullPath: '/onboarding/welcome'
+      preLoaderRoute: typeof AuthenticatedOnboardingWelcomeRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/walkthrough': {
+      id: '/_authenticated/onboarding/walkthrough'
+      path: '/walkthrough'
+      fullPath: '/onboarding/walkthrough'
+      preLoaderRoute: typeof AuthenticatedOnboardingWalkthroughRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/subscription': {
+      id: '/_authenticated/onboarding/subscription'
+      path: '/subscription'
+      fullPath: '/onboarding/subscription'
+      preLoaderRoute: typeof AuthenticatedOnboardingSubscriptionRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/marketing-plan': {
+      id: '/_authenticated/onboarding/marketing-plan'
+      path: '/marketing-plan'
+      fullPath: '/onboarding/marketing-plan'
+      preLoaderRoute: typeof AuthenticatedOnboardingMarketingPlanRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/first-success': {
+      id: '/_authenticated/onboarding/first-success'
+      path: '/first-success'
+      fullPath: '/onboarding/first-success'
+      preLoaderRoute: typeof AuthenticatedOnboardingFirstSuccessRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/discovery': {
+      id: '/_authenticated/onboarding/discovery'
+      path: '/discovery'
+      fullPath: '/onboarding/discovery'
+      preLoaderRoute: typeof AuthenticatedOnboardingDiscoveryRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/connections': {
+      id: '/_authenticated/onboarding/connections'
+      path: '/connections'
+      fullPath: '/onboarding/connections'
+      preLoaderRoute: typeof AuthenticatedOnboardingConnectionsRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/configuration': {
+      id: '/_authenticated/onboarding/configuration'
+      path: '/configuration'
+      fullPath: '/onboarding/configuration'
+      preLoaderRoute: typeof AuthenticatedOnboardingConfigurationRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/analysis': {
+      id: '/_authenticated/onboarding/analysis'
+      path: '/analysis'
+      fullPath: '/onboarding/analysis'
+      preLoaderRoute: typeof AuthenticatedOnboardingAnalysisRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/ai-training': {
+      id: '/_authenticated/onboarding/ai-training'
+      path: '/ai-training'
+      fullPath: '/onboarding/ai-training'
+      preLoaderRoute: typeof AuthenticatedOnboardingAiTrainingRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
     }
     '/_authenticated/dev-center/webhooks': {
       id: '/_authenticated/dev-center/webhooks'
@@ -1607,6 +1845,51 @@ const AuthenticatedDevCenterRouteWithChildren =
     AuthenticatedDevCenterRouteChildren,
   )
 
+interface AuthenticatedOnboardingRouteChildren {
+  AuthenticatedOnboardingAiTrainingRoute: typeof AuthenticatedOnboardingAiTrainingRoute
+  AuthenticatedOnboardingAnalysisRoute: typeof AuthenticatedOnboardingAnalysisRoute
+  AuthenticatedOnboardingConfigurationRoute: typeof AuthenticatedOnboardingConfigurationRoute
+  AuthenticatedOnboardingConnectionsRoute: typeof AuthenticatedOnboardingConnectionsRoute
+  AuthenticatedOnboardingDiscoveryRoute: typeof AuthenticatedOnboardingDiscoveryRoute
+  AuthenticatedOnboardingFirstSuccessRoute: typeof AuthenticatedOnboardingFirstSuccessRoute
+  AuthenticatedOnboardingMarketingPlanRoute: typeof AuthenticatedOnboardingMarketingPlanRoute
+  AuthenticatedOnboardingSubscriptionRoute: typeof AuthenticatedOnboardingSubscriptionRoute
+  AuthenticatedOnboardingWalkthroughRoute: typeof AuthenticatedOnboardingWalkthroughRoute
+  AuthenticatedOnboardingWelcomeRoute: typeof AuthenticatedOnboardingWelcomeRoute
+  AuthenticatedOnboardingWorkspaceBuildRoute: typeof AuthenticatedOnboardingWorkspaceBuildRoute
+  AuthenticatedOnboardingIndexRoute: typeof AuthenticatedOnboardingIndexRoute
+}
+
+const AuthenticatedOnboardingRouteChildren: AuthenticatedOnboardingRouteChildren =
+  {
+    AuthenticatedOnboardingAiTrainingRoute:
+      AuthenticatedOnboardingAiTrainingRoute,
+    AuthenticatedOnboardingAnalysisRoute: AuthenticatedOnboardingAnalysisRoute,
+    AuthenticatedOnboardingConfigurationRoute:
+      AuthenticatedOnboardingConfigurationRoute,
+    AuthenticatedOnboardingConnectionsRoute:
+      AuthenticatedOnboardingConnectionsRoute,
+    AuthenticatedOnboardingDiscoveryRoute:
+      AuthenticatedOnboardingDiscoveryRoute,
+    AuthenticatedOnboardingFirstSuccessRoute:
+      AuthenticatedOnboardingFirstSuccessRoute,
+    AuthenticatedOnboardingMarketingPlanRoute:
+      AuthenticatedOnboardingMarketingPlanRoute,
+    AuthenticatedOnboardingSubscriptionRoute:
+      AuthenticatedOnboardingSubscriptionRoute,
+    AuthenticatedOnboardingWalkthroughRoute:
+      AuthenticatedOnboardingWalkthroughRoute,
+    AuthenticatedOnboardingWelcomeRoute: AuthenticatedOnboardingWelcomeRoute,
+    AuthenticatedOnboardingWorkspaceBuildRoute:
+      AuthenticatedOnboardingWorkspaceBuildRoute,
+    AuthenticatedOnboardingIndexRoute: AuthenticatedOnboardingIndexRoute,
+  }
+
+const AuthenticatedOnboardingRouteWithChildren =
+  AuthenticatedOnboardingRoute._addFileChildren(
+    AuthenticatedOnboardingRouteChildren,
+  )
+
 interface AuthenticatedPublishingRouteChildren {
   AuthenticatedPublishingApprovalsRoute: typeof AuthenticatedPublishingApprovalsRoute
   AuthenticatedPublishingCalendarRoute: typeof AuthenticatedPublishingCalendarRoute
@@ -1649,7 +1932,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDevCenterRoute: typeof AuthenticatedDevCenterRouteWithChildren
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
-  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRouteWithChildren
   AuthenticatedPublishingRoute: typeof AuthenticatedPublishingRouteWithChildren
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRouteWithChildren
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
@@ -1667,7 +1950,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDevCenterRoute: AuthenticatedDevCenterRouteWithChildren,
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
-  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRouteWithChildren,
   AuthenticatedPublishingRoute: AuthenticatedPublishingRouteWithChildren,
   AuthenticatedReportsRoute: AuthenticatedReportsRouteWithChildren,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
