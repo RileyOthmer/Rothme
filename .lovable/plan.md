@@ -1,45 +1,76 @@
-# Velora Onboarding Experience — Build Plan
+# Velora Onboarding Redesign — Plan
 
-This is 16 distinct surfaces. Shipping it in one turn would produce shallow work on all of them. I'll break it into 4 phases, each independently valuable and reviewable. Confirm the phase 1 scope (and the design direction questions below) before I start.
+## Goal
+Replace the current 3-step wizard (`/get-started`, `/get-started/solution`) with a full 11-step guided onboarding that feels like Velora is learning about the business and building the workspace in real time.
 
-## Phase 1 — Public marketing + discovery (this turn, after your answers)
-The pre-auth journey. Highest leverage — this is what a first-time visitor sees.
+## Architecture
 
-1. **Landing** (`/`) — Hero, "Trusted by", "Everything in one place" (cards + modals), "How it works", Testimonials, CTA. Animated dashboard preview, floating charts, gradient.
-2. **Business Discovery** (`/get-started`) — Multi-step wizard, progress bar, 12 questions, personalizes downstream.
-3. **Personalized Solution** (`/get-started/solution`) — AI-generated summary from wizard answers via Lovable AI (server function). Recommended features, integrations, time-saved estimate.
-4. **Why Velora** (`/why`) — With/without comparison, animated.
-5. **Pricing** (`/pricing`) — 4 tiers, monthly/yearly toggle, comparison table, FAQ, guarantee, badges.
+Single authenticated layout route `/_authenticated/onboarding` that hosts all 11 steps as child routes, plus a persistent shell:
+- Progress rail (left) — step list + completion %
+- Content canvas (center) — active step
+- AI companion panel (right, collapsible) — live analysis, checklist, "Velora is thinking…" states
 
-Discovery answers persisted in a `discovery_sessions` table (RLS: session-owned by anon session id, upgraded to user on signup).
+State: one `onboarding_sessions` row per user (jsonb `answers`, jsonb `analysis`, jsonb `checklist`, `current_step`, `completed_at`). Autosaves on every field blur via a debounced `saveOnboardingStep` server fn. Reuses existing `onboarding_responses` table where fields overlap; new columns added via migration.
 
-## Phase 2 — Account creation + billing
-6. **Create Account** — reuse existing `/auth`, restyle to match new brand.
-7. **Checkout** — Stripe via Lovable payments (`payments--enable_stripe_payments`). Plan carry-through from pricing.
-8. **Welcome** — Confetti, progress tracker, transitions into workspace setup.
+## Step Map
 
-## Phase 3 — Post-signup setup (extends existing `_authenticated/onboarding.tsx`)
-9. **Workspace Setup** — Logo, brand colors, description, website.
-10. **Business Profile** — Voice, audience, competitors, products, goals. Feeds AI strategist context.
-11. **Connect Platforms** — Reuses existing `IntegrationHub` + `social/` framework. Skip allowed.
-12. **Import Data** — CSV / past posts / media / contacts. Adapter-per-source.
+```text
+/onboarding/welcome           → Hero + 3-min estimate, animated progress ring
+/onboarding/discovery         → 6 sub-steps (grouped, not 25 questions on one page):
+                                  1. Identity (name, website, industry, type)
+                                  2. Scale (size, employees, revenue, country, timezone, languages)
+                                  3. Goals (experience, budget, business goals, success goals)
+                                  4. Audience & offer (target audience, products, services, competitors)
+                                  5. Current stack (social, CRM, email, analytics platforms)
+                                  6. Pain points & AI level
+/onboarding/analysis          → Live AI scoring (business score, maturity, opportunity,
+                                  time saved, revenue opportunity, recommended features)
+/onboarding/workspace-build   → Cinematic 7-line "Creating Dashboard… Building Analytics…" sequence
+                                  with real background writes (create workspace defaults, seed dashboards)
+/onboarding/connections       → 13 platform cards with Connect / Skip / Status
+/onboarding/subscription      → 4 plans, monthly/annual toggle, comparison, FAQ
+/onboarding/configuration     → Logo upload, brand colors, fonts, description, mission,
+                                  voice, hours, locations, team invites
+/onboarding/ai-training       → Teach-AI form: voice, style, audience, keywords, tone
+/onboarding/marketing-plan    → AI-generated strategy, 90-day roadmap, calendar preview, KPIs
+/onboarding/walkthrough       → Guided tour cards for Dashboard/Analytics/Calendar/Publishing/…
+/onboarding/first-success     → Pick one action; confetti on completion → /dashboard
+```
 
-## Phase 4 — Activation
-13. **AI Setup** — Strategist generates initial strategy, calendar, KPIs from profile + connections.
-14. **Dashboard Tour** — Overlay tour (react-joyride style, custom-built to match brand).
-15. **First Success** — Guided single meaningful action + celebration.
-16. Hand-off into existing `/dashboard`.
+## AI Integration
 
-## Technical details
+- `analyzeBusiness` server fn → Lovable AI Gateway (Gemini via `ai-gateway.server`), structured JSON output validated by Zod, returns `{ businessScore, maturity, opportunity, timeSaved, revenueOpportunity, recommendedFeatures[] }`. Called after discovery completes.
+- `generateMarketingPlan` server fn → same gateway, returns `{ strategy, roadmap[], calendar[], kpis[] }`. Called after AI training.
+- Both follow the four-questions voice contract; refuse-on-low-confidence honored.
 
-- **Routing**: All Phase 1 pages are public (top-level under `src/routes/`), each with distinct `head()` — title, description, og:title, og:description. og:image only on leaf routes.
-- **Data**: `discovery_sessions` table (session_id, user_id nullable, answers jsonb, personalization jsonb, created_at). RLS + GRANTs per project rules.
-- **AI**: Personalized Solution uses `createServerFn` calling Lovable AI Gateway. Structured JSON output validated by Zod. Follows the four-questions voice contract (`mem://ai/voice-contract`).
-- **Payments**: Stripe via `payments--enable_stripe_payments` (per project rules — never BYOK Stripe). Phase 2.
-- **Design tokens**: Add new brand palette, gradients, and font pair to `src/styles.css` under `@theme` / `@theme inline`. No hardcoded colors in components.
-- **Animation**: Framer Motion (already common in this stack) for hero, section reveals, wizard transitions, comparison cards.
-- **State across pre-auth flow**: Discovery answers in localStorage + server-side session row; hydrated on account creation and linked to the new user.
-- **Reused primitives**: `IntegrationHub`, `social/registry.ts`, existing `_authenticated/onboarding.tsx` scaffolding, `AssistantChat`.
+## Data & Backend
 
-## Deliverable this turn
-After you confirm scope and design direction: **Phase 1 only** — 5 routes, discovery table + server functions, brand tokens. Roughly 15–20 files. Phases 2–4 land in follow-up prompts.
+Migration adds columns to `onboarding_responses` (or new `onboarding_sessions` table) for: analysis jsonb, marketing_plan jsonb, checklist jsonb, current_step text, plan_tier text, connections jsonb. RLS: owner-scoped. Grants: authenticated + service_role.
+
+Server fns (all `_authenticated`, `requireSupabaseAuth`):
+- `getOnboardingSession`
+- `saveOnboardingStep({ step, patch })` — autosave
+- `analyzeBusiness()` — reads answers, writes analysis
+- `generateMarketingPlan()` — reads answers+analysis+training, writes plan
+- `completeOnboarding()` — flips workspace to ready
+
+## UI System
+
+- Reuses existing Velora tokens in `src/styles.css` (no new palette).
+- Glassmorphism cards, gradient borders, framer-motion page transitions, animated progress ring, typing-effect for AI lines.
+- Persistent checklist component in shell, updates live as steps complete.
+- Every step routed so back/forward works and autosave restores position.
+
+## Files (roughly 25)
+
+New route files (11), new layout, new shell components (ProgressRail, AICompanion, ChecklistCard, StepShell), new form sub-components for discovery, new server fns file `src/lib/onboarding.functions.ts`, one migration, ai plan generator, marketing plan renderer. Existing `/get-started/*` routes redirect to `/onboarding/welcome`.
+
+## Scope for this turn
+
+Ship Phase A — foundation + first 5 steps (welcome → connections) end-to-end with real autosave, real AI analysis, real workspace-build animation writing defaults. Phases B (subscription→training) and C (plan→dashboard) land in follow-up prompts.
+
+## Out of scope this turn
+
+- Real OAuth for the 13 platforms (uses existing `social/registry.ts` stubs; connect buttons launch existing flows where available, mark skipped otherwise).
+- Stripe checkout wiring on subscription step (UI only until user asks to enable Stripe).
+- Team invite emails (UI captures, sends on completion in Phase C).
