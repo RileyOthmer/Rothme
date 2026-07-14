@@ -93,6 +93,7 @@ import { Route as AuthenticatedAnalyticsAlertsRouteImport } from './routes/_auth
 import { Route as AuthenticatedAnalyticsAiInsightsRouteImport } from './routes/_authenticated/analytics.ai-insights'
 import { Route as AuthenticatedAnalyticsAdvertisingRouteImport } from './routes/_authenticated/analytics.advertising'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
 import { Route as ApiPublicCronSocialSyncRouteImport } from './routes/api/public/cron/social-sync'
 import { Route as ApiPublicCronPublishRouteImport } from './routes/api/public/cron/publish'
@@ -572,6 +573,12 @@ const AuthenticatedAnalyticsMetricRoute =
     path: '/$metric',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
   } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksGenerateWeeklyReportsRoute =
   ApiPublicHooksGenerateWeeklyReportsRouteImport.update({
     id: '/api/public/hooks/generate-weekly-reports',
@@ -676,6 +683,7 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -760,6 +768,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -850,6 +859,7 @@ export interface FileRoutesById {
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -940,6 +950,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -1024,6 +1035,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -1113,6 +1125,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1131,6 +1144,7 @@ export interface RootRouteChildren {
   ApiPublicCronPublishRoute: typeof ApiPublicCronPublishRoute
   ApiPublicCronSocialSyncRoute: typeof ApiPublicCronSocialSyncRoute
   ApiPublicHooksGenerateWeeklyReportsRoute: typeof ApiPublicHooksGenerateWeeklyReportsRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1723,6 +1737,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsMetricRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/generate-weekly-reports': {
       id: '/api/public/hooks/generate-weekly-reports'
       path: '/api/public/hooks/generate-weekly-reports'
@@ -2021,6 +2042,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronSocialSyncRoute: ApiPublicCronSocialSyncRoute,
   ApiPublicHooksGenerateWeeklyReportsRoute:
     ApiPublicHooksGenerateWeeklyReportsRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
