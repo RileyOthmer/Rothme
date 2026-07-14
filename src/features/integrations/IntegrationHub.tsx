@@ -133,7 +133,7 @@ export function IntegrationHub() {
             Integrations
           </h1>
           <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-            Connect the tools you already use. Velora reads your data — you never leave to check
+            Connect the tools you already use. ROTHME reads your data — you never leave to check
             another dashboard.
           </p>
         </div>
@@ -208,7 +208,7 @@ function EmptyState({ onReset }: { onReset: () => void }) {
       </div>
       <h2 className="mt-3 text-sm font-semibold">No integrations match that search</h2>
       <p className="mt-1 text-sm text-muted-foreground">
-        Try a different word, or browse everything Velora supports.
+        Try a different word, or browse everything ROTHME supports.
       </p>
       <button
         type="button" onClick={onReset}

@@ -45,7 +45,7 @@ export function InsightsPanel({ insights = SEED_INSIGHTS }: { insights?: Insight
               {insights.length} things worth knowing this week.
             </h2>
             <p className="mt-1 max-w-xl text-sm text-muted-foreground">
-              Velora read every metric across your platforms. Here's what changed,
+              ROTHME read every metric across your platforms. Here's what changed,
               why it changed, and what to do about it — in plain English.
             </p>
           </div>
@@ -87,7 +87,7 @@ export function InsightsPanel({ insights = SEED_INSIGHTS }: { insights?: Insight
       {visible.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border bg-card/50 p-10 text-center">
           <p className="text-sm text-muted-foreground">
-            No insights in this category right now. Velora will surface something the moment it matters.
+            No insights in this category right now. ROTHME will surface something the moment it matters.
           </p>
         </div>
       ) : (

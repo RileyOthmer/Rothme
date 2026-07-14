@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { ComingSoonHub } from "@/features/analytics/ComingSoonHub";
 
 export const Route = createFileRoute("/_authenticated/analytics/developer")({
-  head: () => ({ meta: [{ title: "Developer Analytics — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Developer Analytics — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: () => (
     <ComingSoonHub
       title="Developer Analytics" phase={4}

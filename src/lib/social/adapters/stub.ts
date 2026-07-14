@@ -57,7 +57,7 @@ export function createStubAdapter(config: {
     },
 
     async getProfile(): Promise<AccountProfile> {
-      return { id: `${config.id}-profile`, handle: `@velora`, displayName: "Velora" };
+      return { id: `${config.id}-profile`, handle: `@ROTHME`, displayName: "ROTHME" };
     },
     async getAnalytics(_ctx: AdapterContext, _range: DateRange): Promise<AnalyticsPoint[]> {
       need("analytics");

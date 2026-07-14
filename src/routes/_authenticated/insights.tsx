@@ -12,11 +12,11 @@ import {
 export const Route = createFileRoute("/_authenticated/insights")({
   head: () => ({
     meta: [
-      { title: "Product insights — Velora" },
+      { title: "Product insights — ROTHME" },
       {
         name: "description",
         content:
-          "Anonymous onboarding signal — what people ask for, where they drop off, how Velora should prioritize next.",
+          "Anonymous onboarding signal — what people ask for, where they drop off, how ROTHME should prioritize next.",
       },
       { name: "robots", content: "noindex" },
     ],

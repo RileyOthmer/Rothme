@@ -6,11 +6,11 @@ import { InsightsPanel } from "@/features/insights/InsightsPanel";
 export const Route = createFileRoute("/_authenticated/analytics/ai-insights")({
   head: () => ({
     meta: [
-      { title: "AI Insights — Velora" },
+      { title: "AI Insights — ROTHME" },
       {
         name: "description",
         content:
-          "Velora reads every metric across your platforms and explains what happened, why, and what to do next — in plain English, with confidence.",
+          "ROTHME reads every metric across your platforms and explains what happened, why, and what to do next — in plain English, with confidence.",
       },
       { name: "robots", content: "noindex" },
     ],

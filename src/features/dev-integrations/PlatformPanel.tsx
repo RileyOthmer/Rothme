@@ -338,13 +338,13 @@ export function PlatformPanel({ row }: { row: IntegrationRow }) {
         {/* -------------------- KPI mapping -------------------- */}
         <TabsContent value="kpis" className="pt-4">
           <p className="mb-3 text-xs text-muted-foreground">
-            Map every Velora KPI to the exact JSON field returned by the API. Confirmed mappings are required to enable the integration.
+            Map every ROTHME KPI to the exact JSON field returned by the API. Confirmed mappings are required to enable the integration.
           </p>
           <div className="overflow-x-auto rounded-xl border border-border/60">
             <table className="min-w-full text-xs">
               <thead className="bg-muted/40 text-muted-foreground">
                 <tr className="[&>th]:px-3 [&>th]:py-2 [&>th]:text-left">
-                  <th>Velora KPI</th>
+                  <th>ROTHME KPI</th>
                   <th>External field</th>
                   <th>Type</th>
                   <th>Frequency</th>
@@ -395,7 +395,7 @@ export function PlatformPanel({ row }: { row: IntegrationRow }) {
                 </pre>
               </div>
               <div className="rounded-xl border border-border/60">
-                <header className="border-b border-border/50 px-4 py-2 text-xs font-medium">Parsed by Velora</header>
+                <header className="border-b border-border/50 px-4 py-2 text-xs font-medium">Parsed by ROTHME</header>
                 <table className="w-full text-xs">
                   <thead className="bg-muted/40 text-muted-foreground">
                     <tr className="[&>th]:px-3 [&>th]:py-2 [&>th]:text-left"><th>KPI</th><th>Value</th></tr>

@@ -9,7 +9,7 @@ import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/sessi
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/workspace-build")({
-  head: () => ({ meta: [{ title: "Building your workspace — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Building your workspace — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: WorkspaceBuildStep,
 });
 
@@ -71,11 +71,11 @@ function WorkspaceBuildStep() {
           <span className="text-muted-foreground">Setting things up</span>
         </div>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-          {done ? "Your workspace is ready." : "Building your Velora workspace…"}
+          {done ? "Your workspace is ready." : "Building your ROTHME workspace…"}
         </h1>
         <p className="mt-3 text-muted-foreground">
           {done
-            ? "Everything's provisioned. Next, connect the platforms Velora should watch."
+            ? "Everything's provisioned. Next, connect the platforms ROTHME should watch."
             : "Sit back for a moment. This normally takes seconds."}
         </p>
 

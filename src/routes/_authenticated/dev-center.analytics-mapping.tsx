@@ -12,7 +12,7 @@ function AnalyticsMappingPage() {
   return (
     <DevCenterShell
       title="Analytics Mapping"
-      description="Map each provider's returned metric to Velora's unified reporting schema. Only supported metrics for each platform are shown."
+      description="Map each provider's returned metric to ROTHME's unified reporting schema. Only supported metrics for each platform are shown."
     >
       <div className="space-y-4">
         {DEV_PLATFORMS.filter((p) => p.capabilities.includes("analytics")).map((p) => (
@@ -26,7 +26,7 @@ function AnalyticsMappingPage() {
               <thead className="text-xs uppercase tracking-wide text-muted-foreground">
                 <tr>
                   <th className="px-4 py-2 text-left">Platform metric</th>
-                  <th className="px-4 py-2 text-left">Velora metric</th>
+                  <th className="px-4 py-2 text-left">ROTHME metric</th>
                   <th className="px-4 py-2 text-left">Type</th>
                   <th className="px-4 py-2 text-left">Sample</th>
                   <th className="px-4 py-2 text-left">Validation</th>

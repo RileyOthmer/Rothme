@@ -21,7 +21,7 @@ interface Props {
   duration?: number;
 }
 
-// Suggested Velora KPIs — admin picks from any of these when mapping.
+// Suggested ROTHME KPIs — admin picks from any of these when mapping.
 const KPI_SUGGESTIONS = [
   "Followers", "Reach", "Impressions", "Engagement", "Likes", "Comments",
   "Shares", "Saves", "Profile Visits", "Website Clicks", "CTR", "Video Views",
@@ -64,7 +64,7 @@ export function JsonMapper({ platformId, endpointId, response, status, duration 
     try {
       await mapFn({ data: {
         platform_id: platformId, endpoint_id: endpointId,
-        velora_kpi: kpiName.trim(), json_path: selectedPath,
+        ROTHME_kpi: kpiName.trim(), json_path: selectedPath,
         example_response: response,
       } });
       await qc.invalidateQueries({ queryKey: ["mappings", platformId] });
@@ -78,7 +78,7 @@ export function JsonMapper({ platformId, endpointId, response, status, duration 
     try {
       await upFn({ data: {
         id, platform_id: platformId, endpoint_id: row.endpoint_id ?? null,
-        velora_kpi: row.velora_kpi, json_path: row.json_path,
+        ROTHME_kpi: row.ROTHME_kpi, json_path: row.json_path,
         data_type: row.data_type, confirmed,
       } });
       await qc.invalidateQueries({ queryKey: ["mappings", platformId] });
@@ -98,7 +98,7 @@ export function JsonMapper({ platformId, endpointId, response, status, duration 
         <div>
           <h4 className="text-sm font-semibold">JSON → KPI mapper</h4>
           <p className="text-xs text-muted-foreground">
-            Click a field on the left, name the Velora KPI, then Assign. No coding.
+            Click a field on the left, name the ROTHME KPI, then Assign. No coding.
           </p>
         </div>
         {status != null && (
@@ -149,7 +149,7 @@ export function JsonMapper({ platformId, endpointId, response, status, duration 
             <code className="block truncate rounded bg-muted px-2 py-1 font-mono text-xs">
               {selectedPath ?? "—"}
             </code>
-            <Input placeholder="Velora KPI (e.g. Followers)"
+            <Input placeholder="ROTHME KPI (e.g. Followers)"
               value={kpiName} onChange={(e) => setKpiName(e.target.value)}
               list="kpi-suggestions" className="h-8 text-xs" />
             <datalist id="kpi-suggestions">
@@ -170,7 +170,7 @@ export function JsonMapper({ platformId, endpointId, response, status, duration 
                 <li key={m.id}
                   className="flex items-center justify-between gap-2 rounded-lg border border-border/60 bg-card/30 px-2 py-1.5 text-xs">
                   <div className="min-w-0 flex-1">
-                    <div className="truncate font-medium">{m.velora_kpi}</div>
+                    <div className="truncate font-medium">{m.ROTHME_kpi}</div>
                     <code className="block truncate font-mono text-[10px] text-muted-foreground">{m.json_path || "—"}</code>
                   </div>
                   <Button size="icon" variant="ghost" className="h-7 w-7"

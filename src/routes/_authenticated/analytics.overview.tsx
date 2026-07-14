@@ -33,7 +33,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/_authenticated/analytics/overview")({
   head: () => ({
     meta: [
-      { title: "Overview — Velora Analytics Center" },
+      { title: "Overview — ROTHME Analytics Center" },
       { name: "description", content: "The complete cross-platform executive view: KPIs, growth, platform mix, and an AI strategist summary — all in one glance." },
     ],
   }),

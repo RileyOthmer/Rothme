@@ -10,7 +10,7 @@ import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/sessi
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/ai-training")({
-  head: () => ({ meta: [{ title: "Train the AI — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Train the AI — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: AiTrainingStep,
 });
 
@@ -40,7 +40,7 @@ function AiTrainingStep() {
   return (
     <OnboardingShell currentStepId="ai-training" session={session ?? null}>
       <div className="mx-auto max-w-2xl">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Teach Velora your voice.</h1>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Teach ROTHME your voice.</h1>
         <p className="mt-3 text-muted-foreground">Everything the AI writes from here on will sound like you.</p>
 
         <div className="mt-8 space-y-6">
@@ -76,7 +76,7 @@ function AiTrainingStep() {
             <Textarea rows={2} value={t.keywords ?? ""} onChange={(e) => set("keywords", e.target.value)} placeholder="e.g. sustainable coffee, small batch, ethically sourced" />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-medium">Anything Velora should never say?</label>
+            <label className="mb-2 block text-sm font-medium">Anything ROTHME should never say?</label>
             <Textarea rows={2} value={t.avoid ?? ""} onChange={(e) => set("avoid", e.target.value)} placeholder="Phrases, claims, or topics to steer clear of." />
           </div>
         </div>

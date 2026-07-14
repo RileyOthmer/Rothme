@@ -28,7 +28,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/_authenticated/analytics/unified")({
   head: () => ({
     meta: [
-      { title: "Unified analytics — Velora" },
+      { title: "Unified analytics — ROTHME" },
       {
         name: "description",
         content:

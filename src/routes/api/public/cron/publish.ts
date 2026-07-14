@@ -13,7 +13,7 @@ export const Route = createFileRoute("/api/public/cron/publish")({
         const provided = request.headers.get("x-cron-signature") ?? "";
         if (!secret) return new Response("CRON_SECRET not configured", { status: 500 });
 
-        const expected = createHmac("sha256", secret).update("velora-cron-publish").digest("hex");
+        const expected = createHmac("sha256", secret).update("ROTHME-cron-publish").digest("hex");
         const a = Buffer.from(provided);
         const b = Buffer.from(expected);
         if (a.length !== b.length || !timingSafeEqual(a, b)) {
@@ -44,7 +44,7 @@ export const Route = createFileRoute("/api/public/cron/publish")({
           try {
             // Plugin dispatch happens here. For now we mark as published with a stub URL.
             // Real platform plugins subscribe by module="publish" and consume the schedule.
-            const externalUrl = `https://plugins.velora/${item.platform_id}/pending`;
+            const externalUrl = `https://plugins.ROTHME/${item.platform_id}/pending`;
             await supabaseAdmin
               .from("post_schedules")
               .update({

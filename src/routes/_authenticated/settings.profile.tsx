@@ -16,7 +16,7 @@ import { useNavigate } from "@tanstack/react-router";
 export const Route = createFileRoute("/_authenticated/settings/profile")({
   head: () => ({
     meta: [
-      { title: "Profile — Velora" },
+      { title: "Profile — ROTHME" },
       { name: "robots", content: "noindex" },
     ],
   }),

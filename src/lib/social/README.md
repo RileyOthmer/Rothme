@@ -1,6 +1,6 @@
 # Social Integration Framework
 
-Plugin-based framework that lets Velora talk to any social platform through a
+Plugin-based framework that lets ROTHME talk to any social platform through a
 single interface. Core app depends only on `types.ts` and `framework.server.ts`
 — never on platform-specific code.
 

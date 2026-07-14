@@ -13,11 +13,11 @@ import type { Goal } from "@/features/goals/types";
 export const Route = createFileRoute("/_authenticated/goals")({
   head: () => ({
     meta: [
-      { title: "Goals — Velora" },
+      { title: "Goals — ROTHME" },
       {
         name: "description",
         content:
-          "Set the business goals that matter — revenue, orders, ROAS, traffic, leads — and let Velora forecast where you'll land and what to do about it.",
+          "Set the business goals that matter — revenue, orders, ROAS, traffic, leads — and let ROTHME forecast where you'll land and what to do about it.",
       },
     ],
   }),
@@ -48,7 +48,7 @@ function GoalsPage() {
           <div>
             <h1 className="text-2xl font-semibold tracking-tight">Goals</h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              The numbers you're aiming at. Velora tracks progress, forecasts where you'll land,
+              The numbers you're aiming at. ROTHME tracks progress, forecasts where you'll land,
               and tells you what to do next.
             </p>
           </div>
@@ -77,7 +77,7 @@ function GoalsPage() {
             </div>
             <h2 className="mt-4 text-lg font-medium text-foreground">Set your first goal</h2>
             <p className="mx-auto mt-1 max-w-md text-sm text-muted-foreground">
-              Pick one number that matters — revenue, orders, followers — and tell Velora where you
+              Pick one number that matters — revenue, orders, followers — and tell ROTHME where you
               want it to be. We'll take it from there.
             </p>
             <Button className="mt-4" onClick={() => setCreating(true)}>

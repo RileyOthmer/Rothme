@@ -21,7 +21,7 @@ export function RecommendedGoals({
     <section className="rounded-2xl border border-dashed border-border bg-muted/20 p-6">
       <div className="mb-4 flex items-center gap-2">
         <Sparkles className="h-4 w-4 text-primary" />
-        <h2 className="text-sm font-medium text-foreground">Velora suggests</h2>
+        <h2 className="text-sm font-medium text-foreground">ROTHME suggests</h2>
       </div>
       <p className="mb-4 text-sm text-muted-foreground">
         Based on your recent numbers, these are realistic goals worth setting.

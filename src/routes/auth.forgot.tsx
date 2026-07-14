@@ -11,7 +11,7 @@ import { Loader2 } from "lucide-react";
 export const Route = createFileRoute("/auth/forgot")({
   head: () => ({
     meta: [
-      { title: "Reset password — Velora" },
+      { title: "Reset password — ROTHME" },
       { name: "robots", content: "noindex" },
     ],
   }),

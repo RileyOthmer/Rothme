@@ -1,6 +1,6 @@
 # Unified Data Engine
 
-The single source of truth for every marketing metric in Velora.
+The single source of truth for every marketing metric in ROTHME.
 
 ## Why it exists
 

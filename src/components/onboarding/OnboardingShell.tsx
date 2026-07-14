@@ -21,7 +21,7 @@ export const ONBOARDING_STEPS: StepDef[] = [
   { id: "configuration", path: "/onboarding/configuration", label: "Brand profile", group: "Configure" },
   { id: "ai-training", path: "/onboarding/ai-training", label: "Train the AI", group: "Configure" },
   { id: "marketing-plan", path: "/onboarding/marketing-plan", label: "Your first plan", group: "Launch" },
-  { id: "walkthrough", path: "/onboarding/walkthrough", label: "Tour Velora", group: "Launch" },
+  { id: "walkthrough", path: "/onboarding/walkthrough", label: "Tour ROTHME", group: "Launch" },
   { id: "first-success", path: "/onboarding/first-success", label: "First win", group: "Launch" },
 ];
 
@@ -151,7 +151,7 @@ function DefaultAiPanel() {
     <div className="rounded-2xl border border-border/50 bg-card/50 p-4 backdrop-blur-xl">
       <div className="mb-2 flex items-center gap-2 text-xs font-medium">
         <Sparkles className="h-3.5 w-3.5 text-primary" />
-        Velora AI
+        ROTHME AI
       </div>
       <p className="text-xs leading-relaxed text-muted-foreground">
         I'm learning about your business as you go. Every answer helps me tailor your workspace.
@@ -211,7 +211,7 @@ export function AiThinkingPanel({ lines }: { lines: string[] }) {
     <div className="rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-4 backdrop-blur-xl">
       <div className="mb-3 flex items-center gap-2 text-xs font-medium">
         <Sparkles className="h-3.5 w-3.5 animate-pulse text-primary" />
-        Velora is analyzing…
+        ROTHME is analyzing…
       </div>
       <ul className="space-y-1.5 text-xs text-muted-foreground">
         {lines.map((l, i) => (

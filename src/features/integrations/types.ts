@@ -42,11 +42,11 @@ export type IntegrationDefinition = {
   id: string;
   name: string;
   category: IntegrationCategory;
-  /** One-sentence, plain-English description of what Velora reads. */
+  /** One-sentence, plain-English description of what ROTHME reads. */
   summary: string;
-  /** Human-readable permissions Velora will request. Kept generic pre-OAuth. */
+  /** Human-readable permissions ROTHME will request. Kept generic pre-OAuth. */
   permissions: string[];
-  /** True once Velora has an adapter that can actually pull data. */
+  /** True once ROTHME has an adapter that can actually pull data. */
   available: boolean;
   /** Optional brand color for the logo mark. */
   brandColor?: string;

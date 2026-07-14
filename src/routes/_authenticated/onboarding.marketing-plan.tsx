@@ -7,7 +7,7 @@ import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
 import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/session.functions";
 
 export const Route = createFileRoute("/_authenticated/onboarding/marketing-plan")({
-  head: () => ({ meta: [{ title: "Your first plan — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Your first plan — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: MarketingPlanStep,
 });
 
@@ -28,7 +28,7 @@ function MarketingPlanStep() {
   return (
     <OnboardingShell currentStepId="marketing-plan" session={session ?? null}>
       <div className="mx-auto max-w-3xl">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Velora's first plan for {bizName}.</h1>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">ROTHME's first plan for {bizName}.</h1>
         <p className="mt-3 text-muted-foreground">
           {analysis?.summary ?? "A starting point you can refine any time. Nothing here is locked in."}
         </p>
@@ -51,7 +51,7 @@ function MarketingPlanStep() {
               <li>· Educational thread on your niche</li>
             </ul>
           </Card>
-          <Card icon={<TrendingUp className="h-4 w-4" />} title="KPIs Velora will watch">
+          <Card icon={<TrendingUp className="h-4 w-4" />} title="KPIs ROTHME will watch">
             <ul className="space-y-1">
               <li>· Engagement per post</li>
               <li>· New followers per week</li>

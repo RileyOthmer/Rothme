@@ -123,7 +123,7 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
 async function handleCheckoutCompleted(session: any) {
   const orgId: string | undefined = session.metadata?.orgId;
   const userId: string | undefined = session.metadata?.userId;
-  await logActivity(orgId ?? null, userId ?? null, "subscription.activated", "Velora Pro activated", {
+  await logActivity(orgId ?? null, userId ?? null, "subscription.activated", "ROTHME Pro activated", {
     session_id: session.id,
     amount_total: session.amount_total,
     currency: session.currency,

@@ -22,7 +22,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/_authenticated/analytics/charts")({
   head: () => ({
     meta: [
-      { title: "Charts — Velora" },
+      { title: "Charts — ROTHME" },
       {
         name: "description",
         content:

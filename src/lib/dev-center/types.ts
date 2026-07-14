@@ -70,7 +70,7 @@ export interface FieldMapping {
   id: string;
   platform_id: string;
   endpoint_id: string | null;
-  velora_kpi: string;
+  ROTHME_kpi: string;
   json_path: string;
   data_type: "number" | "percent" | "currency" | "duration" | "string" | "boolean";
   category: string | null;

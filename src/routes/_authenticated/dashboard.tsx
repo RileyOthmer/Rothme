@@ -19,11 +19,11 @@ import {
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Decisions — Velora" },
+      { title: "Decisions — ROTHME" },
       {
         name: "description",
         content:
-          "The AI Decision Center. A short, calm list of what to do today for your marketing — with the reason, the impact, and how confident Velora is.",
+          "The AI Decision Center. A short, calm list of what to do today for your marketing — with the reason, the impact, and how confident ROTHME is.",
       },
     ],
   }),
@@ -77,7 +77,7 @@ function DashboardPage() {
           <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
             {prefs
               ? "The tools you told us matter most are pinned to the top. Everything else is one click away."
-              : "Start by connecting an account or asking Velora anything."}
+              : "Start by connecting an account or asking ROTHME anything."}
           </p>
         </section>
 

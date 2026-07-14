@@ -1,6 +1,6 @@
 /**
  * Server function that turns discovery wizard answers into a personalized
- * Velora recommendation. Lovable AI Gateway → structured JSON validated by
+ * ROTHME recommendation. Lovable AI Gateway → structured JSON validated by
  * Zod. Follows the four-questions voice contract: plain English, evidence,
  * confidence, no jargon.
  */
@@ -26,14 +26,14 @@ const AnswersSchema = z.object({
 
 const SolutionSchema = z.object({
   headline: z.string().describe("One sentence, plain English, personal — includes the business name if given."),
-  summary: z.string().describe("2-3 sentences explaining how Velora specifically helps this business."),
+  summary: z.string().describe("2-3 sentences explaining how ROTHME specifically helps this business."),
   recommendedFeatures: z.array(z.object({
     name: z.string(),
     reason: z.string().describe("Why this matters for THIS business, plain English, one sentence."),
   })).min(3).max(5),
   recommendedIntegrations: z.array(z.string()).min(2).max(6),
   estimatedTimeSavedHoursPerWeek: z.number().min(1).max(40),
-  firstThreeActions: z.array(z.string()).min(3).max(3).describe("The first three concrete things Velora would do for this business, in order."),
+  firstThreeActions: z.array(z.string()).min(3).max(3).describe("The first three concrete things ROTHME would do for this business, in order."),
   confidence: z.enum(["high", "medium", "low"]),
 });
 
@@ -47,7 +47,7 @@ export const generatePersonalizedSolution = createServerFn({ method: "POST" })
 
     const gateway = createLovableAiGatewayProvider(key);
 
-    const system = `You are Velora's strategist. Velora is an AI marketing operating system for non-expert business owners.
+    const system = `You are ROTHME's strategist. ROTHME is an AI marketing operating system for non-expert business owners.
 Voice contract:
 - Plain English, no jargon (no CTR/ROAS/CAC unless explaining).
 - Friendly, confident, never robotic.
@@ -60,7 +60,7 @@ You are given wizard answers from a prospective customer. Return a personalized 
     const prompt = `Wizard answers (JSON):
 ${JSON.stringify(data, null, 2)}
 
-Recommend which Velora capabilities matter MOST for this business and why. Available capabilities:
+Recommend which ROTHME capabilities matter MOST for this business and why. Available capabilities:
 - AI Assistant (plain-English explanations of what's working)
 - Unified Analytics (one dashboard across every platform)
 - Publishing & Scheduling (write once, post everywhere)
@@ -88,10 +88,10 @@ Pick 3-5 recommended features and 2-6 integrations that fit THIS business.`;
       const platforms = data.preferredPlatforms ?? [];
       return {
         headline: data.businessName
-          ? `Here's how Velora would work for ${data.businessName}.`
-          : "Here's how Velora would work for your business.",
+          ? `Here's how ROTHME would work for ${data.businessName}.`
+          : "Here's how ROTHME would work for your business.",
         summary:
-          "Based on your answers, Velora will pull your marketing into one place, watch it every day, and tell you in plain English what's working and what to do next.",
+          "Based on your answers, ROTHME will pull your marketing into one place, watch it every day, and tell you in plain English what's working and what to do next.",
         recommendedFeatures: [
           { name: "AI Assistant", reason: "Explains your numbers in plain English so you don't have to interpret charts." },
           { name: "Unified Analytics", reason: "One dashboard replaces the tabs you keep open across platforms." },
@@ -105,7 +105,7 @@ Pick 3-5 recommended features and 2-6 integrations that fit THIS business.`;
         firstThreeActions: [
           "Connect your top marketing account (2 minutes).",
           "Get your first plain-English morning brief within 24 hours.",
-          "Pick one recommended action and let Velora do it for you.",
+          "Pick one recommended action and let ROTHME do it for you.",
         ],
         confidence: Object.values(data).filter(Boolean).length >= 6 ? "medium" : "low",
       };

@@ -7,7 +7,7 @@ import { getStripeEnvironment, isPaymentsConfigured } from "@/lib/stripe";
 import { createPortalSession } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/_authenticated/settings/billing")({
-  head: () => ({ meta: [{ title: "Billing — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Billing — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: BillingPage,
 });
 
@@ -42,9 +42,9 @@ function BillingPage() {
   };
 
   const planLabel = subscription?.price_id === "pro_annual"
-    ? "Velora Pro — Annual ($470/year)"
+    ? "ROTHME Pro — Annual ($470/year)"
     : subscription?.price_id === "pro_monthly"
-      ? "Velora Pro — Monthly ($49/month)"
+      ? "ROTHME Pro — Monthly ($49/month)"
       : "Free";
 
   const renews = subscription?.current_period_end
@@ -55,7 +55,7 @@ function BillingPage() {
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-8 sm:px-6">
       <div>
         <h1 className="text-2xl font-semibold">Billing</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Manage your Velora subscription, payment method, and invoices.</p>
+        <p className="mt-1 text-sm text-muted-foreground">Manage your ROTHME subscription, payment method, and invoices.</p>
       </div>
 
       {!isPaymentsConfigured() && (
@@ -95,7 +95,7 @@ function BillingPage() {
               </div>
             )}
             {!loading && !isActive && (
-              <div className="mt-1 text-sm text-muted-foreground">Upgrade to unlock the full Velora platform.</div>
+              <div className="mt-1 text-sm text-muted-foreground">Upgrade to unlock the full ROTHME platform.</div>
             )}
           </div>
         </div>

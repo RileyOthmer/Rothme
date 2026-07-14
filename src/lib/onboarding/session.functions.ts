@@ -159,7 +159,7 @@ export const analyzeBusiness = createServerFn({ method: "POST" })
 
     const gateway = createLovableAiGatewayProvider(key);
 
-    const system = `You are Velora's strategist. Velora is an AI marketing operating system for non-expert business owners.
+    const system = `You are ROTHME's strategist. ROTHME is an AI marketing operating system for non-expert business owners.
 Voice contract:
 - Plain English, no jargon (no CTR/ROAS/CAC unless explaining).
 - Friendly, confident, never robotic.
@@ -170,7 +170,7 @@ Voice contract:
     const prompt = `Onboarding answers:
 ${JSON.stringify(answers, null, 2)}
 
-Return an honest analysis. businessScore is 0-100. marketingMaturity is current sophistication. growthOpportunity is headroom given industry, goals, current state. timeSavedHoursPerMonth is realistic hours Velora would save per month. revenueOpportunityLabel is a plain-English band. headline: one warm sentence, use business name if given. summary: 2 sentences on what Velora will DO for them. recommendedFeatures: 3-6 capabilities with plain-English reasons.`;
+Return an honest analysis. businessScore is 0-100. marketingMaturity is current sophistication. growthOpportunity is headroom given industry, goals, current state. timeSavedHoursPerMonth is realistic hours ROTHME would save per month. revenueOpportunityLabel is a plain-English band. headline: one warm sentence, use business name if given. summary: 2 sentences on what ROTHME will DO for them. recommendedFeatures: 3-6 capabilities with plain-English reasons.`;
 
     let result: OnboardingAnalysis;
     try {
@@ -188,13 +188,13 @@ Return an honest analysis. businessScore is 0-100. marketingMaturity is current 
         marketingMaturity: filled > 12 ? "established" : filled > 6 ? "developing" : "beginner",
         growthOpportunity: "high",
         timeSavedHoursPerMonth: 24,
-        revenueOpportunityLabel: "Meaningful — most owners see a 10–25% lift once Velora is running.",
+        revenueOpportunityLabel: "Meaningful — most owners see a 10–25% lift once ROTHME is running.",
         headline:
           typeof answers.businessName === "string" && answers.businessName
-            ? `Here's how Velora will work for ${answers.businessName}.`
-            : "Here's how Velora will work for your business.",
+            ? `Here's how ROTHME will work for ${answers.businessName}.`
+            : "Here's how ROTHME will work for your business.",
         summary:
-          "Velora will unify your marketing data, watch it every day, and translate what's happening into plain English with a next best action.",
+          "ROTHME will unify your marketing data, watch it every day, and translate what's happening into plain English with a next best action.",
         recommendedFeatures: [
           { name: "AI Assistant", reason: "Explains your numbers in plain English." },
           { name: "Unified Analytics", reason: "One dashboard replaces the tabs you keep open." },

@@ -2,7 +2,7 @@
 // analytics. No PII: we generate a random ID per browser and only capture
 // coarse environment (timezone, device class, referrer host).
 
-const ANON_KEY = "velora.anon.v1";
+const ANON_KEY = "ROTHME.anon.v1";
 
 export function getAnonId(): string {
   if (typeof window === "undefined") return "ssr-noop";

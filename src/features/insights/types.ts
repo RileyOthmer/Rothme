@@ -1,5 +1,5 @@
 // AI Insight — the AI's plain-English reading of a metric.
-// Follows Velora's four-questions voice contract: What happened? Why?
+// Follows ROTHME's four-questions voice contract: What happened? Why?
 // What should I do? Would you like me to help?
 // See mem://ai/voice-contract.
 

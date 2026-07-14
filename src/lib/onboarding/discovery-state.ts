@@ -19,7 +19,7 @@ export type DiscoveryAnswers = {
   preferredPlatforms?: string[];
 };
 
-const KEY = "velora.discovery.v1";
+const KEY = "ROTHME.discovery.v1";
 
 export function loadDiscovery(): DiscoveryAnswers {
   if (typeof window === "undefined") return {};

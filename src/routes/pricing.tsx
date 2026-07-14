@@ -9,10 +9,10 @@ type BillingCycle = "monthly" | "annual";
 export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
-      { title: "Pricing — Velora" },
+      { title: "Pricing — ROTHME" },
       { name: "description", content: "One plan. Everything included. Monthly or annual — cancel anytime. Enterprise available." },
-      { property: "og:title", content: "Pricing — Velora" },
-      { property: "og:description", content: "Velora Pro — the complete AI business growth platform. Monthly or annual, cancel anytime." },
+      { property: "og:title", content: "Pricing — ROTHME" },
+      { property: "og:description", content: "ROTHME Pro — the complete AI business growth platform. Monthly or annual, cancel anytime." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -72,7 +72,7 @@ function PricingPage() {
         <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Link to="/"><Wordmark /></Link>
           <div className="flex items-center gap-4 text-sm">
-            <Link to="/why" className="text-muted-foreground hover:text-foreground">Why Velora</Link>
+            <Link to="/why" className="text-muted-foreground hover:text-foreground">Why ROTHME</Link>
             <Link to="/auth" className="text-muted-foreground hover:text-foreground">Sign in</Link>
           </div>
         </div>
@@ -108,7 +108,7 @@ function PricingPage() {
               Most popular
             </div>
             <div>
-              <h2 className="text-2xl font-semibold">Velora Pro</h2>
+              <h2 className="text-2xl font-semibold">ROTHME Pro</h2>
               <p className="mt-1 text-sm text-muted-foreground">Everything to run your business's growth.</p>
             </div>
             <div className="mt-6 flex items-baseline gap-2">
@@ -124,7 +124,7 @@ function PricingPage() {
               disabled={loading}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-3 text-sm font-medium text-background transition hover:opacity-90 disabled:opacity-50"
             >
-              {loading ? "Loading…" : "Start with Velora Pro"} <ArrowRight className="h-4 w-4" />
+              {loading ? "Loading…" : "Start with ROTHME Pro"} <ArrowRight className="h-4 w-4" />
             </button>
 
             <ul className="mt-8 space-y-3">
@@ -149,7 +149,7 @@ function PricingPage() {
             <p className="mt-1 text-xs text-muted-foreground">Volume pricing, SSO, and dedicated support.</p>
 
             <a
-              href="mailto:sales@velora.app?subject=Enterprise%20inquiry"
+              href="mailto:sales@ROTHME.app?subject=Enterprise%20inquiry"
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border/70 px-4 py-3 text-sm font-medium hover:bg-muted/50"
             >
               Talk to sales <ArrowRight className="h-4 w-4" />
