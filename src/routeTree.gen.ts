@@ -14,6 +14,7 @@ import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as DesignRouteImport } from './routes/design'
+import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -22,6 +23,7 @@ import { Route as GetStartedIndexRouteImport } from './routes/get-started.index'
 import { Route as SettingsNotificationsRouteImport } from './routes/settings.notifications'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as GetStartedSolutionRouteImport } from './routes/get-started.solution'
+import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthForgotRouteImport } from './routes/auth.forgot'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
@@ -44,6 +46,7 @@ import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_auth
 import { Route as AuthenticatedSettingsPluginsRouteImport } from './routes/_authenticated/settings.plugins'
 import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_authenticated/settings.developer'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
+import { Route as AuthenticatedSettingsBillingRouteImport } from './routes/_authenticated/settings.billing'
 import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authenticated/reports.$id'
 import { Route as AuthenticatedPublishingQueueRouteImport } from './routes/_authenticated/publishing.queue'
 import { Route as AuthenticatedPublishingMediaRouteImport } from './routes/_authenticated/publishing.media'
@@ -93,6 +96,7 @@ import { Route as AuthenticatedAnalyticsAlertsRouteImport } from './routes/_auth
 import { Route as AuthenticatedAnalyticsAiInsightsRouteImport } from './routes/_authenticated/analytics.ai-insights'
 import { Route as AuthenticatedAnalyticsAdvertisingRouteImport } from './routes/_authenticated/analytics.advertising'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
 import { Route as ApiPublicCronSocialSyncRouteImport } from './routes/api/public/cron/social-sync'
 import { Route as ApiPublicCronPublishRouteImport } from './routes/api/public/cron/publish'
@@ -120,6 +124,11 @@ const GetStartedRoute = GetStartedRouteImport.update({
 const DesignRoute = DesignRouteImport.update({
   id: '/design',
   path: '/design',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutRoute = CheckoutRouteImport.update({
+  id: '/checkout',
+  path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -160,6 +169,11 @@ const GetStartedSolutionRoute = GetStartedSolutionRouteImport.update({
   id: '/solution',
   path: '/solution',
   getParentRoute: () => GetStartedRoute,
+} as any)
+const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
+  id: '/return',
+  path: '/return',
+  getParentRoute: () => CheckoutRoute,
 } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -277,6 +291,12 @@ const AuthenticatedSettingsConnectionsRoute =
   AuthenticatedSettingsConnectionsRouteImport.update({
     id: '/settings/connections',
     path: '/settings/connections',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsBillingRoute =
+  AuthenticatedSettingsBillingRouteImport.update({
+    id: '/settings/billing',
+    path: '/settings/billing',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedReportsIdRoute = AuthenticatedReportsIdRouteImport.update({
@@ -572,6 +592,12 @@ const AuthenticatedAnalyticsMetricRoute =
     path: '/$metric',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
   } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksGenerateWeeklyReportsRoute =
   ApiPublicHooksGenerateWeeklyReportsRouteImport.update({
     id: '/api/public/hooks/generate-weekly-reports',
@@ -593,6 +619,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/checkout': typeof CheckoutRouteWithChildren
   '/design': typeof DesignRoute
   '/get-started': typeof GetStartedRouteWithChildren
   '/notifications': typeof NotificationsRoute
@@ -612,6 +639,7 @@ export interface FileRoutesByFullPath {
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
@@ -665,6 +693,7 @@ export interface FileRoutesByFullPath {
   '/publishing/media': typeof AuthenticatedPublishingMediaRoute
   '/publishing/queue': typeof AuthenticatedPublishingQueueRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
+  '/settings/billing': typeof AuthenticatedSettingsBillingRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
@@ -676,11 +705,13 @@ export interface FileRoutesByFullPath {
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/checkout': typeof CheckoutRouteWithChildren
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
@@ -696,6 +727,7 @@ export interface FileRoutesByTo {
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
@@ -749,6 +781,7 @@ export interface FileRoutesByTo {
   '/publishing/media': typeof AuthenticatedPublishingMediaRoute
   '/publishing/queue': typeof AuthenticatedPublishingQueueRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
+  '/settings/billing': typeof AuthenticatedSettingsBillingRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
@@ -760,6 +793,7 @@ export interface FileRoutesByTo {
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -767,6 +801,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/checkout': typeof CheckoutRouteWithChildren
   '/design': typeof DesignRoute
   '/get-started': typeof GetStartedRouteWithChildren
   '/notifications': typeof NotificationsRoute
@@ -786,6 +821,7 @@ export interface FileRoutesById {
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/checkout/return': typeof CheckoutReturnRoute
   '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
@@ -839,6 +875,7 @@ export interface FileRoutesById {
   '/_authenticated/publishing/media': typeof AuthenticatedPublishingMediaRoute
   '/_authenticated/publishing/queue': typeof AuthenticatedPublishingQueueRoute
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
+  '/_authenticated/settings/billing': typeof AuthenticatedSettingsBillingRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/_authenticated/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
@@ -850,6 +887,7 @@ export interface FileRoutesById {
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -857,6 +895,7 @@ export interface FileRouteTypes {
     | '/'
     | '/assistant'
     | '/auth'
+    | '/checkout'
     | '/design'
     | '/get-started'
     | '/notifications'
@@ -876,6 +915,7 @@ export interface FileRouteTypes {
     | '/assistant/$threadId'
     | '/auth/forgot'
     | '/auth/reset-password'
+    | '/checkout/return'
     | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
@@ -929,6 +969,7 @@ export interface FileRouteTypes {
     | '/publishing/media'
     | '/publishing/queue'
     | '/reports/$id'
+    | '/settings/billing'
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/plugins'
@@ -940,11 +981,13 @@ export interface FileRouteTypes {
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/assistant'
     | '/auth'
+    | '/checkout'
     | '/design'
     | '/notifications'
     | '/pricing'
@@ -960,6 +1003,7 @@ export interface FileRouteTypes {
     | '/assistant/$threadId'
     | '/auth/forgot'
     | '/auth/reset-password'
+    | '/checkout/return'
     | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
@@ -1013,6 +1057,7 @@ export interface FileRouteTypes {
     | '/publishing/media'
     | '/publishing/queue'
     | '/reports/$id'
+    | '/settings/billing'
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/plugins'
@@ -1024,12 +1069,14 @@ export interface FileRouteTypes {
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/assistant'
     | '/auth'
+    | '/checkout'
     | '/design'
     | '/get-started'
     | '/notifications'
@@ -1049,6 +1096,7 @@ export interface FileRouteTypes {
     | '/assistant/$threadId'
     | '/auth/forgot'
     | '/auth/reset-password'
+    | '/checkout/return'
     | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
@@ -1102,6 +1150,7 @@ export interface FileRouteTypes {
     | '/_authenticated/publishing/media'
     | '/_authenticated/publishing/queue'
     | '/_authenticated/reports/$id'
+    | '/_authenticated/settings/billing'
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/developer'
     | '/_authenticated/settings/plugins'
@@ -1113,6 +1162,7 @@ export interface FileRouteTypes {
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -1120,6 +1170,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AssistantRoute: typeof AssistantRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  CheckoutRoute: typeof CheckoutRouteWithChildren
   DesignRoute: typeof DesignRoute
   GetStartedRoute: typeof GetStartedRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
@@ -1131,6 +1182,7 @@ export interface RootRouteChildren {
   ApiPublicCronPublishRoute: typeof ApiPublicCronPublishRoute
   ApiPublicCronSocialSyncRoute: typeof ApiPublicCronSocialSyncRoute
   ApiPublicHooksGenerateWeeklyReportsRoute: typeof ApiPublicHooksGenerateWeeklyReportsRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1168,6 +1220,13 @@ declare module '@tanstack/react-router' {
       path: '/design'
       fullPath: '/design'
       preLoaderRoute: typeof DesignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout': {
+      id: '/checkout'
+      path: '/checkout'
+      fullPath: '/checkout'
+      preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -1225,6 +1284,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/get-started/solution'
       preLoaderRoute: typeof GetStartedSolutionRouteImport
       parentRoute: typeof GetStartedRoute
+    }
+    '/checkout/return': {
+      id: '/checkout/return'
+      path: '/return'
+      fullPath: '/checkout/return'
+      preLoaderRoute: typeof CheckoutReturnRouteImport
+      parentRoute: typeof CheckoutRoute
     }
     '/auth/reset-password': {
       id: '/auth/reset-password'
@@ -1378,6 +1444,13 @@ declare module '@tanstack/react-router' {
       path: '/settings/connections'
       fullPath: '/settings/connections'
       preLoaderRoute: typeof AuthenticatedSettingsConnectionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/billing': {
+      id: '/_authenticated/settings/billing'
+      path: '/settings/billing'
+      fullPath: '/settings/billing'
+      preLoaderRoute: typeof AuthenticatedSettingsBillingRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/reports/$id': {
@@ -1723,6 +1796,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsMetricRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
     }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/generate-weekly-reports': {
       id: '/api/public/hooks/generate-weekly-reports'
       path: '/api/public/hooks/generate-weekly-reports'
@@ -1937,6 +2017,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRouteWithChildren
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
+  AuthenticatedSettingsBillingRoute: typeof AuthenticatedSettingsBillingRoute
   AuthenticatedSettingsConnectionsRoute: typeof AuthenticatedSettingsConnectionsRoute
   AuthenticatedSettingsDeveloperRoute: typeof AuthenticatedSettingsDeveloperRoute
   AuthenticatedSettingsPluginsRoute: typeof AuthenticatedSettingsPluginsRoute
@@ -1955,6 +2036,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedReportsRoute: AuthenticatedReportsRouteWithChildren,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
+  AuthenticatedSettingsBillingRoute: AuthenticatedSettingsBillingRoute,
   AuthenticatedSettingsConnectionsRoute: AuthenticatedSettingsConnectionsRoute,
   AuthenticatedSettingsDeveloperRoute: AuthenticatedSettingsDeveloperRoute,
   AuthenticatedSettingsPluginsRoute: AuthenticatedSettingsPluginsRoute,
@@ -1990,6 +2072,18 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface CheckoutRouteChildren {
+  CheckoutReturnRoute: typeof CheckoutReturnRoute
+}
+
+const CheckoutRouteChildren: CheckoutRouteChildren = {
+  CheckoutReturnRoute: CheckoutReturnRoute,
+}
+
+const CheckoutRouteWithChildren = CheckoutRoute._addFileChildren(
+  CheckoutRouteChildren,
+)
+
 interface GetStartedRouteChildren {
   GetStartedSolutionRoute: typeof GetStartedSolutionRoute
   GetStartedIndexRoute: typeof GetStartedIndexRoute
@@ -2009,6 +2103,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AssistantRoute: AssistantRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  CheckoutRoute: CheckoutRouteWithChildren,
   DesignRoute: DesignRoute,
   GetStartedRoute: GetStartedRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
@@ -2021,17 +2116,8 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicCronSocialSyncRoute: ApiPublicCronSocialSyncRoute,
   ApiPublicHooksGenerateWeeklyReportsRoute:
     ApiPublicHooksGenerateWeeklyReportsRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
