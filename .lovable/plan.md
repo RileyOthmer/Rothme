@@ -1,76 +1,84 @@
-# ROTHME Onboarding Redesign — Plan
+# Fix billing, entitlement & purchase flow gaps
 
-## Goal
-Replace the current 3-step wizard (`/get-started`, `/get-started/solution`) with a full 11-step guided onboarding that feels like ROTHME is learning about the business and building the workspace in real time.
+Based on your answers: **Pro Monthly $49 / Pro Annual $490**, **7-day trial**, **per-org entitlement**, **full tax compliance handling (+3.5%)**.
 
-## Architecture
+## What's broken today (short version)
 
-Single authenticated layout route `/_authenticated/onboarding` that hosts all 11 steps as child routes, plus a persistent shell:
-- Progress rail (left) — step list + completion %
-- Content canvas (center) — active step
-- AI companion panel (right, collapsible) — live analysis, checklist, "ROTHME is thinking…" states
+1. **Pro is decorative** — no route/feature is actually gated; `has_active_subscription` exists but is called nowhere.
+2. **Two pricing systems** — onboarding shows a fake $0/$39/$129/Enterprise picker that never touches Stripe; the real system (`/pricing`) sells one Pro plan at different prices.
+3. **No Stripe products in code** — `pro_monthly`/`pro_annual` lookup_keys are referenced but never created.
+4. **No trial, no tax config, no managed_payments** on checkout.
+5. **Webhook**: `checkout.session.completed` doesn't activate entitlement (races on `subscription.created`); `invoice.payment_failed` ignores `environment`; no `invoice.payment_succeeded` to clear past-due.
+6. **Client-controlled `environment` param** on server fns (trust boundary).
+7. **Portal fn throws** instead of returning `{error}`.
 
-State: one `onboarding_sessions` row per user (jsonb `answers`, jsonb `analysis`, jsonb `checklist`, `current_step`, `completed_at`). Autosaves on every field blur via a debounced `saveOnboardingStep` server fn. Reuses existing `onboarding_responses` table where fields overlap; new columns added via migration.
+## Plan
 
-## Step Map
+### 1. Product catalog (Stripe)
+- `payments--batch_create_product`: one product `pro`, two prices `pro_monthly` ($4900/mo) & `pro_annual` ($49000/yr, ~2 months free), `tax_code: txcd_10103001` (SaaS), quantity 1/1.
 
-```text
-/onboarding/welcome           → Hero + 3-min estimate, animated progress ring
-/onboarding/discovery         → 6 sub-steps (grouped, not 25 questions on one page):
-                                  1. Identity (name, website, industry, type)
-                                  2. Scale (size, employees, revenue, country, timezone, languages)
-                                  3. Goals (experience, budget, business goals, success goals)
-                                  4. Audience & offer (target audience, products, services, competitors)
-                                  5. Current stack (social, CRM, email, analytics platforms)
-                                  6. Pain points & AI level
-/onboarding/analysis          → Live AI scoring (business score, maturity, opportunity,
-                                  time saved, revenue opportunity, recommended features)
-/onboarding/workspace-build   → Cinematic 7-line "Creating Dashboard… Building Analytics…" sequence
-                                  with real background writes (create workspace defaults, seed dashboards)
-/onboarding/connections       → 13 platform cards with Connect / Skip / Status
-/onboarding/subscription      → 4 plans, monthly/annual toggle, comparison, FAQ
-/onboarding/configuration     → Logo upload, brand colors, fonts, description, mission,
-                                  voice, hours, locations, team invites
-/onboarding/ai-training       → Teach-AI form: voice, style, audience, keywords, tone
-/onboarding/marketing-plan    → AI-generated strategy, 90-day roadmap, calendar preview, KPIs
-/onboarding/walkthrough       → Guided tour cards for Dashboard/Analytics/Calendar/Publishing/…
-/onboarding/first-success     → Pick one action; confetti on completion → /dashboard
-```
+### 2. Checkout hardening (`src/lib/payments.functions.ts`)
+- Add `subscription_data.trial_period_days: 7`.
+- Add `managed_payments: { enabled: true }` (cast to `SessionCreateParams` — dahlia field).
+- Stamp `subscription_data.metadata.orgId` (already stamps userId).
+- `createPortalSession`: return `{ error }` on failures instead of throwing.
+- Derive `environment` server-side from `STRIPE_LIVE_API_KEY` presence + a signed hint, rather than trusting client. (Simplest: ignore client `environment`, pick sandbox in preview / live once live key exists.)
 
-## AI Integration
+### 3. Onboarding ↔ real billing (`src/routes/_authenticated/onboarding.subscription.tsx`)
+- Replace fake 4-tier picker with the same two-price flow used by `/pricing`: Pro Monthly / Pro Annual toggle + "Start 7-day free trial" CTA that opens embedded checkout via `useStripeCheckout`.
+- Skip step entirely if org already has active subscription.
+- Remove `plan_tier` writes from this step.
 
-- `analyzeBusiness` server fn → Lovable AI Gateway (Gemini via `ai-gateway.server`), structured JSON output validated by Zod, returns `{ businessScore, maturity, opportunity, timeSaved, revenueOpportunity, recommendedFeatures[] }`. Called after discovery completes.
-- `generateMarketingPlan` server fn → same gateway, returns `{ strategy, roadmap[], calendar[], kpis[] }`. Called after AI training.
-- Both follow the four-questions voice contract; refuse-on-low-confidence honored.
+### 4. Per-org entitlement (`supabase/migrations/…`)
+- New DB function `private.org_has_active_subscription(org uuid)` — checks `subscriptions.org_id` + active/trialing/past_due/canceled-with-future-period_end.
+- Update `subscriptions` RLS: users can select rows for orgs they're members of (`is_org_member`).
+- Update `useSubscription` to query by active org id (from `profiles.active_org_id`) instead of user_id; keep env filter; keep realtime.
 
-## Data & Backend
+### 5. Feature gating
+- Add `<RequirePro>` wrapper component in `src/components/RequirePro.tsx` (checks org subscription via hook; if not active, redirects to `/settings/billing?upgrade=1` and shows soft upgrade CTA).
+- Wrap Pro-only route groups: analytics/*, assistant, dev-center, insights, reports, plugins.
+- Onboarding + settings + dashboard remain free (needed to reach checkout).
 
-Migration adds columns to `onboarding_responses` (or new `onboarding_sessions` table) for: analysis jsonb, marketing_plan jsonb, checklist jsonb, current_step text, plan_tier text, connections jsonb. RLS: owner-scoped. Grants: authenticated + service_role.
+### 6. Webhook (`src/routes/api/public/payments/webhook.ts`)
+- `checkout.session.completed`: if `mode=subscription` and `subscription` id present, fetch subscription + upsert immediately (idempotent fallback for race with `customer.subscription.created`).
+- `invoice.payment_succeeded`: clear past_due, log activity event `subscription.renewed`.
+- `invoice.payment_failed`: add `.eq('environment', env)` filter.
+- `handleSubscriptionUpsert`: log `subscription.updated` activity when status transitions.
+- Keep custom HMAC verify (works fine; SDK swap is nice-to-have, not blocking).
 
-Server fns (all `_authenticated`, `requireSupabaseAuth`):
-- `getOnboardingSession`
-- `saveOnboardingStep({ step, patch })` — autosave
-- `analyzeBusiness()` — reads answers, writes analysis
-- `generateMarketingPlan()` — reads answers+analysis+training, writes plan
-- `completeOnboarding()` — flips workspace to ready
+### 7. Billing UI polish (`src/routes/_authenticated/settings.billing.tsx`)
+- Rename duplicate portal buttons to one **"Manage subscription"** button; separate **"View invoices"** deep-links portal `flow_data`.
+- Show trial-ending badge when `status === 'trialing'` and `current_period_end` < 3 days away.
 
-## UI System
+### 8. Return page (`src/routes/checkout.return.tsx`)
+- Already polls subscriptions + resumes onboarding — keep. Add success toast + `activity_events` client insert removed (webhook handles it).
 
-- Reuses existing ROTHME tokens in `src/styles.css` (no new palette).
-- Glassmorphism cards, gradient borders, framer-motion page transitions, animated progress ring, typing-effect for AI lines.
-- Persistent checklist component in shell, updates live as steps complete.
-- Every step routed so back/forward works and autosave restores position.
+## Files touched
 
-## Files (roughly 25)
+- **new**: `supabase/migrations/<ts>_pro_entitlement.sql`, `src/components/RequirePro.tsx`
+- **edit**: `src/lib/payments.functions.ts`, `src/routes/api/public/payments/webhook.ts`, `src/hooks/useSubscription.ts`, `src/routes/_authenticated/onboarding.subscription.tsx`, `src/routes/_authenticated/settings.billing.tsx`, `src/routes/_authenticated/analytics.*` (wrap with RequirePro via `_authenticated/route.tsx` matcher — single edit, not per-route)
+- **Stripe**: `payments--batch_create_product` (one call)
 
-New route files (11), new layout, new shell components (ProgressRail, AICompanion, ChecklistCard, StepShell), new form sub-components for discovery, new server fns file `src/lib/onboarding.functions.ts`, one migration, ai plan generator, marketing plan renderer. Existing `/get-started/*` routes redirect to `/onboarding/welcome`.
+## Testing in preview (test mode)
 
-## Scope for this turn
+1. **Sign in** to preview → complete onboarding until "Subscription" step.
+2. **Click "Start 7-day trial – Pro Monthly"** → embedded checkout opens inline (orange test-mode banner at top).
+3. **Test card**: `4242 4242 4242 4242`, any future expiry (e.g. `12/34`), any CVC (`123`), any ZIP.
+4. Stripe redirects to `/checkout/return?session_id=…` → success screen → routes into `/dashboard`.
+5. Verify **`/settings/billing`** shows "Trial – ends in 7 days", plan = Pro Monthly.
+6. Verify **`/analytics/overview`** now loads (was blocked before checkout).
+7. **Cancel test**: click "Manage subscription" → opens Stripe portal in new tab → cancel → return to app → banner shows "Access until <date>", app still works until period end.
+8. **Failed payment test**: use `4000 0000 0000 0341` (attaches successfully but fails on renewal) → after next webhook, banner "Payment failed, we're retrying".
+9. **3DS test**: `4000 0025 0000 3155` — checkout will prompt for auth code.
+10. **Annual test**: repeat with the annual toggle.
 
-Ship Phase A — foundation + first 5 steps (welcome → connections) end-to-end with real autosave, real AI analysis, real workspace-build animation writing defaults. Phases B (subscription→training) and C (plan→dashboard) land in follow-up prompts.
+Reset between tests: delete rows from `subscriptions` where `environment='sandbox'` for your user (Cloud → tables).
 
-## Out of scope this turn
+## Out of scope (deferred)
 
-- Real OAuth for the 13 platforms (uses existing `social/registry.ts` stubs; connect buttons launch existing flows where available, mark skipped otherwise).
-- Stripe checkout wiring on subscription step (UI only until user asks to enable Stripe).
-- Team invite emails (UI captures, sends on completion in Phase C).
+- SDK-based webhook signature verify (works today).
+- Removing dead `has_active_subscription` (kept, still referenced by new org variant).
+- Email templates for renewals/dunning (needs domain — you flagged separately).
+- Win-back banner for canceled users (V2).
+
+Reply **approve** and I'll execute in one pass.
