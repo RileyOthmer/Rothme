@@ -10,7 +10,6 @@ import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 
 // ---------- Schemas ----------
 
-const AnswersSchema = z.record(z.any());
 const PatchSchema = z.object({
   step: z.string().optional(),
   answers: z.record(z.any()).optional(),
@@ -38,16 +37,23 @@ const AnalysisSchema = z.object({
 
 export type OnboardingAnalysis = z.infer<typeof AnalysisSchema>;
 
+// Session shape as returned across the RPC boundary. JSON columns are typed
+// as plain objects/records with string keys and `any` values so TanStack's
+// serializer accepts them (Record<string, unknown> confuses ValidateSerializable).
 export type OnboardingSession = {
   user_id: string;
   current_step: string;
-  answers: Record<string, unknown>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  answers: { [k: string]: any };
   analysis: OnboardingAnalysis | null;
-  connections: Record<string, "connected" | "skipped">;
-  brand: Record<string, unknown>;
-  ai_training: Record<string, unknown>;
-  marketing_plan: unknown;
-  checklist: Record<string, boolean>;
+  connections: { [k: string]: "connected" | "skipped" };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  brand: { [k: string]: any };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ai_training: { [k: string]: any };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  marketing_plan: any;
+  checklist: { [k: string]: boolean };
   plan_tier: string | null;
   completed_at: string | null;
 };
@@ -68,7 +74,7 @@ const DEFAULT_CHECKLIST: Record<string, boolean> = {
 
 export const getOnboardingSession = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<OnboardingSession> => {
+  .handler(async ({ context }) => {
     const { supabase, userId } = context;
     const { data, error } = await supabase
       .from("onboarding_sessions")
@@ -78,7 +84,6 @@ export const getOnboardingSession = createServerFn({ method: "GET" })
     if (error) throw error;
     if (data) return data as unknown as OnboardingSession;
 
-    // Create row on first read
     const seed = {
       user_id: userId,
       current_step: "welcome",
@@ -105,27 +110,30 @@ export const saveOnboardingStep = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
-    // Read current state so we can deep-merge JSONB fields.
     const { data: current } = await supabase
       .from("onboarding_sessions")
       .select("*")
       .eq("user_id", userId)
       .maybeSingle();
 
-    const merged: Record<string, unknown> = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cur = (current ?? {}) as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const merged: Record<string, any> = {
       user_id: userId,
-      current_step: data.step ?? current?.current_step ?? "welcome",
-      answers: { ...(current?.answers ?? {}), ...(data.answers ?? {}) },
-      connections: { ...(current?.connections ?? {}), ...(data.connections ?? {}) },
-      brand: { ...(current?.brand ?? {}), ...(data.brand ?? {}) },
-      ai_training: { ...(current?.ai_training ?? {}), ...(data.ai_training ?? {}) },
-      checklist: { ...(current?.checklist ?? DEFAULT_CHECKLIST), ...(data.checklist ?? {}) },
+      current_step: data.step ?? cur.current_step ?? "welcome",
+      answers: { ...(cur.answers ?? {}), ...(data.answers ?? {}) },
+      connections: { ...(cur.connections ?? {}), ...(data.connections ?? {}) },
+      brand: { ...(cur.brand ?? {}), ...(data.brand ?? {}) },
+      ai_training: { ...(cur.ai_training ?? {}), ...(data.ai_training ?? {}) },
+      checklist: { ...(cur.checklist ?? DEFAULT_CHECKLIST), ...(data.checklist ?? {}) },
     };
     if (data.plan_tier !== undefined) merged.plan_tier = data.plan_tier;
 
     const { data: saved, error } = await supabase
       .from("onboarding_sessions")
-      .upsert(merged, { onConflict: "user_id" })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .upsert(merged as any, { onConflict: "user_id" })
       .select("*")
       .single();
     if (error) throw error;
@@ -136,7 +144,7 @@ export const saveOnboardingStep = createServerFn({ method: "POST" })
 
 export const analyzeBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }): Promise<OnboardingAnalysis> => {
+  .handler(async ({ context }) => {
     const { supabase, userId } = context;
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("Missing LOVABLE_API_KEY");
@@ -146,7 +154,8 @@ export const analyzeBusiness = createServerFn({ method: "POST" })
       .select("answers")
       .eq("user_id", userId)
       .maybeSingle();
-    const answers = AnswersSchema.parse(session?.answers ?? {});
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const answers = (session?.answers ?? {}) as Record<string, any>;
 
     const gateway = createLovableAiGatewayProvider(key);
 
@@ -156,22 +165,14 @@ Voice contract:
 - Friendly, confident, never robotic.
 - Concrete, personal, evidence-based.
 - If information is missing, say what you'd need — never invent numbers.
-- Confidence: high when answers are detailed, medium when partial, low when sparse.
-
-You are given a business's onboarding answers. Score the business honestly and recommend Velora capabilities that will move the needle.`;
+- Confidence: high when answers are detailed, medium when partial, low when sparse.`;
 
     const prompt = `Onboarding answers:
 ${JSON.stringify(answers, null, 2)}
 
-Return an honest analysis. businessScore is 0-100 reflecting how set-up-for-growth this business is today.
-marketingMaturity reflects their current sophistication.
-growthOpportunity reflects headroom given industry, goals, current state.
-timeSavedHoursPerMonth is a realistic estimate of hours Velora would save this specific business every month.
-revenueOpportunityLabel is a plain-English band like "Meaningful — likely 10–25% more sales" or "Modest — mostly time savings", tailored to what they told us.
-headline: one warm sentence, includes business name if given.
-summary: 2 sentences on what Velora will actually DO for them.
-recommendedFeatures: 3-6 Velora capabilities that matter most for THIS business, each with a plain-English reason.`;
+Return an honest analysis. businessScore is 0-100. marketingMaturity is current sophistication. growthOpportunity is headroom given industry, goals, current state. timeSavedHoursPerMonth is realistic hours Velora would save per month. revenueOpportunityLabel is a plain-English band. headline: one warm sentence, use business name if given. summary: 2 sentences on what Velora will DO for them. recommendedFeatures: 3-6 capabilities with plain-English reasons.`;
 
+    let result: OnboardingAnalysis;
     try {
       const { output } = await generateText({
         model: gateway("google/gemini-2.5-flash"),
@@ -179,18 +180,10 @@ recommendedFeatures: 3-6 Velora capabilities that matter most for THIS business,
         prompt,
         output: Output.object({ schema: AnalysisSchema }),
       });
-
-      // Persist analysis
-      await supabase
-        .from("onboarding_sessions")
-        .update({ analysis: output })
-        .eq("user_id", userId);
-
-      return output;
+      result = output;
     } catch {
-      // Deterministic fallback so the UI never crashes.
       const filled = Object.values(answers).filter(Boolean).length;
-      const fallback: OnboardingAnalysis = {
+      result = {
         businessScore: Math.min(45 + filled * 3, 82),
         marketingMaturity: filled > 12 ? "established" : filled > 6 ? "developing" : "beginner",
         growthOpportunity: "high",
@@ -203,19 +196,22 @@ recommendedFeatures: 3-6 Velora capabilities that matter most for THIS business,
         summary:
           "Velora will unify your marketing data, watch it every day, and translate what's happening into plain English with a next best action.",
         recommendedFeatures: [
-          { name: "AI Assistant", reason: "Explains your numbers in plain English so you don't have to interpret charts." },
-          { name: "Unified Analytics", reason: "One dashboard replaces the tabs you keep open across platforms." },
+          { name: "AI Assistant", reason: "Explains your numbers in plain English." },
+          { name: "Unified Analytics", reason: "One dashboard replaces the tabs you keep open." },
           { name: "Weekly Reports", reason: "A short briefing lands every Monday — no manual work." },
-          { name: "Publishing & Scheduling", reason: "Plan a week of content in one sitting and forget it." },
+          { name: "Publishing & Scheduling", reason: "Plan a week of content in one sitting." },
         ],
         confidence: filled > 12 ? "medium" : "low",
       };
-      await supabase
-        .from("onboarding_sessions")
-        .update({ analysis: fallback })
-        .eq("user_id", userId);
-      return fallback;
     }
+
+    await supabase
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .from("onboarding_sessions")
+      .update({ analysis: result as unknown as Record<string, unknown> })
+      .eq("user_id", userId);
+
+    return result;
   });
 
 // ---------- completeOnboarding ----------

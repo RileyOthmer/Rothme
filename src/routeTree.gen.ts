@@ -36,6 +36,7 @@ import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDevCenterRouteImport } from './routes/_authenticated/dev-center'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
+import { Route as AuthenticatedOnboardingIndexRouteImport } from './routes/_authenticated/onboarding.index'
 import { Route as AuthenticatedDevCenterIndexRouteImport } from './routes/_authenticated/dev-center.index'
 import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics.index'
 import { Route as AuthenticatedSettingsSocialHealthRouteImport } from './routes/_authenticated/settings.social-health'
@@ -219,6 +220,12 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOnboardingIndexRoute =
+  AuthenticatedOnboardingIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
 const AuthenticatedDevCenterIndexRoute =
   AuthenticatedDevCenterIndexRouteImport.update({
     id: '/',
@@ -519,7 +526,7 @@ export interface FileRoutesByFullPath {
   '/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
-  '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/onboarding': typeof AuthenticatedOnboardingRouteWithChildren
   '/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/reports': typeof AuthenticatedReportsRouteWithChildren
   '/tasks': typeof AuthenticatedTasksRoute
@@ -577,6 +584,7 @@ export interface FileRoutesByFullPath {
   '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/dev-center/': typeof AuthenticatedDevCenterIndexRoute
+  '/onboarding/': typeof AuthenticatedOnboardingIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -592,7 +600,6 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
-  '/onboarding': typeof AuthenticatedOnboardingRoute
   '/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/reports': typeof AuthenticatedReportsRouteWithChildren
   '/tasks': typeof AuthenticatedTasksRoute
@@ -650,6 +657,7 @@ export interface FileRoutesByTo {
   '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/dev-center': typeof AuthenticatedDevCenterIndexRoute
+  '/onboarding': typeof AuthenticatedOnboardingIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -670,7 +678,7 @@ export interface FileRoutesById {
   '/_authenticated/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
-  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/onboarding': typeof AuthenticatedOnboardingRouteWithChildren
   '/_authenticated/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/_authenticated/reports': typeof AuthenticatedReportsRouteWithChildren
   '/_authenticated/tasks': typeof AuthenticatedTasksRoute
@@ -728,6 +736,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/_authenticated/dev-center/': typeof AuthenticatedDevCenterIndexRoute
+  '/_authenticated/onboarding/': typeof AuthenticatedOnboardingIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -806,6 +815,7 @@ export interface FileRouteTypes {
     | '/settings/social-health'
     | '/analytics/'
     | '/dev-center/'
+    | '/onboarding/'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
@@ -821,7 +831,6 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/goals'
     | '/insights'
-    | '/onboarding'
     | '/publishing'
     | '/reports'
     | '/tasks'
@@ -879,6 +888,7 @@ export interface FileRouteTypes {
     | '/settings/social-health'
     | '/analytics'
     | '/dev-center'
+    | '/onboarding'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
@@ -956,6 +966,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/social-health'
     | '/_authenticated/analytics/'
     | '/_authenticated/dev-center/'
+    | '/_authenticated/onboarding/'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
@@ -1169,6 +1180,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/analytics'
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/onboarding/': {
+      id: '/_authenticated/onboarding/'
+      path: '/'
+      fullPath: '/onboarding/'
+      preLoaderRoute: typeof AuthenticatedOnboardingIndexRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
     }
     '/_authenticated/dev-center/': {
       id: '/_authenticated/dev-center/'
@@ -1607,6 +1625,20 @@ const AuthenticatedDevCenterRouteWithChildren =
     AuthenticatedDevCenterRouteChildren,
   )
 
+interface AuthenticatedOnboardingRouteChildren {
+  AuthenticatedOnboardingIndexRoute: typeof AuthenticatedOnboardingIndexRoute
+}
+
+const AuthenticatedOnboardingRouteChildren: AuthenticatedOnboardingRouteChildren =
+  {
+    AuthenticatedOnboardingIndexRoute: AuthenticatedOnboardingIndexRoute,
+  }
+
+const AuthenticatedOnboardingRouteWithChildren =
+  AuthenticatedOnboardingRoute._addFileChildren(
+    AuthenticatedOnboardingRouteChildren,
+  )
+
 interface AuthenticatedPublishingRouteChildren {
   AuthenticatedPublishingApprovalsRoute: typeof AuthenticatedPublishingApprovalsRoute
   AuthenticatedPublishingCalendarRoute: typeof AuthenticatedPublishingCalendarRoute
@@ -1649,7 +1681,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDevCenterRoute: typeof AuthenticatedDevCenterRouteWithChildren
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
-  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRouteWithChildren
   AuthenticatedPublishingRoute: typeof AuthenticatedPublishingRouteWithChildren
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRouteWithChildren
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
@@ -1667,7 +1699,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDevCenterRoute: AuthenticatedDevCenterRouteWithChildren,
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
-  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedOnboardingRoute: AuthenticatedOnboardingRouteWithChildren,
   AuthenticatedPublishingRoute: AuthenticatedPublishingRouteWithChildren,
   AuthenticatedReportsRoute: AuthenticatedReportsRouteWithChildren,
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
