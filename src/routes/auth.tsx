@@ -88,7 +88,8 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: safeRedirect ?? "/dashboard", replace: true });
+        const t = navTarget(safeRedirect);
+        navigate({ to: t.to, search: t.search, replace: true } as never);
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong.");
