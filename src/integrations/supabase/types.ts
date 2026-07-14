@@ -1306,6 +1306,122 @@ export type Database = {
           },
         ]
       }
+      social_connections: {
+        Row: {
+          created_at: string
+          external_account_id: string | null
+          external_handle: string | null
+          health_score: number
+          health_updated_at: string
+          id: string
+          last_error_kind: string | null
+          last_error_message: string | null
+          last_synced_at: string | null
+          org_id: string
+          platform: string
+          status: string
+          tokens_ciphertext: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          external_account_id?: string | null
+          external_handle?: string | null
+          health_score?: number
+          health_updated_at?: string
+          id?: string
+          last_error_kind?: string | null
+          last_error_message?: string | null
+          last_synced_at?: string | null
+          org_id: string
+          platform: string
+          status?: string
+          tokens_ciphertext: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          external_account_id?: string | null
+          external_handle?: string | null
+          health_score?: number
+          health_updated_at?: string
+          id?: string
+          last_error_kind?: string | null
+          last_error_message?: string | null
+          last_synced_at?: string | null
+          org_id?: string
+          platform?: string
+          status?: string
+          tokens_ciphertext?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_connections_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      social_events: {
+        Row: {
+          connection_id: string | null
+          created_at: string
+          data: Json
+          event: string
+          id: string
+          level: string
+          org_id: string | null
+          platform: string | null
+          request_id: string | null
+          scope: string
+        }
+        Insert: {
+          connection_id?: string | null
+          created_at?: string
+          data?: Json
+          event: string
+          id?: string
+          level?: string
+          org_id?: string | null
+          platform?: string | null
+          request_id?: string | null
+          scope?: string
+        }
+        Update: {
+          connection_id?: string | null
+          created_at?: string
+          data?: Json
+          event?: string
+          id?: string
+          level?: string
+          org_id?: string | null
+          platform?: string | null
+          request_id?: string | null
+          scope?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_events_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "social_connections"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_events_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tasks: {
         Row: {
           assignee_id: string | null

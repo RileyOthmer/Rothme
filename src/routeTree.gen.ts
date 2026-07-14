@@ -31,6 +31,7 @@ import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics.index'
+import { Route as AuthenticatedSettingsSocialHealthRouteImport } from './routes/_authenticated/settings.social-health'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as AuthenticatedSettingsPluginsRouteImport } from './routes/_authenticated/settings.plugins'
 import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_authenticated/settings.developer'
@@ -62,6 +63,7 @@ import { Route as AuthenticatedAnalyticsAiInsightsRouteImport } from './routes/_
 import { Route as AuthenticatedAnalyticsAdvertisingRouteImport } from './routes/_authenticated/analytics.advertising'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
+import { Route as ApiPublicCronSocialSyncRouteImport } from './routes/api/public/cron/social-sync'
 import { Route as ApiPublicCronPublishRouteImport } from './routes/api/public/cron/publish'
 
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -173,6 +175,12 @@ const AuthenticatedAnalyticsIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedSettingsSocialHealthRoute =
+  AuthenticatedSettingsSocialHealthRouteImport.update({
+    id: '/settings/social-health',
+    path: '/settings/social-health',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSettingsProfileRoute =
   AuthenticatedSettingsProfileRouteImport.update({
@@ -359,6 +367,11 @@ const ApiPublicHooksGenerateWeeklyReportsRoute =
     path: '/api/public/hooks/generate-weekly-reports',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronSocialSyncRoute = ApiPublicCronSocialSyncRouteImport.update({
+  id: '/api/public/cron/social-sync',
+  path: '/api/public/cron/social-sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronPublishRoute = ApiPublicCronPublishRouteImport.update({
   id: '/api/public/cron/publish',
   path: '/api/public/cron/publish',
@@ -416,8 +429,10 @@ export interface FileRoutesByFullPath {
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
+  '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesByTo {
@@ -470,8 +485,10 @@ export interface FileRoutesByTo {
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
+  '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesById {
@@ -527,8 +544,10 @@ export interface FileRoutesById {
   '/_authenticated/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/_authenticated/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/_authenticated/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
+  '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRouteTypes {
@@ -584,8 +603,10 @@ export interface FileRouteTypes {
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
+    | '/settings/social-health'
     | '/analytics/'
     | '/api/public/cron/publish'
+    | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -638,8 +659,10 @@ export interface FileRouteTypes {
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
+    | '/settings/social-health'
     | '/analytics'
     | '/api/public/cron/publish'
+    | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
   id:
     | '__root__'
@@ -694,8 +717,10 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/developer'
     | '/_authenticated/settings/plugins'
     | '/_authenticated/settings/profile'
+    | '/_authenticated/settings/social-health'
     | '/_authenticated/analytics/'
     | '/api/public/cron/publish'
+    | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesById: FileRoutesById
 }
@@ -710,6 +735,7 @@ export interface RootRouteChildren {
   InviteTokenRoute: typeof InviteTokenRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
   ApiPublicCronPublishRoute: typeof ApiPublicCronPublishRoute
+  ApiPublicCronSocialSyncRoute: typeof ApiPublicCronSocialSyncRoute
   ApiPublicHooksGenerateWeeklyReportsRoute: typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 
@@ -868,6 +894,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/analytics/'
       preLoaderRoute: typeof AuthenticatedAnalyticsIndexRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/settings/social-health': {
+      id: '/_authenticated/settings/social-health'
+      path: '/settings/social-health'
+      fullPath: '/settings/social-health'
+      preLoaderRoute: typeof AuthenticatedSettingsSocialHealthRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/profile': {
       id: '/_authenticated/settings/profile'
@@ -1086,6 +1119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksGenerateWeeklyReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/social-sync': {
+      id: '/api/public/cron/social-sync'
+      path: '/api/public/cron/social-sync'
+      fullPath: '/api/public/cron/social-sync'
+      preLoaderRoute: typeof ApiPublicCronSocialSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/publish': {
       id: '/api/public/cron/publish'
       path: '/api/public/cron/publish'
@@ -1202,6 +1242,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsDeveloperRoute: typeof AuthenticatedSettingsDeveloperRoute
   AuthenticatedSettingsPluginsRoute: typeof AuthenticatedSettingsPluginsRoute
   AuthenticatedSettingsProfileRoute: typeof AuthenticatedSettingsProfileRoute
+  AuthenticatedSettingsSocialHealthRoute: typeof AuthenticatedSettingsSocialHealthRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1218,6 +1259,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsDeveloperRoute: AuthenticatedSettingsDeveloperRoute,
   AuthenticatedSettingsPluginsRoute: AuthenticatedSettingsPluginsRoute,
   AuthenticatedSettingsProfileRoute: AuthenticatedSettingsProfileRoute,
+  AuthenticatedSettingsSocialHealthRoute:
+    AuthenticatedSettingsSocialHealthRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -1258,6 +1301,7 @@ const rootRouteChildren: RootRouteChildren = {
   InviteTokenRoute: InviteTokenRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
   ApiPublicCronPublishRoute: ApiPublicCronPublishRoute,
+  ApiPublicCronSocialSyncRoute: ApiPublicCronSocialSyncRoute,
   ApiPublicHooksGenerateWeeklyReportsRoute:
     ApiPublicHooksGenerateWeeklyReportsRoute,
 }
