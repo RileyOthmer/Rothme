@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as DesignRouteImport } from './routes/design'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssistantRouteImport } from './routes/assistant'
@@ -83,6 +84,11 @@ import { Route as ApiPublicCronPublishRouteImport } from './routes/api/public/cr
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GetStartedRoute = GetStartedRouteImport.update({
+  id: '/get-started',
+  path: '/get-started',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignRoute = DesignRouteImport.update({
@@ -480,6 +486,7 @@ export interface FileRoutesByFullPath {
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
+  '/get-started': typeof GetStartedRoute
   '/notifications': typeof NotificationsRoute
   '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -551,6 +558,7 @@ export interface FileRoutesByTo {
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
+  '/get-started': typeof GetStartedRoute
   '/notifications': typeof NotificationsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
@@ -622,6 +630,7 @@ export interface FileRoutesById {
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
+  '/get-started': typeof GetStartedRoute
   '/notifications': typeof NotificationsRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
@@ -695,6 +704,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/auth'
     | '/design'
+    | '/get-started'
     | '/notifications'
     | '/analytics'
     | '/dashboard'
@@ -766,6 +776,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/auth'
     | '/design'
+    | '/get-started'
     | '/notifications'
     | '/dashboard'
     | '/goals'
@@ -836,6 +847,7 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/auth'
     | '/design'
+    | '/get-started'
     | '/notifications'
     | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
@@ -909,6 +921,7 @@ export interface RootRouteChildren {
   AssistantRoute: typeof AssistantRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   DesignRoute: typeof DesignRoute
+  GetStartedRoute: typeof GetStartedRoute
   NotificationsRoute: typeof NotificationsRoute
   ApiChatRoute: typeof ApiChatRoute
   InviteTokenRoute: typeof InviteTokenRoute
@@ -925,6 +938,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/get-started': {
+      id: '/get-started'
+      path: '/get-started'
+      fullPath: '/get-started'
+      preLoaderRoute: typeof GetStartedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/design': {
@@ -1617,6 +1637,7 @@ const rootRouteChildren: RootRouteChildren = {
   AssistantRoute: AssistantRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   DesignRoute: DesignRoute,
+  GetStartedRoute: GetStartedRoute,
   NotificationsRoute: NotificationsRoute,
   ApiChatRoute: ApiChatRoute,
   InviteTokenRoute: InviteTokenRoute,

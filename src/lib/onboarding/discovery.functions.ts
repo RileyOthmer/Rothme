@@ -75,13 +75,13 @@ Available integrations: Instagram, Facebook, TikTok, LinkedIn, YouTube, X, Pinte
 Pick 3-5 recommended features and 2-6 integrations that fit THIS business.`;
 
     try {
-      const { experimental_output } = await generateText({
+      const { output } = await generateText({
         model: gateway("google/gemini-2.5-flash"),
         system,
         prompt,
-        experimental_output: Output.object({ schema: SolutionSchema }),
+        output: Output.object({ schema: SolutionSchema }),
       });
-      return experimental_output;
+      return output;
     } catch (err) {
       // Fallback: deterministic, personalized-lite response so the UI never crashes
       const goals = data.primaryGoals ?? [];
