@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CreditCard, ExternalLink, AlertTriangle, Sparkles, Clock } from "lucide-react";
+import { CreditCard, ExternalLink, AlertTriangle, Sparkles, Clock, ArrowUpRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
 import { getStripeEnvironment, isPaymentsConfigured } from "@/lib/stripe";
-import { createPortalSession } from "@/lib/payments.functions";
+import { createPortalSession, changeSubscriptionPlan } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/_authenticated/settings/billing")({
   head: () => ({ meta: [{ title: "Billing — ROTHME" }, { name: "robots", content: "noindex" }] }),
@@ -15,6 +15,8 @@ function BillingPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
+  const [switchLoading, setSwitchLoading] = useState(false);
+  const [switchMsg, setSwitchMsg] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -38,6 +40,23 @@ function BillingPage() {
       setPortalError(e instanceof Error ? e.message : "Failed to open portal");
     } finally {
       setPortalLoading(false);
+    }
+  };
+
+  const switchToAnnual = async () => {
+    if (!confirm("Switch to annual billing? You'll be charged the pro-rated difference today and save ~17% going forward.")) return;
+    setSwitchLoading(true);
+    setSwitchMsg(null);
+    try {
+      const result = await changeSubscriptionPlan({
+        data: { priceId: "pro_annual", environment: getStripeEnvironment() },
+      });
+      if ("error" in result) throw new Error(result.error);
+      setSwitchMsg("You're on the annual plan. Renewals now bill yearly.");
+    } catch (e) {
+      setSwitchMsg(e instanceof Error ? e.message : "Failed to switch plan");
+    } finally {
+      setSwitchLoading(false);
     }
   };
 

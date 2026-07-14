@@ -1,8 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { supabase } from "@/integrations/supabase/client";
+import { useSubscription } from "@/hooks/useSubscription";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -63,7 +64,15 @@ const FAQ = [
 
 function PricingPage() {
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
+  }, []);
+
+  const { subscription, isActive } = useSubscription(userId);
+  const currentPlan = isActive ? subscription?.price_id : null;
 
   const handleStart = async (plan: "monthly" | "annual") => {
     setLoading(true);
@@ -72,6 +81,11 @@ function PricingPage() {
       const priceId = plan === "monthly" ? "pro_monthly" : "pro_annual";
       if (!data.session) {
         navigate({ to: "/auth", search: { redirect: `/checkout?plan=${priceId}` } as never });
+        return;
+      }
+      // Already active — send to billing instead of duplicate checkout
+      if (isActive) {
+        navigate({ to: "/settings/billing" });
         return;
       }
       navigate({ to: "/checkout", search: { plan: priceId } as never });
@@ -120,7 +134,13 @@ function PricingPage() {
               disabled={loading}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-3 text-sm font-medium text-background transition hover:opacity-90 disabled:opacity-50"
             >
-              {loading ? "Loading…" : "Start Monthly"} <ArrowRight className="h-4 w-4" />
+              {loading
+                ? "Loading…"
+                : currentPlan === "pro_monthly"
+                  ? "Current plan — Manage"
+                  : currentPlan === "pro_annual"
+                    ? "Manage subscription"
+                    : "Start Monthly"} <ArrowRight className="h-4 w-4" />
             </button>
 
             <ul className="mt-8 space-y-3">
@@ -158,7 +178,13 @@ function PricingPage() {
               disabled={loading}
               className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-3 text-sm font-medium text-background transition hover:opacity-90 disabled:opacity-50"
             >
-              {loading ? "Loading…" : "Start Annual"} <ArrowRight className="h-4 w-4" />
+              {loading
+                ? "Loading…"
+                : currentPlan === "pro_annual"
+                  ? "Current plan — Manage"
+                  : currentPlan === "pro_monthly"
+                    ? "Switch to Annual"
+                    : "Start Annual"} <ArrowRight className="h-4 w-4" />
             </button>
 
             <ul className="mt-8 space-y-3">
