@@ -62,7 +62,8 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
               const active =
                 pathname === item.to ||
                 (item.to === "/settings/profile" && pathname.startsWith("/settings")) ||
-                (item.to === "/reports" && pathname.startsWith("/reports"));
+                (item.to === "/reports" && pathname.startsWith("/reports")) ||
+                (item.to.startsWith("/dev-center") && pathname.startsWith("/dev-center"));
               return (
                 <Link
                   key={item.to}
@@ -124,7 +125,8 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
           const active =
             pathname === item.to ||
             (item.to === "/settings/profile" && pathname.startsWith("/settings")) ||
-            (item.to === "/reports" && pathname.startsWith("/reports"));
+            (item.to === "/reports" && pathname.startsWith("/reports")) ||
+            (item.to.startsWith("/dev-center") && pathname.startsWith("/dev-center"));
           return (
             <Link
               key={item.to}
