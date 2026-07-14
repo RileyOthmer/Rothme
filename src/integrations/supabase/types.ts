@@ -679,7 +679,7 @@ export type Database = {
           unit: string | null
           updated_at: string
           validation: Json
-          ROTHME_kpi: string
+          velora_kpi: string
         }
         Insert: {
           aggregation?: string | null
@@ -700,7 +700,7 @@ export type Database = {
           unit?: string | null
           updated_at?: string
           validation?: Json
-          ROTHME_kpi: string
+          velora_kpi: string
         }
         Update: {
           aggregation?: string | null
@@ -721,7 +721,7 @@ export type Database = {
           unit?: string | null
           updated_at?: string
           validation?: Json
-          ROTHME_kpi?: string
+          velora_kpi?: string
         }
         Relationships: [
           {
