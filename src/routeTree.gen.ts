@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhyRouteImport } from './routes/why'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as DesignRouteImport } from './routes/design'
 import { Route as CheckoutRouteImport } from './routes/checkout'
@@ -38,6 +39,8 @@ import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDevCenterRouteImport } from './routes/_authenticated/dev-center'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AuthenticatedOnboardingIndexRouteImport } from './routes/_authenticated/onboarding.index'
 import { Route as AuthenticatedDevCenterIndexRouteImport } from './routes/_authenticated/dev-center.index'
 import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics.index'
@@ -96,6 +99,8 @@ import { Route as AuthenticatedAnalyticsAlertsRouteImport } from './routes/_auth
 import { Route as AuthenticatedAnalyticsAiInsightsRouteImport } from './routes/_authenticated/analytics.ai-insights'
 import { Route as AuthenticatedAnalyticsAdvertisingRouteImport } from './routes/_authenticated/analytics.advertising'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
 import { Route as ApiPublicCronSocialSyncRouteImport } from './routes/api/public/cron/social-sync'
@@ -114,6 +119,11 @@ const PricingRoute = PricingRouteImport.update({
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GetStartedRoute = GetStartedRouteImport.update({
@@ -245,6 +255,18 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedOnboardingIndexRoute =
   AuthenticatedOnboardingIndexRouteImport.update({
     id: '/',
@@ -592,6 +614,17 @@ const AuthenticatedAnalyticsMetricRoute =
     path: '/$metric',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
   } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -622,9 +655,12 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRouteWithChildren
   '/design': typeof DesignRoute
   '/get-started': typeof GetStartedRouteWithChildren
+  '/mcp': typeof McpRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/why': typeof WhyRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
@@ -644,6 +680,8 @@ export interface FileRoutesByFullPath {
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/get-started/': typeof GetStartedIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
   '/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
@@ -713,9 +751,12 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
   '/design': typeof DesignRoute
+  '/mcp': typeof McpRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/why': typeof WhyRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
@@ -732,6 +773,8 @@ export interface FileRoutesByTo {
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/get-started': typeof GetStartedIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
   '/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
@@ -804,9 +847,12 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRouteWithChildren
   '/design': typeof DesignRoute
   '/get-started': typeof GetStartedRouteWithChildren
+  '/mcp': typeof McpRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/why': typeof WhyRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
@@ -826,6 +872,8 @@ export interface FileRoutesById {
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
   '/get-started/': typeof GetStartedIndexRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/_authenticated/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
   '/_authenticated/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
@@ -898,9 +946,12 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/design'
     | '/get-started'
+    | '/mcp'
     | '/notifications'
     | '/pricing'
     | '/why'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/analytics'
     | '/dashboard'
     | '/dev-center'
@@ -920,6 +971,8 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/settings/notifications'
     | '/get-started/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/analytics/$metric'
     | '/analytics/advertising'
     | '/analytics/ai-insights'
@@ -989,9 +1042,12 @@ export interface FileRouteTypes {
     | '/auth'
     | '/checkout'
     | '/design'
+    | '/mcp'
     | '/notifications'
     | '/pricing'
     | '/why'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/dashboard'
     | '/goals'
     | '/insights'
@@ -1008,6 +1064,8 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/settings/notifications'
     | '/get-started'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/analytics/$metric'
     | '/analytics/advertising'
     | '/analytics/ai-insights'
@@ -1079,9 +1137,12 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/design'
     | '/get-started'
+    | '/mcp'
     | '/notifications'
     | '/pricing'
     | '/why'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
     | '/_authenticated/dev-center'
@@ -1101,6 +1162,8 @@ export interface FileRouteTypes {
     | '/invite/$token'
     | '/settings/notifications'
     | '/get-started/'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/analytics/$metric'
     | '/_authenticated/analytics/advertising'
     | '/_authenticated/analytics/ai-insights'
@@ -1173,12 +1236,17 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRouteWithChildren
   DesignRoute: typeof DesignRoute
   GetStartedRoute: typeof GetStartedRouteWithChildren
+  McpRoute: typeof McpRoute
   NotificationsRoute: typeof NotificationsRoute
   PricingRoute: typeof PricingRoute
   WhyRoute: typeof WhyRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiChatRoute: typeof ApiChatRoute
   InviteTokenRoute: typeof InviteTokenRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicCronPublishRoute: typeof ApiPublicCronPublishRoute
   ApiPublicCronSocialSyncRoute: typeof ApiPublicCronSocialSyncRoute
   ApiPublicHooksGenerateWeeklyReportsRoute: typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -1206,6 +1274,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/get-started': {
@@ -1389,6 +1464,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/analytics'
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/onboarding/': {
       id: '/_authenticated/onboarding/'
@@ -1796,6 +1885,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsMetricRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
     }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -2106,12 +2209,18 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRouteWithChildren,
   DesignRoute: DesignRoute,
   GetStartedRoute: GetStartedRouteWithChildren,
+  McpRoute: McpRoute,
   NotificationsRoute: NotificationsRoute,
   PricingRoute: PricingRoute,
   WhyRoute: WhyRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiChatRoute: ApiChatRoute,
   InviteTokenRoute: InviteTokenRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicCronPublishRoute: ApiPublicCronPublishRoute,
   ApiPublicCronSocialSyncRoute: ApiPublicCronSocialSyncRoute,
   ApiPublicHooksGenerateWeeklyReportsRoute:
