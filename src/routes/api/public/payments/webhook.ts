@@ -113,7 +113,7 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
       ts(periodEnd),
       subscription.customer as string,
     );
-    await logActivity(orgId, userId ?? null, "subscription.canceled", {
+    await logActivity(orgId, userId ?? null, "subscription.canceled", "Pro subscription canceled — access continues until period end", {
       subscription_id: subscription.id,
       access_until: ts(periodEnd),
     });
@@ -123,7 +123,7 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
 async function handleCheckoutCompleted(session: any) {
   const orgId: string | undefined = session.metadata?.orgId;
   const userId: string | undefined = session.metadata?.userId;
-  await logActivity(orgId ?? null, userId ?? null, "subscription.activated", {
+  await logActivity(orgId ?? null, userId ?? null, "subscription.activated", "Velora Pro activated", {
     session_id: session.id,
     amount_total: session.amount_total,
     currency: session.currency,
