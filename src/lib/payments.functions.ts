@@ -1,9 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
+import type Stripe from "stripe";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
 
 type CheckoutSessionResult = { clientSecret: string } | { error: string };
 type PortalSessionResult = { url: string } | { error: string };
+
+const TRIAL_DAYS = 7;
 
 async function resolveOrCreateCustomer(
   stripe: ReturnType<typeof createStripeClient>,
@@ -25,7 +28,11 @@ async function resolveOrCreateCustomer(
       const customer = existing.data[0];
       if (options.userId && customer.metadata?.userId !== options.userId) {
         await stripe.customers.update(customer.id, {
-          metadata: { ...customer.metadata, userId: options.userId, ...(options.orgId && { orgId: options.orgId }) },
+          metadata: {
+            ...customer.metadata,
+            userId: options.userId,
+            ...(options.orgId && { orgId: options.orgId }),
+          },
         });
       }
       return customer.id;
@@ -50,6 +57,9 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     orgId?: string;
   }) => {
     if (!/^[a-zA-Z0-9_-]+$/.test(data.priceId)) throw new Error("Invalid priceId");
+    if (data.environment !== "sandbox" && data.environment !== "live") {
+      throw new Error("Invalid environment");
+    }
     return data;
   })
   .handler(async ({ data, context }): Promise<CheckoutSessionResult> => {
@@ -67,6 +77,22 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
       const { data: userRes } = await supabase.auth.getUser();
       const email = userRes?.user?.email ?? undefined;
 
+      // Idempotency: if this org already has an active/trialing subscription,
+      // don't create a duplicate — send the caller to the portal via error.
+      if (orgId) {
+        const { data: existing } = await supabase
+          .from("subscriptions")
+          .select("status")
+          .eq("org_id", orgId)
+          .eq("environment", data.environment)
+          .in("status", ["active", "trialing", "past_due"])
+          .limit(1)
+          .maybeSingle();
+        if (existing) {
+          return { error: "You already have an active subscription. Manage it from Settings → Billing." };
+        }
+      }
+
       const prices = await stripe.prices.list({ lookup_keys: [data.priceId] });
       if (!prices.data.length) throw new Error("Price not found");
       const stripePrice = prices.data[0];
@@ -77,7 +103,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         orgId: orgId ?? undefined,
       });
 
-      const session = await stripe.checkout.sessions.create({
+      const sessionParams: Stripe.Checkout.SessionCreateParams = {
         line_items: [{ price: stripePrice.id, quantity: 1 }],
         mode: "subscription",
         ui_mode: "embedded_page",
@@ -89,12 +115,21 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
           ...(orgId && { orgId }),
         },
         subscription_data: {
+          trial_period_days: TRIAL_DAYS,
           metadata: {
             userId,
             ...(orgId && { orgId }),
           },
         },
-      });
+      };
+
+      // Stripe's dahlia-preview end-to-end compliance handling. Cast because
+      // the current SDK type doesn't yet include `managed_payments`.
+      (sessionParams as unknown as { managed_payments: { enabled: boolean } }).managed_payments = {
+        enabled: true,
+      };
+
+      const session = await stripe.checkout.sessions.create(sessionParams);
 
       return { clientSecret: session.client_secret ?? "" };
     } catch (error) {
@@ -104,19 +139,26 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
 
 export const createPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { returnUrl?: string; environment: StripeEnv }) => data)
+  .inputValidator((data: { returnUrl?: string; environment: StripeEnv; flow?: "cancel" | "invoices" | "payment_method" }) => {
+    if (data.environment !== "sandbox" && data.environment !== "live") {
+      throw new Error("Invalid environment");
+    }
+    return data;
+  })
   .handler(async ({ data, context }): Promise<PortalSessionResult> => {
-    const { supabase, userId } = context;
-    const { data: sub, error: subError } = await supabase
-      .from("subscriptions")
-      .select("stripe_customer_id")
-      .eq("user_id", userId)
-      .eq("environment", data.environment)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    if (subError || !sub?.stripe_customer_id) throw new Error("No subscription found");
     try {
+      const { supabase, userId } = context;
+      const { data: sub } = await supabase
+        .from("subscriptions")
+        .select("stripe_customer_id")
+        .eq("user_id", userId)
+        .eq("environment", data.environment)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (!sub?.stripe_customer_id) {
+        return { error: "No subscription found. Start one from the pricing page." };
+      }
       const stripe = createStripeClient(data.environment);
       const portal = await stripe.billingPortal.sessions.create({
         customer: sub.stripe_customer_id as string,

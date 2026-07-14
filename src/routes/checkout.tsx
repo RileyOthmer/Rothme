@@ -41,7 +41,7 @@ function CheckoutPage() {
     })();
   }, [navigate, plan]);
 
-  const planLabel = plan === "pro_monthly" ? "ROTHME Pro — Monthly ($49/mo)" : "ROTHME Pro — Annual ($470/yr, save 20%)";
+  const planLabel = plan === "pro_monthly" ? "ROTHME Pro — Monthly ($49/mo)" : "ROTHME Pro — Annual ($490/yr, 2 months free)";
 
   if (!isPaymentsConfigured()) {
     return (
@@ -68,8 +68,8 @@ function CheckoutPage() {
           <div className="mt-1 text-lg font-semibold">{planLabel}</div>
           {userEmail && <div className="mt-4 text-sm text-muted-foreground">Signed in as {userEmail}</div>}
           <div className="mt-6 space-y-2 text-sm text-muted-foreground">
+            <p>✓ 7-day free trial — no charge today</p>
             <p>✓ Cancel anytime from Settings → Billing</p>
-            <p>✓ 14-day money-back guarantee</p>
             <p>✓ Instant access to all Pro features</p>
           </div>
         </aside>
