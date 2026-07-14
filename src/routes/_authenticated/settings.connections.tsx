@@ -7,7 +7,7 @@ import { IntegrationHub } from "@/features/integrations/IntegrationHub";
 export const Route = createFileRoute("/_authenticated/settings/connections")({
   head: () => ({
     meta: [
-      { title: "Integrations — Velora" },
+      { title: "Integrations — ROTHME" },
       { name: "robots", content: "noindex" },
     ],
   }),

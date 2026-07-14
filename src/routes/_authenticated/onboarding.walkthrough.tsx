@@ -7,7 +7,7 @@ import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
 import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/session.functions";
 
 export const Route = createFileRoute("/_authenticated/onboarding/walkthrough")({
-  head: () => ({ meta: [{ title: "Tour Velora — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Tour ROTHME — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: WalkthroughStep,
 });
 

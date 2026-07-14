@@ -13,7 +13,7 @@ import { listSocialConnections, listSocialEvents, pingSocialConnection } from "@
 export const Route = createFileRoute("/_authenticated/settings/social-health")({
   head: () => ({
     meta: [
-      { title: "Connection Health — Velora" },
+      { title: "Connection Health — ROTHME" },
       { name: "description", content: "Monitor social platform connection health, sync status, and recent activity." },
       { name: "robots", content: "noindex" },
     ],

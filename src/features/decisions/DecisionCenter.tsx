@@ -36,7 +36,7 @@ export function DecisionCenter({ firstName, hasConnections = true }: Props) {
       <EmptyShell
         icon={<Plug className="h-6 w-6 text-primary" />}
         title={`Welcome, ${firstName}.`}
-        body="Connect your first marketing platform and Velora will read the data, spot what changed, and tell you what to do about it — in plain English."
+        body="Connect your first marketing platform and ROTHME will read the data, spot what changed, and tell you what to do about it — in plain English."
         cta={
           <Button asChild>
             <Link to="/settings/connections">Connect a platform</Link>
@@ -52,7 +52,7 @@ export function DecisionCenter({ firstName, hasConnections = true }: Props) {
       <EmptyShell
         icon={<PartyPopper className="h-6 w-6 text-emerald-500" />}
         title="You're on track."
-        body="No decisions need your attention right now. Velora will surface something the moment it matters."
+        body="No decisions need your attention right now. ROTHME will surface something the moment it matters."
       />
     );
   }
@@ -90,7 +90,7 @@ export function DecisionCenter({ firstName, hasConnections = true }: Props) {
       </div>
 
       <p className="pt-2 text-center text-xs text-muted-foreground">
-        Velora only surfaces decisions it's confident matter. If it's not here, it's not urgent.
+        ROTHME only surfaces decisions it's confident matter. If it's not here, it's not urgent.
       </p>
     </section>
   );

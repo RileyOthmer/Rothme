@@ -24,7 +24,7 @@ import { isAdmin, claimFirstAdmin } from "@/lib/integrations/integrations.functi
 export const Route = createFileRoute("/_authenticated/settings/plugins")({
   head: () => ({
     meta: [
-      { title: "Plugin Manager — Velora" },
+      { title: "Plugin Manager — ROTHME" },
       { name: "description", content: "Admin-only: install, configure, verify, and monitor every platform integration as a modular plugin." },
       { name: "robots", content: "noindex" },
     ],

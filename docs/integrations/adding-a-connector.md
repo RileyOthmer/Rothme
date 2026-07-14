@@ -1,6 +1,6 @@
 # Adding a new integration
 
-Velora's Integration Hub is registry-driven. Adding a new platform is one file edit.
+ROTHME's Integration Hub is registry-driven. Adding a new platform is one file edit.
 
 ## Step 1 — Add a registry entry
 

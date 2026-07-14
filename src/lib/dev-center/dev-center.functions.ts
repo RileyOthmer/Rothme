@@ -333,7 +333,7 @@ export const listMappings = createServerFn({ method: "GET" })
     const { data: rows, error } = await (supabaseAdmin as any)
       .from("platform_field_mappings").select("*")
       .eq("platform_id", data.platform_id)
-      .order("velora_kpi", { ascending: true });
+      .order("ROTHME_kpi", { ascending: true });
     if (error) throw new Error(error.message);
     return (rows ?? []) as FieldMapping[];
   });
@@ -342,7 +342,7 @@ const mappingInput = z.object({
   id: z.string().uuid().optional(),
   platform_id: z.string().uuid(),
   endpoint_id: z.string().uuid().nullable().optional(),
-  velora_kpi: z.string().min(1).max(60),
+  ROTHME_kpi: z.string().min(1).max(60),
   json_path: z.string().max(300).default(""),
   data_type: z.enum(["number", "percent", "currency", "duration", "string", "boolean"]).default("number"),
   category: z.string().max(60).nullable().optional(),
@@ -365,7 +365,7 @@ export const upsertMapping = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { error } = await (supabaseAdmin as any)
       .from("platform_field_mappings")
-      .upsert(data, { onConflict: "platform_id,velora_kpi" });
+      .upsert(data, { onConflict: "platform_id,ROTHME_kpi" });
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -387,12 +387,12 @@ export const mapPathToKpi = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: {
     platform_id: string; endpoint_id: string;
-    velora_kpi: string; json_path: string;
+    ROTHME_kpi: string; json_path: string;
     example_response?: unknown;
   }) => ({
     platform_id: String(d.platform_id),
     endpoint_id: String(d.endpoint_id),
-    velora_kpi: String(d.velora_kpi),
+    ROTHME_kpi: String(d.ROTHME_kpi),
     json_path: String(d.json_path),
     example_response: d.example_response ?? null,
   }))
@@ -405,11 +405,11 @@ export const mapPathToKpi = createServerFn({ method: "POST" })
       .upsert({
         platform_id: data.platform_id,
         endpoint_id: data.endpoint_id,
-        velora_kpi: data.velora_kpi,
+        ROTHME_kpi: data.ROTHME_kpi,
         json_path: data.json_path,
         example_value,
         confirmed: false,
-      }, { onConflict: "platform_id,velora_kpi" });
+      }, { onConflict: "platform_id,ROTHME_kpi" });
     if (error) throw new Error(error.message);
     return { ok: true, example_value };
   });

@@ -7,7 +7,7 @@ import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
 import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/session.functions";
 
 export const Route = createFileRoute("/_authenticated/onboarding/welcome")({
-  head: () => ({ meta: [{ title: "Welcome — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Welcome — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: WelcomeStep,
 });
 
@@ -33,7 +33,7 @@ function WelcomeStep() {
         </div>
 
         <h1 className="mb-4 text-balance text-5xl font-semibold tracking-tight sm:text-6xl">
-          Welcome to Velora.
+          Welcome to ROTHME.
         </h1>
         <p className="mb-2 text-balance text-lg text-muted-foreground">
           Let's build your marketing workspace together.

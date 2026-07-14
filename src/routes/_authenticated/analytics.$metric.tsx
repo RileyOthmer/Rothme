@@ -31,8 +31,8 @@ export const Route = createFileRoute("/_authenticated/analytics/$metric")({
     meta: [
       {
         title: loaderData
-          ? `${loaderData.metric.label} — Analytics · Velora`
-          : "Metric — Analytics · Velora",
+          ? `${loaderData.metric.label} — Analytics · ROTHME`
+          : "Metric — Analytics · ROTHME",
       },
       { name: "description", content: loaderData?.metric.description ?? "" },
     ],

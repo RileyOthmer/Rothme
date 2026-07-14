@@ -36,7 +36,7 @@ export const WIDGETS: Record<WidgetId, WidgetMeta> = {
   ai: {
     id: "ai",
     title: "AI Assistant",
-    primaryLine: "Ask Velora anything.",
+    primaryLine: "Ask ROTHME anything.",
     secondaryLine: "Draft a post, summarize last week, or plan a campaign — always with reasoning and confidence.",
     icon: Sparkles,
     ctaLabel: "Start a chat",

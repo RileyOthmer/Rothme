@@ -5,7 +5,7 @@ import { loadThreads, newThreadId } from "@/lib/assistant-store";
 export const Route = createFileRoute("/assistant")({
   head: () => ({
     meta: [
-      { title: "Strategist — Velora" },
+      { title: "Strategist — ROTHME" },
       {
         name: "description",
         content:

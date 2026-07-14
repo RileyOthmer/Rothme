@@ -15,8 +15,8 @@ export const Route = createFileRoute("/checkout")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Checkout — Velora" },
-      { name: "description", content: "Complete your Velora Pro subscription." },
+      { title: "Checkout — ROTHME" },
+      { name: "description", content: "Complete your ROTHME Pro subscription." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -41,7 +41,7 @@ function CheckoutPage() {
     })();
   }, [navigate, plan]);
 
-  const planLabel = plan === "pro_monthly" ? "Velora Pro — Monthly ($49/mo)" : "Velora Pro — Annual ($470/yr, save 20%)";
+  const planLabel = plan === "pro_monthly" ? "ROTHME Pro — Monthly ($49/mo)" : "ROTHME Pro — Annual ($470/yr, save 20%)";
 
   if (!isPaymentsConfigured()) {
     return (

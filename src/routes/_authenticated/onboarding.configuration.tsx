@@ -10,7 +10,7 @@ import { OnboardingShell } from "@/components/onboarding/OnboardingShell";
 import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/session.functions";
 
 export const Route = createFileRoute("/_authenticated/onboarding/configuration")({
-  head: () => ({ meta: [{ title: "Brand profile — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Brand profile — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: ConfigurationStep,
 });
 
@@ -38,7 +38,7 @@ function ConfigurationStep() {
     <OnboardingShell currentStepId="configuration" session={session ?? null}>
       <div className="mx-auto max-w-2xl">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Set up your brand.</h1>
-        <p className="mt-3 text-muted-foreground">Everything Velora writes will match this voice.</p>
+        <p className="mt-3 text-muted-foreground">Everything ROTHME writes will match this voice.</p>
 
         <div className="mt-8 space-y-5">
           <Field label="Company description">

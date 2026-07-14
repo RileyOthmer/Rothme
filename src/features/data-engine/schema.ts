@@ -2,7 +2,7 @@
  * Unified Data Engine — schema.
  *
  * ONE shape for every marketing metric, from every provider, for every user.
- * If a value doesn't fit here, it doesn't enter Velora.
+ * If a value doesn't fit here, it doesn't enter ROTHME.
  *
  * Design rules:
  * - Only PRIMITIVE metrics are stored. Ratios (CTR, CPA, ROAS, conversion

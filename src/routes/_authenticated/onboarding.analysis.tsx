@@ -14,7 +14,7 @@ import {
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/analysis")({
-  head: () => ({ meta: [{ title: "Business analysis — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Business analysis — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: AnalysisStep,
 });
 
@@ -72,7 +72,7 @@ function AnalysisStep() {
           <span className="text-muted-foreground">Live analysis</span>
         </div>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-          {loading ? "Velora is analyzing your business…" : analysis?.headline}
+          {loading ? "ROTHME is analyzing your business…" : analysis?.headline}
         </h1>
         {analysis && (
           <p className="mt-3 text-lg text-muted-foreground">{analysis.summary}</p>

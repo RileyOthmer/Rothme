@@ -60,10 +60,10 @@ export function GoalForm({ onSubmit, onCancel, initial }: GoalFormProps) {
       impact: initial?.impact ?? "medium",
       impactReason:
         initial?.impactReason ??
-        "You told Velora this matters — we'll track it and flag risks early.",
+        "You told ROTHME this matters — we'll track it and flag risks early.",
       recommendation:
         initial?.recommendation ??
-        "Check in weekly. Velora will suggest a specific action once there's a week of data.",
+        "Check in weekly. ROTHME will suggest a specific action once there's a week of data.",
       source: initial?.source ?? "user",
       confidencePct: initial?.confidencePct ?? 60,
       history: [{ date: now.toISOString().slice(0, 10), value: currentNum }],

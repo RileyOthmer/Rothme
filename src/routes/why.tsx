@@ -5,10 +5,10 @@ import { Wordmark } from "@/components/brand/Wordmark";
 export const Route = createFileRoute("/why")({
   head: () => ({
     meta: [
-      { title: "Why Velora — One workspace instead of ten tabs" },
-      { name: "description", content: "Compare life without Velora to life with Velora. One dashboard, one AI, one workspace, one bill." },
-      { property: "og:title", content: "Why Velora" },
-      { property: "og:description", content: "Stop juggling dashboards. Velora replaces them with plain English." },
+      { title: "Why ROTHME — One workspace instead of ten tabs" },
+      { name: "description", content: "Compare life without ROTHME to life with ROTHME. One dashboard, one AI, one workspace, one bill." },
+      { property: "og:title", content: "Why ROTHME" },
+      { property: "og:description", content: "Stop juggling dashboards. ROTHME replaces them with plain English." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -48,12 +48,12 @@ function Why() {
       </header>
 
       <section className="mx-auto max-w-3xl px-4 pt-20 pb-10 text-center sm:px-6 sm:pt-28">
-        <span className="eyebrow">Why Velora</span>
+        <span className="eyebrow">Why ROTHME</span>
         <h1 className="mt-6 font-serif text-4xl leading-tight text-foreground sm:text-6xl">
           The difference is what you don't do.
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-muted-foreground">
-          Velora replaces the ten tabs, the copy-pasting, and the "wait, which number is right?" — with one calm workspace.
+          ROTHME replaces the ten tabs, the copy-pasting, and the "wait, which number is right?" — with one calm workspace.
         </p>
       </section>
 
@@ -62,7 +62,7 @@ function Why() {
           <div className="rounded-2xl border border-border bg-surface p-8">
             <div className="flex items-center gap-2 text-muted-foreground">
               <X className="h-4 w-4" />
-              <span className="eyebrow">Without Velora</span>
+              <span className="eyebrow">Without ROTHME</span>
             </div>
             <ul className="mt-6 space-y-3.5">
               {WITHOUT.map((item, idx) => (
@@ -81,7 +81,7 @@ function Why() {
           <div className="rounded-2xl border border-foreground/20 bg-surface p-8 shadow-md ring-1 ring-foreground/5">
             <div className="flex items-center gap-2">
               <Check className="h-4 w-4 text-foreground" />
-              <span className="eyebrow">With Velora</span>
+              <span className="eyebrow">With ROTHME</span>
             </div>
             <ul className="mt-6 space-y-3.5">
               {WITH.map((item, idx) => (

@@ -9,7 +9,7 @@ import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/sessi
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/subscription")({
-  head: () => ({ meta: [{ title: "Choose a plan — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Choose a plan — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: SubscriptionStep,
 });
 

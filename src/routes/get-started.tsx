@@ -4,10 +4,10 @@ import { Wordmark } from "@/components/brand/Wordmark";
 export const Route = createFileRoute("/get-started")({
   head: () => ({
     meta: [
-      { title: "Get started — Velora" },
-      { name: "description", content: "Tell us about your business. Velora builds you a personalized marketing workspace in minutes." },
-      { property: "og:title", content: "Get started — Velora" },
-      { property: "og:description", content: "Answer a few questions. Velora tailors your workspace, integrations, and AI strategist to your business." },
+      { title: "Get started — ROTHME" },
+      { name: "description", content: "Tell us about your business. ROTHME builds you a personalized marketing workspace in minutes." },
+      { property: "og:title", content: "Get started — ROTHME" },
+      { property: "og:description", content: "Answer a few questions. ROTHME tailors your workspace, integrations, and AI strategist to your business." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

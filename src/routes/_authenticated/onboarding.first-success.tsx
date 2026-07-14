@@ -14,7 +14,7 @@ import { updateProfile } from "@/lib/profile.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/first-success")({
-  head: () => ({ meta: [{ title: "Your first win — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Your first win — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: FirstSuccessStep,
 });
 
@@ -54,7 +54,7 @@ function FirstSuccessStep() {
         {!celebrating ? (
           <>
             <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Pick your first win.</h1>
-            <p className="mt-3 text-muted-foreground">One action, and Velora is officially working for you.</p>
+            <p className="mt-3 text-muted-foreground">One action, and ROTHME is officially working for you.</p>
 
             <div className="mt-8 space-y-3">
               {ACTIONS.map((a) => (

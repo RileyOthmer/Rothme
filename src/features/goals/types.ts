@@ -1,4 +1,4 @@
-// Goals — user-set business targets Velora tracks against unified metrics.
+// Goals — user-set business targets ROTHME tracks against unified metrics.
 // A goal is always tied to one universal metric (revenue, orders, roas, ...)
 // so progress can be computed from the Unified Data Engine.
 

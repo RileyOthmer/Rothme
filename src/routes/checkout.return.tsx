@@ -11,7 +11,7 @@ export const Route = createFileRoute("/checkout/return")({
   }),
   head: () => ({
     meta: [
-      { title: "Welcome to Velora Pro" },
+      { title: "Welcome to ROTHME Pro" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -96,7 +96,7 @@ function CheckoutReturn() {
         {state === "success" && (
           <>
             <CheckCircle2 className="mx-auto h-14 w-14 text-emerald-500" />
-            <h1 className="mt-6 text-3xl font-semibold">You're on Velora Pro.</h1>
+            <h1 className="mt-6 text-3xl font-semibold">You're on ROTHME Pro.</h1>
             <p className="mt-3 text-muted-foreground">
               All Pro features are unlocked. A receipt is on the way to your inbox.
             </p>

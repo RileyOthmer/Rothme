@@ -15,7 +15,7 @@ export type DashboardPrefs = {
   updatedAt: string;
 };
 
-const PREFS_KEY = "velora.dashboard.prefs.v1";
+const PREFS_KEY = "ROTHME.dashboard.prefs.v1";
 
 // Signals from the onboarding form we care about.
 export type IntentSignals = {

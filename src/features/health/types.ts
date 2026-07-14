@@ -1,4 +1,4 @@
-// Marketing Health Score — Velora's signature verdict.
+// Marketing Health Score — ROTHME's signature verdict.
 // Seven pillars, each scored 0-100, all in plain English.
 // Overall = confidence-weighted average of pillars with enough data.
 

@@ -8,7 +8,7 @@ import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/sessi
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/connections")({
-  head: () => ({ meta: [{ title: "Connect platforms — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Connect platforms — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: ConnectionsStep,
 });
 
@@ -24,7 +24,7 @@ type PlatformCard = {
 const PLATFORMS: PlatformCard[] = [
   { id: "instagram", name: "Instagram", initials: "IG", description: "Posts, reels, insights.", benefit: "See what's actually growing your following.", gradient: "from-[#f58529] via-[#dd2a7b] to-[#8134af]" },
   { id: "facebook", name: "Facebook", initials: "FB", description: "Pages and audience insights.", benefit: "Track reach and engagement in one place.", gradient: "from-[#1877f2] to-[#0a4bc0]" },
-  { id: "threads", name: "Threads", initials: "TH", description: "Posts and replies.", benefit: "Follow the conversation Velora spots for you.", gradient: "from-[#111] to-[#333]" },
+  { id: "threads", name: "Threads", initials: "TH", description: "Posts and replies.", benefit: "Follow the conversation ROTHME spots for you.", gradient: "from-[#111] to-[#333]" },
   { id: "tiktok", name: "TikTok", initials: "TT", description: "Video views and follows.", benefit: "Know which videos actually work.", gradient: "from-[#25f4ee] via-[#111] to-[#fe2c55]" },
   { id: "linkedin", name: "LinkedIn", initials: "IN", description: "Company page and posts.", benefit: "Grow your professional reach faster.", gradient: "from-[#0a66c2] to-[#004182]" },
   { id: "x", name: "X", initials: "X", description: "Posts and engagement.", benefit: "See which posts drove traffic.", gradient: "from-[#0f0f0f] to-[#2a2a2a]" },
@@ -32,7 +32,7 @@ const PLATFORMS: PlatformCard[] = [
   { id: "youtube", name: "YouTube", initials: "YT", description: "Videos and channel data.", benefit: "See how each video performs over time.", gradient: "from-[#ff0000] to-[#b30000]" },
   { id: "google_business", name: "Google Business", initials: "GB", description: "Local listing and reviews.", benefit: "Turn local searches into visits.", gradient: "from-[#4285f4] to-[#0f9d58]" },
   { id: "mailchimp", name: "Mailchimp", initials: "MC", description: "Email campaigns.", benefit: "Attribute revenue to the right send.", gradient: "from-[#ffe01b] to-[#c8b300]" },
-  { id: "hubspot", name: "HubSpot", initials: "HS", description: "CRM and contacts.", benefit: "Bring your pipeline into Velora.", gradient: "from-[#ff7a59] to-[#c95530]" },
+  { id: "hubspot", name: "HubSpot", initials: "HS", description: "CRM and contacts.", benefit: "Bring your pipeline into ROTHME.", gradient: "from-[#ff7a59] to-[#c95530]" },
   { id: "shopify", name: "Shopify", initials: "SH", description: "Sales and products.", benefit: "Tie marketing to actual revenue.", gradient: "from-[#96bf48] to-[#5e8e3e]" },
   { id: "google_analytics", name: "Google Analytics", initials: "GA", description: "Website behavior.", benefit: "See what's driving traffic that converts.", gradient: "from-[#f9ab00] to-[#e37400]" },
 ];
@@ -67,7 +67,7 @@ function ConnectionsStep() {
   return (
     <OnboardingShell currentStepId="connections" session={session ?? null}>
       <div className="mx-auto max-w-4xl">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Connect the platforms Velora should watch.</h1>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">Connect the platforms ROTHME should watch.</h1>
         <p className="mt-3 text-muted-foreground">
           Connect one to see real value fast. You can always add more later.
         </p>

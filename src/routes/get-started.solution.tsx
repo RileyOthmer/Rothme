@@ -77,7 +77,7 @@ function LoadingState() {
         Reading your answers…
       </h1>
       <p className="mt-4 text-[15px] text-muted-foreground">
-        Our strategist is matching your business to the right Velora setup. This takes about ten seconds.
+        Our strategist is matching your business to the right ROTHME setup. This takes about ten seconds.
       </p>
       <div className="mt-10 space-y-3">
         {[0, 1, 2].map((k) => (
@@ -164,7 +164,7 @@ function ResultView({ data, onContinue }: { data: PersonalizedSolution; onContin
           See pricing <ArrowRight className="h-4 w-4" />
         </button>
         <Link to="/why" className="text-sm text-muted-foreground hover:text-foreground">
-          Why Velora →
+          Why ROTHME →
         </Link>
       </div>
     </div>

@@ -18,13 +18,13 @@ import { Wordmark } from "@/components/brand/Wordmark";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Velora — Marketing made simpler. Business growth made smarter." },
+      { title: "ROTHME — Marketing made simpler. Business growth made smarter." },
       {
         name: "description",
         content:
-          "Velora brings AI, marketing, social, analytics, automation, and reporting into one workspace — so you can focus on growing your business.",
+          "ROTHME brings AI, marketing, social, analytics, automation, and reporting into one workspace — so you can focus on growing your business.",
       },
-      { property: "og:title", content: "Velora — Marketing made simpler. Business growth made smarter." },
+      { property: "og:title", content: "ROTHME — Marketing made simpler. Business growth made smarter." },
       { property: "og:description", content: "One workspace. One AI strategist. Everything you need to grow." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "/" },
@@ -100,7 +100,7 @@ function Header() {
         <nav className="hidden items-center gap-7 text-sm text-muted-foreground md:flex">
           <a href="#capabilities" className="hover:text-foreground">Product</a>
           <a href="#how" className="hover:text-foreground">How it works</a>
-          <Link to="/why" className="hover:text-foreground">Why Velora</Link>
+          <Link to="/why" className="hover:text-foreground">Why ROTHME</Link>
           <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
         </nav>
         <div className="flex items-center gap-2">
@@ -128,7 +128,7 @@ function Hero() {
           <span className="font-serif italic font-normal">Growth made smarter.</span>
         </h1>
         <p className="mx-auto mt-6 max-w-xl text-[17px] leading-relaxed text-muted-foreground">
-          Velora brings AI, marketing, social, analytics, automation, reporting, and collaboration into one platform — so you can focus on growing your business.
+          ROTHME brings AI, marketing, social, analytics, automation, reporting, and collaboration into one platform — so you can focus on growing your business.
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link to="/get-started" className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:opacity-90">
@@ -306,7 +306,7 @@ function HowItWorks() {
     <section id="how" className="border-b border-border/70 bg-surface-2/40">
       <div className="mx-auto max-w-6xl px-4 py-24 sm:px-6">
         <div className="max-w-2xl">
-          <span className="eyebrow">How Velora works</span>
+          <span className="eyebrow">How ROTHME works</span>
           <h2 className="mt-4 text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
             Set it up in minutes. Grow every day.
           </h2>
@@ -366,7 +366,7 @@ function CTA() {
           Ready to run your marketing on one screen?
         </h2>
         <p className="mx-auto mt-4 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
-          Answer twelve quick questions. Velora will build a personalized workspace for your business — free.
+          Answer twelve quick questions. ROTHME will build a personalized workspace for your business — free.
         </p>
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link to="/get-started" className="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-sm transition-all hover:opacity-90">
@@ -401,7 +401,7 @@ function Footer() {
             { label: "Features", href: "#capabilities" },
             { label: "How it works", href: "#how" },
             { label: "Pricing", to: "/pricing" as const },
-            { label: "Why Velora", to: "/why" as const },
+            { label: "Why ROTHME", to: "/why" as const },
           ]} />
           <FooterCol title="Company" links={[
             { label: "About", href: "#" },
@@ -415,7 +415,7 @@ function Footer() {
           ]} />
         </div>
         <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} Velora.</span>
+          <span>© {new Date().getFullYear()} ROTHME.</span>
           <span>Made for people who'd rather run their business.</span>
         </div>
       </div>

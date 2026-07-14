@@ -20,8 +20,8 @@ import { PlatformEditor } from "@/features/dev-center/PlatformEditor";
 export const Route = createFileRoute("/_authenticated/settings/developer")({
   head: () => ({
     meta: [
-      { title: "Developer Center — Velora" },
-      { name: "description", content: "Admin-only integration engine: add any platform, wire endpoints, and map API fields to Velora KPIs." },
+      { title: "Developer Center — ROTHME" },
+      { name: "description", content: "Admin-only integration engine: add any platform, wire endpoints, and map API fields to ROTHME KPIs." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -101,7 +101,7 @@ function DeveloperCenter() {
             <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Admin</p>
             <h1 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">Developer Center</h1>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              Modular integration engine. Add any platform, wire unlimited endpoints, test them, and click JSON fields to map them to Velora KPIs — no code.
+              Modular integration engine. Add any platform, wire unlimited endpoints, test them, and click JSON fields to map them to ROTHME KPIs — no code.
             </p>
           </div>
           <div className="flex items-center gap-2">

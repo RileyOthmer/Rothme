@@ -1,7 +1,7 @@
 import type { Goal } from "./types";
 import { getSeedGoals } from "./seed";
 
-const STORAGE_KEY = "velora.goals.v1";
+const STORAGE_KEY = "ROTHME.goals.v1";
 
 function safeParse(raw: string | null): Goal[] | null {
   if (!raw) return null;

@@ -36,7 +36,7 @@ const STEPS: Step[] = [
   { key: "businessSize", kind: "single", title: "How big is your business?", options: BUSINESS_SIZES },
   { key: "country", kind: "text", title: "Where are you based?", placeholder: "Country" },
   { key: "timezone", kind: "text", title: "What timezone do you work in?", placeholder: "e.g. Pacific Time (PT)", optional: true },
-  { key: "experience", kind: "single", title: "How comfortable are you with marketing?", hint: "There's no wrong answer — Velora adapts.", options: EXPERIENCE },
+  { key: "experience", kind: "single", title: "How comfortable are you with marketing?", hint: "There's no wrong answer — ROTHME adapts.", options: EXPERIENCE },
   { key: "primaryGoals", kind: "multi", title: "What matters most right now?", hint: "Pick everything that fits.", options: GOALS },
   { key: "teamSize", kind: "single", title: "How many people help with marketing?", options: ["Just me", "2–3", "4–10", "11+"] as const },
   { key: "currentTools", kind: "multi", title: "What are you using today?", hint: "So we know what to connect.", options: TOOLS },

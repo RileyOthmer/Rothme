@@ -1,14 +1,14 @@
-# Velora Onboarding Redesign — Plan
+# ROTHME Onboarding Redesign — Plan
 
 ## Goal
-Replace the current 3-step wizard (`/get-started`, `/get-started/solution`) with a full 11-step guided onboarding that feels like Velora is learning about the business and building the workspace in real time.
+Replace the current 3-step wizard (`/get-started`, `/get-started/solution`) with a full 11-step guided onboarding that feels like ROTHME is learning about the business and building the workspace in real time.
 
 ## Architecture
 
 Single authenticated layout route `/_authenticated/onboarding` that hosts all 11 steps as child routes, plus a persistent shell:
 - Progress rail (left) — step list + completion %
 - Content canvas (center) — active step
-- AI companion panel (right, collapsible) — live analysis, checklist, "Velora is thinking…" states
+- AI companion panel (right, collapsible) — live analysis, checklist, "ROTHME is thinking…" states
 
 State: one `onboarding_sessions` row per user (jsonb `answers`, jsonb `analysis`, jsonb `checklist`, `current_step`, `completed_at`). Autosaves on every field blur via a debounced `saveOnboardingStep` server fn. Reuses existing `onboarding_responses` table where fields overlap; new columns added via migration.
 
@@ -56,7 +56,7 @@ Server fns (all `_authenticated`, `requireSupabaseAuth`):
 
 ## UI System
 
-- Reuses existing Velora tokens in `src/styles.css` (no new palette).
+- Reuses existing ROTHME tokens in `src/styles.css` (no new palette).
 - Glassmorphism cards, gradient borders, framer-motion page transitions, animated progress ring, typing-effect for AI lines.
 - Persistent checklist component in shell, updates live as steps complete.
 - Every step routed so back/forward works and autosave restores position.

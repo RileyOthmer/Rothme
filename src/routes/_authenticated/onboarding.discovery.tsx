@@ -11,7 +11,7 @@ import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/sessi
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/discovery")({
-  head: () => ({ meta: [{ title: "About your business — Velora" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "About your business — ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: DiscoveryStep,
 });
 
@@ -61,7 +61,7 @@ const SUB_STEPS: SubStep[] = [
   {
     id: "scale",
     title: "Tell us about the shape of your team.",
-    subtitle: "This helps Velora right-size recommendations.",
+    subtitle: "This helps ROTHME right-size recommendations.",
     fields: [
       { key: "companySize", label: "Company size", type: "select", options: SIZES },
       { key: "employees", label: "People on marketing", type: "select", options: EMPLOYEES },
@@ -107,7 +107,7 @@ const SUB_STEPS: SubStep[] = [
   {
     id: "pain",
     title: "Where does it hurt most?",
-    subtitle: "This is what Velora will attack first.",
+    subtitle: "This is what ROTHME will attack first.",
     fields: [
       { key: "painPoints", label: "Pain points", type: "chips", options: PAIN },
       { key: "aiLevel", label: "Preferred AI assistance level", type: "select", options: AI_LEVELS },
