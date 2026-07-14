@@ -348,6 +348,7 @@ export type Database = {
           event_type: string
           id: string
           step_id: string | null
+          user_id: string | null
         }
         Insert: {
           anon_id: string
@@ -355,6 +356,7 @@ export type Database = {
           event_type: string
           id?: string
           step_id?: string | null
+          user_id?: string | null
         }
         Update: {
           anon_id?: string
@@ -362,6 +364,7 @@ export type Database = {
           event_type?: string
           id?: string
           step_id?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -381,6 +384,7 @@ export type Database = {
           referral_source: string | null
           timezone: string | null
           updated_at: string
+          user_id: string | null
           user_type: string[]
         }
         Insert: {
@@ -398,6 +402,7 @@ export type Database = {
           referral_source?: string | null
           timezone?: string | null
           updated_at?: string
+          user_id?: string | null
           user_type?: string[]
         }
         Update: {
@@ -415,6 +420,7 @@ export type Database = {
           referral_source?: string | null
           timezone?: string | null
           updated_at?: string
+          user_id?: string | null
           user_type?: string[]
         }
         Relationships: []
@@ -679,7 +685,7 @@ export type Database = {
           unit: string | null
           updated_at: string
           validation: Json
-          ROTHME_kpi: string
+          velora_kpi: string
         }
         Insert: {
           aggregation?: string | null
@@ -700,7 +706,7 @@ export type Database = {
           unit?: string | null
           updated_at?: string
           validation?: Json
-          ROTHME_kpi: string
+          velora_kpi: string
         }
         Update: {
           aggregation?: string | null
@@ -721,7 +727,7 @@ export type Database = {
           unit?: string | null
           updated_at?: string
           validation?: Json
-          ROTHME_kpi?: string
+          velora_kpi?: string
         }
         Relationships: [
           {
@@ -1655,27 +1661,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      claim_first_admin: { Args: never; Returns: boolean }
-      ensure_personal_org: {
-        Args: { _name: string; _user: string }
-        Returns: string
-      }
-      has_active_subscription: {
-        Args: { check_env?: string; user_uuid: string }
-        Returns: boolean
-      }
-      has_org_role: {
-        Args: { _min_role: string; _org: string; _user: string }
-        Returns: boolean
-      }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      is_org_member: { Args: { _org: string; _user: string }; Returns: boolean }
+      [_ in never]: never
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
