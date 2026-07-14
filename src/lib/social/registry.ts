@@ -7,6 +7,7 @@
  */
 import type { SocialAdapter, SocialPlatformId } from "./types";
 import { createStubAdapter } from "./adapters/stub";
+import { createFacebookAdapter } from "./adapters/facebook";
 
 type Factory = () => SocialAdapter;
 
@@ -30,7 +31,9 @@ export function listAdapters(): SocialAdapter[] {
 export function bootstrapSocialAdapters(): void {
   if (REGISTRY.size > 0) return;
   registerAdapter(() => createStubAdapter({ id: "instagram", name: "Instagram", category: "social" }));
-  registerAdapter(() => createStubAdapter({ id: "facebook", name: "Facebook", category: "social" }));
+  registerAdapter(() => (process.env.FACEBOOK_APP_ID && process.env.FACEBOOK_APP_SECRET)
+    ? createFacebookAdapter()
+    : createStubAdapter({ id: "facebook", name: "Facebook", category: "social" }));
   registerAdapter(() => createStubAdapter({ id: "threads", name: "Threads", category: "social" }));
   registerAdapter(() => createStubAdapter({ id: "tiktok", name: "TikTok", category: "video" }));
   registerAdapter(() => createStubAdapter({ id: "linkedin", name: "LinkedIn", category: "professional" }));
