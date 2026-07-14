@@ -53,9 +53,15 @@ import { Route as AuthenticatedPublishingCalendarRouteImport } from './routes/_a
 import { Route as AuthenticatedPublishingApprovalsRouteImport } from './routes/_authenticated/publishing.approvals'
 import { Route as AuthenticatedOnboardingWorkspaceBuildRouteImport } from './routes/_authenticated/onboarding.workspace-build'
 import { Route as AuthenticatedOnboardingWelcomeRouteImport } from './routes/_authenticated/onboarding.welcome'
+import { Route as AuthenticatedOnboardingWalkthroughRouteImport } from './routes/_authenticated/onboarding.walkthrough'
+import { Route as AuthenticatedOnboardingSubscriptionRouteImport } from './routes/_authenticated/onboarding.subscription'
+import { Route as AuthenticatedOnboardingMarketingPlanRouteImport } from './routes/_authenticated/onboarding.marketing-plan'
+import { Route as AuthenticatedOnboardingFirstSuccessRouteImport } from './routes/_authenticated/onboarding.first-success'
 import { Route as AuthenticatedOnboardingDiscoveryRouteImport } from './routes/_authenticated/onboarding.discovery'
 import { Route as AuthenticatedOnboardingConnectionsRouteImport } from './routes/_authenticated/onboarding.connections'
+import { Route as AuthenticatedOnboardingConfigurationRouteImport } from './routes/_authenticated/onboarding.configuration'
 import { Route as AuthenticatedOnboardingAnalysisRouteImport } from './routes/_authenticated/onboarding.analysis'
+import { Route as AuthenticatedOnboardingAiTrainingRouteImport } from './routes/_authenticated/onboarding.ai-training'
 import { Route as AuthenticatedDevCenterWebhooksRouteImport } from './routes/_authenticated/dev-center.webhooks'
 import { Route as AuthenticatedDevCenterSyncRouteImport } from './routes/_authenticated/dev-center.sync'
 import { Route as AuthenticatedDevCenterStatusRouteImport } from './routes/_authenticated/dev-center.status'
@@ -326,6 +332,30 @@ const AuthenticatedOnboardingWelcomeRoute =
     path: '/welcome',
     getParentRoute: () => AuthenticatedOnboardingRoute,
   } as any)
+const AuthenticatedOnboardingWalkthroughRoute =
+  AuthenticatedOnboardingWalkthroughRouteImport.update({
+    id: '/walkthrough',
+    path: '/walkthrough',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingSubscriptionRoute =
+  AuthenticatedOnboardingSubscriptionRouteImport.update({
+    id: '/subscription',
+    path: '/subscription',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingMarketingPlanRoute =
+  AuthenticatedOnboardingMarketingPlanRouteImport.update({
+    id: '/marketing-plan',
+    path: '/marketing-plan',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingFirstSuccessRoute =
+  AuthenticatedOnboardingFirstSuccessRouteImport.update({
+    id: '/first-success',
+    path: '/first-success',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
 const AuthenticatedOnboardingDiscoveryRoute =
   AuthenticatedOnboardingDiscoveryRouteImport.update({
     id: '/discovery',
@@ -338,10 +368,22 @@ const AuthenticatedOnboardingConnectionsRoute =
     path: '/connections',
     getParentRoute: () => AuthenticatedOnboardingRoute,
   } as any)
+const AuthenticatedOnboardingConfigurationRoute =
+  AuthenticatedOnboardingConfigurationRouteImport.update({
+    id: '/configuration',
+    path: '/configuration',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
 const AuthenticatedOnboardingAnalysisRoute =
   AuthenticatedOnboardingAnalysisRouteImport.update({
     id: '/analysis',
     path: '/analysis',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingAiTrainingRoute =
+  AuthenticatedOnboardingAiTrainingRouteImport.update({
+    id: '/ai-training',
+    path: '/ai-training',
     getParentRoute: () => AuthenticatedOnboardingRoute,
   } as any)
 const AuthenticatedDevCenterWebhooksRoute =
@@ -605,9 +647,15 @@ export interface FileRoutesByFullPath {
   '/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
   '/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
   '/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
+  '/onboarding/ai-training': typeof AuthenticatedOnboardingAiTrainingRoute
   '/onboarding/analysis': typeof AuthenticatedOnboardingAnalysisRoute
+  '/onboarding/configuration': typeof AuthenticatedOnboardingConfigurationRoute
   '/onboarding/connections': typeof AuthenticatedOnboardingConnectionsRoute
   '/onboarding/discovery': typeof AuthenticatedOnboardingDiscoveryRoute
+  '/onboarding/first-success': typeof AuthenticatedOnboardingFirstSuccessRoute
+  '/onboarding/marketing-plan': typeof AuthenticatedOnboardingMarketingPlanRoute
+  '/onboarding/subscription': typeof AuthenticatedOnboardingSubscriptionRoute
+  '/onboarding/walkthrough': typeof AuthenticatedOnboardingWalkthroughRoute
   '/onboarding/welcome': typeof AuthenticatedOnboardingWelcomeRoute
   '/onboarding/workspace-build': typeof AuthenticatedOnboardingWorkspaceBuildRoute
   '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
@@ -683,9 +731,15 @@ export interface FileRoutesByTo {
   '/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
   '/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
   '/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
+  '/onboarding/ai-training': typeof AuthenticatedOnboardingAiTrainingRoute
   '/onboarding/analysis': typeof AuthenticatedOnboardingAnalysisRoute
+  '/onboarding/configuration': typeof AuthenticatedOnboardingConfigurationRoute
   '/onboarding/connections': typeof AuthenticatedOnboardingConnectionsRoute
   '/onboarding/discovery': typeof AuthenticatedOnboardingDiscoveryRoute
+  '/onboarding/first-success': typeof AuthenticatedOnboardingFirstSuccessRoute
+  '/onboarding/marketing-plan': typeof AuthenticatedOnboardingMarketingPlanRoute
+  '/onboarding/subscription': typeof AuthenticatedOnboardingSubscriptionRoute
+  '/onboarding/walkthrough': typeof AuthenticatedOnboardingWalkthroughRoute
   '/onboarding/welcome': typeof AuthenticatedOnboardingWelcomeRoute
   '/onboarding/workspace-build': typeof AuthenticatedOnboardingWorkspaceBuildRoute
   '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
@@ -767,9 +821,15 @@ export interface FileRoutesById {
   '/_authenticated/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
   '/_authenticated/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
   '/_authenticated/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
+  '/_authenticated/onboarding/ai-training': typeof AuthenticatedOnboardingAiTrainingRoute
   '/_authenticated/onboarding/analysis': typeof AuthenticatedOnboardingAnalysisRoute
+  '/_authenticated/onboarding/configuration': typeof AuthenticatedOnboardingConfigurationRoute
   '/_authenticated/onboarding/connections': typeof AuthenticatedOnboardingConnectionsRoute
   '/_authenticated/onboarding/discovery': typeof AuthenticatedOnboardingDiscoveryRoute
+  '/_authenticated/onboarding/first-success': typeof AuthenticatedOnboardingFirstSuccessRoute
+  '/_authenticated/onboarding/marketing-plan': typeof AuthenticatedOnboardingMarketingPlanRoute
+  '/_authenticated/onboarding/subscription': typeof AuthenticatedOnboardingSubscriptionRoute
+  '/_authenticated/onboarding/walkthrough': typeof AuthenticatedOnboardingWalkthroughRoute
   '/_authenticated/onboarding/welcome': typeof AuthenticatedOnboardingWelcomeRoute
   '/_authenticated/onboarding/workspace-build': typeof AuthenticatedOnboardingWorkspaceBuildRoute
   '/_authenticated/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
@@ -851,9 +911,15 @@ export interface FileRouteTypes {
     | '/dev-center/status'
     | '/dev-center/sync'
     | '/dev-center/webhooks'
+    | '/onboarding/ai-training'
     | '/onboarding/analysis'
+    | '/onboarding/configuration'
     | '/onboarding/connections'
     | '/onboarding/discovery'
+    | '/onboarding/first-success'
+    | '/onboarding/marketing-plan'
+    | '/onboarding/subscription'
+    | '/onboarding/walkthrough'
     | '/onboarding/welcome'
     | '/onboarding/workspace-build'
     | '/publishing/approvals'
@@ -929,9 +995,15 @@ export interface FileRouteTypes {
     | '/dev-center/status'
     | '/dev-center/sync'
     | '/dev-center/webhooks'
+    | '/onboarding/ai-training'
     | '/onboarding/analysis'
+    | '/onboarding/configuration'
     | '/onboarding/connections'
     | '/onboarding/discovery'
+    | '/onboarding/first-success'
+    | '/onboarding/marketing-plan'
+    | '/onboarding/subscription'
+    | '/onboarding/walkthrough'
     | '/onboarding/welcome'
     | '/onboarding/workspace-build'
     | '/publishing/approvals'
@@ -1012,9 +1084,15 @@ export interface FileRouteTypes {
     | '/_authenticated/dev-center/status'
     | '/_authenticated/dev-center/sync'
     | '/_authenticated/dev-center/webhooks'
+    | '/_authenticated/onboarding/ai-training'
     | '/_authenticated/onboarding/analysis'
+    | '/_authenticated/onboarding/configuration'
     | '/_authenticated/onboarding/connections'
     | '/_authenticated/onboarding/discovery'
+    | '/_authenticated/onboarding/first-success'
+    | '/_authenticated/onboarding/marketing-plan'
+    | '/_authenticated/onboarding/subscription'
+    | '/_authenticated/onboarding/walkthrough'
     | '/_authenticated/onboarding/welcome'
     | '/_authenticated/onboarding/workspace-build'
     | '/_authenticated/publishing/approvals'
@@ -1365,6 +1443,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingWelcomeRouteImport
       parentRoute: typeof AuthenticatedOnboardingRoute
     }
+    '/_authenticated/onboarding/walkthrough': {
+      id: '/_authenticated/onboarding/walkthrough'
+      path: '/walkthrough'
+      fullPath: '/onboarding/walkthrough'
+      preLoaderRoute: typeof AuthenticatedOnboardingWalkthroughRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/subscription': {
+      id: '/_authenticated/onboarding/subscription'
+      path: '/subscription'
+      fullPath: '/onboarding/subscription'
+      preLoaderRoute: typeof AuthenticatedOnboardingSubscriptionRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/marketing-plan': {
+      id: '/_authenticated/onboarding/marketing-plan'
+      path: '/marketing-plan'
+      fullPath: '/onboarding/marketing-plan'
+      preLoaderRoute: typeof AuthenticatedOnboardingMarketingPlanRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/first-success': {
+      id: '/_authenticated/onboarding/first-success'
+      path: '/first-success'
+      fullPath: '/onboarding/first-success'
+      preLoaderRoute: typeof AuthenticatedOnboardingFirstSuccessRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
     '/_authenticated/onboarding/discovery': {
       id: '/_authenticated/onboarding/discovery'
       path: '/discovery'
@@ -1379,11 +1485,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingConnectionsRouteImport
       parentRoute: typeof AuthenticatedOnboardingRoute
     }
+    '/_authenticated/onboarding/configuration': {
+      id: '/_authenticated/onboarding/configuration'
+      path: '/configuration'
+      fullPath: '/onboarding/configuration'
+      preLoaderRoute: typeof AuthenticatedOnboardingConfigurationRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
     '/_authenticated/onboarding/analysis': {
       id: '/_authenticated/onboarding/analysis'
       path: '/analysis'
       fullPath: '/onboarding/analysis'
       preLoaderRoute: typeof AuthenticatedOnboardingAnalysisRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/ai-training': {
+      id: '/_authenticated/onboarding/ai-training'
+      path: '/ai-training'
+      fullPath: '/onboarding/ai-training'
+      preLoaderRoute: typeof AuthenticatedOnboardingAiTrainingRouteImport
       parentRoute: typeof AuthenticatedOnboardingRoute
     }
     '/_authenticated/dev-center/webhooks': {
@@ -1726,9 +1846,15 @@ const AuthenticatedDevCenterRouteWithChildren =
   )
 
 interface AuthenticatedOnboardingRouteChildren {
+  AuthenticatedOnboardingAiTrainingRoute: typeof AuthenticatedOnboardingAiTrainingRoute
   AuthenticatedOnboardingAnalysisRoute: typeof AuthenticatedOnboardingAnalysisRoute
+  AuthenticatedOnboardingConfigurationRoute: typeof AuthenticatedOnboardingConfigurationRoute
   AuthenticatedOnboardingConnectionsRoute: typeof AuthenticatedOnboardingConnectionsRoute
   AuthenticatedOnboardingDiscoveryRoute: typeof AuthenticatedOnboardingDiscoveryRoute
+  AuthenticatedOnboardingFirstSuccessRoute: typeof AuthenticatedOnboardingFirstSuccessRoute
+  AuthenticatedOnboardingMarketingPlanRoute: typeof AuthenticatedOnboardingMarketingPlanRoute
+  AuthenticatedOnboardingSubscriptionRoute: typeof AuthenticatedOnboardingSubscriptionRoute
+  AuthenticatedOnboardingWalkthroughRoute: typeof AuthenticatedOnboardingWalkthroughRoute
   AuthenticatedOnboardingWelcomeRoute: typeof AuthenticatedOnboardingWelcomeRoute
   AuthenticatedOnboardingWorkspaceBuildRoute: typeof AuthenticatedOnboardingWorkspaceBuildRoute
   AuthenticatedOnboardingIndexRoute: typeof AuthenticatedOnboardingIndexRoute
@@ -1736,11 +1862,23 @@ interface AuthenticatedOnboardingRouteChildren {
 
 const AuthenticatedOnboardingRouteChildren: AuthenticatedOnboardingRouteChildren =
   {
+    AuthenticatedOnboardingAiTrainingRoute:
+      AuthenticatedOnboardingAiTrainingRoute,
     AuthenticatedOnboardingAnalysisRoute: AuthenticatedOnboardingAnalysisRoute,
+    AuthenticatedOnboardingConfigurationRoute:
+      AuthenticatedOnboardingConfigurationRoute,
     AuthenticatedOnboardingConnectionsRoute:
       AuthenticatedOnboardingConnectionsRoute,
     AuthenticatedOnboardingDiscoveryRoute:
       AuthenticatedOnboardingDiscoveryRoute,
+    AuthenticatedOnboardingFirstSuccessRoute:
+      AuthenticatedOnboardingFirstSuccessRoute,
+    AuthenticatedOnboardingMarketingPlanRoute:
+      AuthenticatedOnboardingMarketingPlanRoute,
+    AuthenticatedOnboardingSubscriptionRoute:
+      AuthenticatedOnboardingSubscriptionRoute,
+    AuthenticatedOnboardingWalkthroughRoute:
+      AuthenticatedOnboardingWalkthroughRoute,
     AuthenticatedOnboardingWelcomeRoute: AuthenticatedOnboardingWelcomeRoute,
     AuthenticatedOnboardingWorkspaceBuildRoute:
       AuthenticatedOnboardingWorkspaceBuildRoute,
