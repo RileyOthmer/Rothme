@@ -51,6 +51,11 @@ import { Route as AuthenticatedPublishingDraftsRouteImport } from './routes/_aut
 import { Route as AuthenticatedPublishingComposeRouteImport } from './routes/_authenticated/publishing.compose'
 import { Route as AuthenticatedPublishingCalendarRouteImport } from './routes/_authenticated/publishing.calendar'
 import { Route as AuthenticatedPublishingApprovalsRouteImport } from './routes/_authenticated/publishing.approvals'
+import { Route as AuthenticatedOnboardingWorkspaceBuildRouteImport } from './routes/_authenticated/onboarding.workspace-build'
+import { Route as AuthenticatedOnboardingWelcomeRouteImport } from './routes/_authenticated/onboarding.welcome'
+import { Route as AuthenticatedOnboardingDiscoveryRouteImport } from './routes/_authenticated/onboarding.discovery'
+import { Route as AuthenticatedOnboardingConnectionsRouteImport } from './routes/_authenticated/onboarding.connections'
+import { Route as AuthenticatedOnboardingAnalysisRouteImport } from './routes/_authenticated/onboarding.analysis'
 import { Route as AuthenticatedDevCenterWebhooksRouteImport } from './routes/_authenticated/dev-center.webhooks'
 import { Route as AuthenticatedDevCenterSyncRouteImport } from './routes/_authenticated/dev-center.sync'
 import { Route as AuthenticatedDevCenterStatusRouteImport } from './routes/_authenticated/dev-center.status'
@@ -308,6 +313,36 @@ const AuthenticatedPublishingApprovalsRoute =
     id: '/approvals',
     path: '/approvals',
     getParentRoute: () => AuthenticatedPublishingRoute,
+  } as any)
+const AuthenticatedOnboardingWorkspaceBuildRoute =
+  AuthenticatedOnboardingWorkspaceBuildRouteImport.update({
+    id: '/workspace-build',
+    path: '/workspace-build',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingWelcomeRoute =
+  AuthenticatedOnboardingWelcomeRouteImport.update({
+    id: '/welcome',
+    path: '/welcome',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingDiscoveryRoute =
+  AuthenticatedOnboardingDiscoveryRouteImport.update({
+    id: '/discovery',
+    path: '/discovery',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingConnectionsRoute =
+  AuthenticatedOnboardingConnectionsRouteImport.update({
+    id: '/connections',
+    path: '/connections',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
+  } as any)
+const AuthenticatedOnboardingAnalysisRoute =
+  AuthenticatedOnboardingAnalysisRouteImport.update({
+    id: '/analysis',
+    path: '/analysis',
+    getParentRoute: () => AuthenticatedOnboardingRoute,
   } as any)
 const AuthenticatedDevCenterWebhooksRoute =
   AuthenticatedDevCenterWebhooksRouteImport.update({
@@ -570,6 +605,11 @@ export interface FileRoutesByFullPath {
   '/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
   '/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
   '/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
+  '/onboarding/analysis': typeof AuthenticatedOnboardingAnalysisRoute
+  '/onboarding/connections': typeof AuthenticatedOnboardingConnectionsRoute
+  '/onboarding/discovery': typeof AuthenticatedOnboardingDiscoveryRoute
+  '/onboarding/welcome': typeof AuthenticatedOnboardingWelcomeRoute
+  '/onboarding/workspace-build': typeof AuthenticatedOnboardingWorkspaceBuildRoute
   '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
   '/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
   '/publishing/compose': typeof AuthenticatedPublishingComposeRoute
@@ -643,6 +683,11 @@ export interface FileRoutesByTo {
   '/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
   '/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
   '/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
+  '/onboarding/analysis': typeof AuthenticatedOnboardingAnalysisRoute
+  '/onboarding/connections': typeof AuthenticatedOnboardingConnectionsRoute
+  '/onboarding/discovery': typeof AuthenticatedOnboardingDiscoveryRoute
+  '/onboarding/welcome': typeof AuthenticatedOnboardingWelcomeRoute
+  '/onboarding/workspace-build': typeof AuthenticatedOnboardingWorkspaceBuildRoute
   '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
   '/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
   '/publishing/compose': typeof AuthenticatedPublishingComposeRoute
@@ -722,6 +767,11 @@ export interface FileRoutesById {
   '/_authenticated/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
   '/_authenticated/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
   '/_authenticated/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
+  '/_authenticated/onboarding/analysis': typeof AuthenticatedOnboardingAnalysisRoute
+  '/_authenticated/onboarding/connections': typeof AuthenticatedOnboardingConnectionsRoute
+  '/_authenticated/onboarding/discovery': typeof AuthenticatedOnboardingDiscoveryRoute
+  '/_authenticated/onboarding/welcome': typeof AuthenticatedOnboardingWelcomeRoute
+  '/_authenticated/onboarding/workspace-build': typeof AuthenticatedOnboardingWorkspaceBuildRoute
   '/_authenticated/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
   '/_authenticated/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
   '/_authenticated/publishing/compose': typeof AuthenticatedPublishingComposeRoute
@@ -801,6 +851,11 @@ export interface FileRouteTypes {
     | '/dev-center/status'
     | '/dev-center/sync'
     | '/dev-center/webhooks'
+    | '/onboarding/analysis'
+    | '/onboarding/connections'
+    | '/onboarding/discovery'
+    | '/onboarding/welcome'
+    | '/onboarding/workspace-build'
     | '/publishing/approvals'
     | '/publishing/calendar'
     | '/publishing/compose'
@@ -874,6 +929,11 @@ export interface FileRouteTypes {
     | '/dev-center/status'
     | '/dev-center/sync'
     | '/dev-center/webhooks'
+    | '/onboarding/analysis'
+    | '/onboarding/connections'
+    | '/onboarding/discovery'
+    | '/onboarding/welcome'
+    | '/onboarding/workspace-build'
     | '/publishing/approvals'
     | '/publishing/calendar'
     | '/publishing/compose'
@@ -952,6 +1012,11 @@ export interface FileRouteTypes {
     | '/_authenticated/dev-center/status'
     | '/_authenticated/dev-center/sync'
     | '/_authenticated/dev-center/webhooks'
+    | '/_authenticated/onboarding/analysis'
+    | '/_authenticated/onboarding/connections'
+    | '/_authenticated/onboarding/discovery'
+    | '/_authenticated/onboarding/welcome'
+    | '/_authenticated/onboarding/workspace-build'
     | '/_authenticated/publishing/approvals'
     | '/_authenticated/publishing/calendar'
     | '/_authenticated/publishing/compose'
@@ -1285,6 +1350,41 @@ declare module '@tanstack/react-router' {
       fullPath: '/publishing/approvals'
       preLoaderRoute: typeof AuthenticatedPublishingApprovalsRouteImport
       parentRoute: typeof AuthenticatedPublishingRoute
+    }
+    '/_authenticated/onboarding/workspace-build': {
+      id: '/_authenticated/onboarding/workspace-build'
+      path: '/workspace-build'
+      fullPath: '/onboarding/workspace-build'
+      preLoaderRoute: typeof AuthenticatedOnboardingWorkspaceBuildRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/welcome': {
+      id: '/_authenticated/onboarding/welcome'
+      path: '/welcome'
+      fullPath: '/onboarding/welcome'
+      preLoaderRoute: typeof AuthenticatedOnboardingWelcomeRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/discovery': {
+      id: '/_authenticated/onboarding/discovery'
+      path: '/discovery'
+      fullPath: '/onboarding/discovery'
+      preLoaderRoute: typeof AuthenticatedOnboardingDiscoveryRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/connections': {
+      id: '/_authenticated/onboarding/connections'
+      path: '/connections'
+      fullPath: '/onboarding/connections'
+      preLoaderRoute: typeof AuthenticatedOnboardingConnectionsRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
+    }
+    '/_authenticated/onboarding/analysis': {
+      id: '/_authenticated/onboarding/analysis'
+      path: '/analysis'
+      fullPath: '/onboarding/analysis'
+      preLoaderRoute: typeof AuthenticatedOnboardingAnalysisRouteImport
+      parentRoute: typeof AuthenticatedOnboardingRoute
     }
     '/_authenticated/dev-center/webhooks': {
       id: '/_authenticated/dev-center/webhooks'
@@ -1626,11 +1726,24 @@ const AuthenticatedDevCenterRouteWithChildren =
   )
 
 interface AuthenticatedOnboardingRouteChildren {
+  AuthenticatedOnboardingAnalysisRoute: typeof AuthenticatedOnboardingAnalysisRoute
+  AuthenticatedOnboardingConnectionsRoute: typeof AuthenticatedOnboardingConnectionsRoute
+  AuthenticatedOnboardingDiscoveryRoute: typeof AuthenticatedOnboardingDiscoveryRoute
+  AuthenticatedOnboardingWelcomeRoute: typeof AuthenticatedOnboardingWelcomeRoute
+  AuthenticatedOnboardingWorkspaceBuildRoute: typeof AuthenticatedOnboardingWorkspaceBuildRoute
   AuthenticatedOnboardingIndexRoute: typeof AuthenticatedOnboardingIndexRoute
 }
 
 const AuthenticatedOnboardingRouteChildren: AuthenticatedOnboardingRouteChildren =
   {
+    AuthenticatedOnboardingAnalysisRoute: AuthenticatedOnboardingAnalysisRoute,
+    AuthenticatedOnboardingConnectionsRoute:
+      AuthenticatedOnboardingConnectionsRoute,
+    AuthenticatedOnboardingDiscoveryRoute:
+      AuthenticatedOnboardingDiscoveryRoute,
+    AuthenticatedOnboardingWelcomeRoute: AuthenticatedOnboardingWelcomeRoute,
+    AuthenticatedOnboardingWorkspaceBuildRoute:
+      AuthenticatedOnboardingWorkspaceBuildRoute,
     AuthenticatedOnboardingIndexRoute: AuthenticatedOnboardingIndexRoute,
   }
 
