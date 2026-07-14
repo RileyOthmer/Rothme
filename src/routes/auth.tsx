@@ -26,6 +26,19 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+// Split "/checkout?plan=pro_monthly" into { to: "/checkout", search: { plan: "pro_monthly" } }
+// so TanStack navigate handles the query string instead of treating it as part of the path.
+function navTarget(redirect: string | undefined) {
+  if (!redirect || !redirect.startsWith("/") || redirect.startsWith("//")) {
+    return { to: "/dashboard", search: undefined as Record<string, string> | undefined };
+  }
+  const [path, query] = redirect.split("?", 2);
+  if (!query) return { to: path, search: undefined };
+  const search: Record<string, string> = {};
+  for (const [k, v] of new URLSearchParams(query)) search[k] = v;
+  return { to: path, search };
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const { redirect } = useSearch({ from: "/auth" });
@@ -40,7 +53,8 @@ function AuthPage() {
     let mounted = true;
     supabase.auth.getUser().then(({ data }) => {
       if (mounted && data.user) {
-        navigate({ to: redirect ?? "/dashboard", replace: true });
+        const t = navTarget(redirect);
+        navigate({ to: t.to, search: t.search, replace: true } as never);
       }
     });
     return () => {
@@ -74,7 +88,8 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: safeRedirect ?? "/dashboard", replace: true });
+        const t = navTarget(safeRedirect);
+        navigate({ to: t.to, search: t.search, replace: true } as never);
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong.");
@@ -97,7 +112,8 @@ function AuthPage() {
       if (result.error) throw result.error;
       if (result.redirected) return;
       // Session set by helper — navigate.
-      navigate({ to: safeRedirect ?? "/dashboard", replace: true });
+      const t = navTarget(safeRedirect);
+      navigate({ to: t.to, search: t.search, replace: true } as never);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed.");
     } finally {
