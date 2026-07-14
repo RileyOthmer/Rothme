@@ -46,7 +46,7 @@ function PricingPage() {
   const navigate = useNavigate();
 
   const monthlyPrice = 49;
-  const annualPricePerMonth = 39; // 47000/12 ≈ 39.17
+  const annualPricePerMonth = 40.83; // 490/12 ≈ 40.83
   const displayPrice = cycle === "monthly" ? monthlyPrice : annualPricePerMonth;
   const savings = Math.round((1 - annualPricePerMonth / monthlyPrice) * 100);
 
@@ -116,7 +116,7 @@ function PricingPage() {
               <span className="text-muted-foreground">/ month</span>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              {cycle === "annual" ? "Billed annually ($470/year). Cancel anytime." : "Billed monthly. Cancel anytime."}
+              {cycle === "annual" ? "Billed annually ($490/year — two months free). 7-day free trial. Cancel anytime." : "Billed monthly ($49/month). 7-day free trial. Cancel anytime."}
             </p>
 
             <button
