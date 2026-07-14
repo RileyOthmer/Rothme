@@ -206,10 +206,12 @@ Return an honest analysis. businessScore is 0-100. marketingMaturity is current 
     }
 
     await supabase
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .from("onboarding_sessions")
-      .update({ analysis: result as unknown as Record<string, unknown> })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .update({ analysis: result as any })
       .eq("user_id", userId);
+
+
 
     return result;
   });
