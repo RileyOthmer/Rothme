@@ -20,24 +20,26 @@ function ts(sec?: number | null) {
 
 async function applyPlanToOrg(orgId: string, plan: "pro" | "free", status: string, renewsAt: string | null, customerId: string | null) {
   const supabase = getSupabase();
-  const patch: Record<string, unknown> = {
+  const patch = {
     plan,
     plan_status: status,
     plan_renews_at: renewsAt,
     updated_at: new Date().toISOString(),
+    ...(customerId ? { stripe_customer_id: customerId } : {}),
   };
-  if (customerId) patch.stripe_customer_id = customerId;
   await supabase.from("organizations").update(patch).eq("id", orgId);
 }
 
-async function logActivity(orgId: string | null, userId: string | null, kind: string, payload: Record<string, unknown>) {
-  if (!orgId) return;
+async function logActivity(orgId: string | null, userId: string | null, verb: string, summary: string, metadata: Record<string, unknown>) {
+  if (!orgId || !userId) return;
   try {
     await getSupabase().from("activity_events").insert({
       org_id: orgId,
-      actor_user_id: userId,
-      kind,
-      payload,
+      actor_id: userId,
+      verb,
+      summary,
+      subject_type: "subscription",
+      metadata: metadata as never,
     });
   } catch (e) {
     console.warn("activity log failed", e);
