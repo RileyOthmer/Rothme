@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target, Users, CheckSquare, BarChart3, LineChart, Send } from "lucide-react";
+import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target, Users, CheckSquare, BarChart3, LineChart, Send, Boxes } from "lucide-react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { OrgSwitcher } from "@/features/collab/OrgSwitcher";
@@ -23,6 +23,7 @@ const NAV = [
   { to: "/tasks", label: "Tasks", icon: CheckSquare },
   { to: "/team", label: "Team", icon: Users },
   { to: "/insights", label: "Insights", icon: BarChart3 },
+  { to: "/dev-center/integrations", label: "Dev Center", icon: Boxes },
   { to: "/settings/profile", label: "Settings", icon: SettingsIcon },
 ] as const;
 
@@ -61,7 +62,8 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
               const active =
                 pathname === item.to ||
                 (item.to === "/settings/profile" && pathname.startsWith("/settings")) ||
-                (item.to === "/reports" && pathname.startsWith("/reports"));
+                (item.to === "/reports" && pathname.startsWith("/reports")) ||
+                (item.to.startsWith("/dev-center") && pathname.startsWith("/dev-center"));
               return (
                 <Link
                   key={item.to}
@@ -123,7 +125,8 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
           const active =
             pathname === item.to ||
             (item.to === "/settings/profile" && pathname.startsWith("/settings")) ||
-            (item.to === "/reports" && pathname.startsWith("/reports"));
+            (item.to === "/reports" && pathname.startsWith("/reports")) ||
+            (item.to.startsWith("/dev-center") && pathname.startsWith("/dev-center"));
           return (
             <Link
               key={item.to}
