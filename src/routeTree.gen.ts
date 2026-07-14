@@ -31,6 +31,7 @@ import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
 import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics.index'
+import { Route as AuthenticatedSettingsSocialHealthRouteImport } from './routes/_authenticated/settings.social-health'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as AuthenticatedSettingsPluginsRouteImport } from './routes/_authenticated/settings.plugins'
 import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_authenticated/settings.developer'
@@ -174,6 +175,12 @@ const AuthenticatedAnalyticsIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
+  } as any)
+const AuthenticatedSettingsSocialHealthRoute =
+  AuthenticatedSettingsSocialHealthRouteImport.update({
+    id: '/settings/social-health',
+    path: '/settings/social-health',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSettingsProfileRoute =
   AuthenticatedSettingsProfileRouteImport.update({
@@ -422,6 +429,7 @@ export interface FileRoutesByFullPath {
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
@@ -477,6 +485,7 @@ export interface FileRoutesByTo {
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
@@ -535,6 +544,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/_authenticated/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
+  '/_authenticated/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
@@ -593,6 +603,7 @@ export interface FileRouteTypes {
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
+    | '/settings/social-health'
     | '/analytics/'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
@@ -648,6 +659,7 @@ export interface FileRouteTypes {
     | '/settings/developer'
     | '/settings/plugins'
     | '/settings/profile'
+    | '/settings/social-health'
     | '/analytics'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
@@ -705,6 +717,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/developer'
     | '/_authenticated/settings/plugins'
     | '/_authenticated/settings/profile'
+    | '/_authenticated/settings/social-health'
     | '/_authenticated/analytics/'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
@@ -881,6 +894,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/analytics/'
       preLoaderRoute: typeof AuthenticatedAnalyticsIndexRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/settings/social-health': {
+      id: '/_authenticated/settings/social-health'
+      path: '/settings/social-health'
+      fullPath: '/settings/social-health'
+      preLoaderRoute: typeof AuthenticatedSettingsSocialHealthRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/profile': {
       id: '/_authenticated/settings/profile'
@@ -1222,6 +1242,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsDeveloperRoute: typeof AuthenticatedSettingsDeveloperRoute
   AuthenticatedSettingsPluginsRoute: typeof AuthenticatedSettingsPluginsRoute
   AuthenticatedSettingsProfileRoute: typeof AuthenticatedSettingsProfileRoute
+  AuthenticatedSettingsSocialHealthRoute: typeof AuthenticatedSettingsSocialHealthRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1238,6 +1259,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsDeveloperRoute: AuthenticatedSettingsDeveloperRoute,
   AuthenticatedSettingsPluginsRoute: AuthenticatedSettingsPluginsRoute,
   AuthenticatedSettingsProfileRoute: AuthenticatedSettingsProfileRoute,
+  AuthenticatedSettingsSocialHealthRoute:
+    AuthenticatedSettingsSocialHealthRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
