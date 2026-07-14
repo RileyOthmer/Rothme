@@ -419,6 +419,54 @@ export type Database = {
         }
         Relationships: []
       }
+      onboarding_sessions: {
+        Row: {
+          ai_training: Json
+          analysis: Json | null
+          answers: Json
+          brand: Json
+          checklist: Json
+          completed_at: string | null
+          connections: Json
+          created_at: string
+          current_step: string
+          marketing_plan: Json | null
+          plan_tier: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_training?: Json
+          analysis?: Json | null
+          answers?: Json
+          brand?: Json
+          checklist?: Json
+          completed_at?: string | null
+          connections?: Json
+          created_at?: string
+          current_step?: string
+          marketing_plan?: Json | null
+          plan_tier?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_training?: Json
+          analysis?: Json | null
+          answers?: Json
+          brand?: Json
+          checklist?: Json
+          completed_at?: string | null
+          connections?: Json
+          created_at?: string
+          current_step?: string
+          marketing_plan?: Json | null
+          plan_tier?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       org_invites: {
         Row: {
           accepted_at: string | null
