@@ -28,8 +28,10 @@ import { Route as AuthenticatedPublishingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
 import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticated/insights'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
+import { Route as AuthenticatedDevCenterRouteImport } from './routes/_authenticated/dev-center'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
+import { Route as AuthenticatedDevCenterIndexRouteImport } from './routes/_authenticated/dev-center.index'
 import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics.index'
 import { Route as AuthenticatedSettingsSocialHealthRouteImport } from './routes/_authenticated/settings.social-health'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
@@ -43,6 +45,18 @@ import { Route as AuthenticatedPublishingDraftsRouteImport } from './routes/_aut
 import { Route as AuthenticatedPublishingComposeRouteImport } from './routes/_authenticated/publishing.compose'
 import { Route as AuthenticatedPublishingCalendarRouteImport } from './routes/_authenticated/publishing.calendar'
 import { Route as AuthenticatedPublishingApprovalsRouteImport } from './routes/_authenticated/publishing.approvals'
+import { Route as AuthenticatedDevCenterWebhooksRouteImport } from './routes/_authenticated/dev-center.webhooks'
+import { Route as AuthenticatedDevCenterSyncRouteImport } from './routes/_authenticated/dev-center.sync'
+import { Route as AuthenticatedDevCenterStatusRouteImport } from './routes/_authenticated/dev-center.status'
+import { Route as AuthenticatedDevCenterSecretsRouteImport } from './routes/_authenticated/dev-center.secrets'
+import { Route as AuthenticatedDevCenterSchedulerRouteImport } from './routes/_authenticated/dev-center.scheduler'
+import { Route as AuthenticatedDevCenterPublishingRouteImport } from './routes/_authenticated/dev-center.publishing'
+import { Route as AuthenticatedDevCenterOauthRouteImport } from './routes/_authenticated/dev-center.oauth'
+import { Route as AuthenticatedDevCenterLogsRouteImport } from './routes/_authenticated/dev-center.logs'
+import { Route as AuthenticatedDevCenterIntegrationsRouteImport } from './routes/_authenticated/dev-center.integrations'
+import { Route as AuthenticatedDevCenterHealthRouteImport } from './routes/_authenticated/dev-center.health'
+import { Route as AuthenticatedDevCenterConnectionsRouteImport } from './routes/_authenticated/dev-center.connections'
+import { Route as AuthenticatedDevCenterAnalyticsMappingRouteImport } from './routes/_authenticated/dev-center.analytics-mapping'
 import { Route as AuthenticatedAnalyticsWebsiteRouteImport } from './routes/_authenticated/analytics.website'
 import { Route as AuthenticatedAnalyticsUnifiedRouteImport } from './routes/_authenticated/analytics.unified'
 import { Route as AuthenticatedAnalyticsSeoRouteImport } from './routes/_authenticated/analytics.seo'
@@ -160,6 +174,11 @@ const AuthenticatedGoalsRoute = AuthenticatedGoalsRouteImport.update({
   path: '/goals',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDevCenterRoute = AuthenticatedDevCenterRouteImport.update({
+  id: '/dev-center',
+  path: '/dev-center',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -170,6 +189,12 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedDevCenterIndexRoute =
+  AuthenticatedDevCenterIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
 const AuthenticatedAnalyticsIndexRoute =
   AuthenticatedAnalyticsIndexRouteImport.update({
     id: '/',
@@ -246,6 +271,78 @@ const AuthenticatedPublishingApprovalsRoute =
     id: '/approvals',
     path: '/approvals',
     getParentRoute: () => AuthenticatedPublishingRoute,
+  } as any)
+const AuthenticatedDevCenterWebhooksRoute =
+  AuthenticatedDevCenterWebhooksRouteImport.update({
+    id: '/webhooks',
+    path: '/webhooks',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterSyncRoute =
+  AuthenticatedDevCenterSyncRouteImport.update({
+    id: '/sync',
+    path: '/sync',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterStatusRoute =
+  AuthenticatedDevCenterStatusRouteImport.update({
+    id: '/status',
+    path: '/status',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterSecretsRoute =
+  AuthenticatedDevCenterSecretsRouteImport.update({
+    id: '/secrets',
+    path: '/secrets',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterSchedulerRoute =
+  AuthenticatedDevCenterSchedulerRouteImport.update({
+    id: '/scheduler',
+    path: '/scheduler',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterPublishingRoute =
+  AuthenticatedDevCenterPublishingRouteImport.update({
+    id: '/publishing',
+    path: '/publishing',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterOauthRoute =
+  AuthenticatedDevCenterOauthRouteImport.update({
+    id: '/oauth',
+    path: '/oauth',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterLogsRoute =
+  AuthenticatedDevCenterLogsRouteImport.update({
+    id: '/logs',
+    path: '/logs',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterIntegrationsRoute =
+  AuthenticatedDevCenterIntegrationsRouteImport.update({
+    id: '/integrations',
+    path: '/integrations',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterHealthRoute =
+  AuthenticatedDevCenterHealthRouteImport.update({
+    id: '/health',
+    path: '/health',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterConnectionsRoute =
+  AuthenticatedDevCenterConnectionsRouteImport.update({
+    id: '/connections',
+    path: '/connections',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
+  } as any)
+const AuthenticatedDevCenterAnalyticsMappingRoute =
+  AuthenticatedDevCenterAnalyticsMappingRouteImport.update({
+    id: '/analytics-mapping',
+    path: '/analytics-mapping',
+    getParentRoute: () => AuthenticatedDevCenterRoute,
   } as any)
 const AuthenticatedAnalyticsWebsiteRoute =
   AuthenticatedAnalyticsWebsiteRouteImport.update({
@@ -386,6 +483,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
@@ -418,6 +516,18 @@ export interface FileRoutesByFullPath {
   '/analytics/seo': typeof AuthenticatedAnalyticsSeoRoute
   '/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
   '/analytics/website': typeof AuthenticatedAnalyticsWebsiteRoute
+  '/dev-center/analytics-mapping': typeof AuthenticatedDevCenterAnalyticsMappingRoute
+  '/dev-center/connections': typeof AuthenticatedDevCenterConnectionsRoute
+  '/dev-center/health': typeof AuthenticatedDevCenterHealthRoute
+  '/dev-center/integrations': typeof AuthenticatedDevCenterIntegrationsRoute
+  '/dev-center/logs': typeof AuthenticatedDevCenterLogsRoute
+  '/dev-center/oauth': typeof AuthenticatedDevCenterOauthRoute
+  '/dev-center/publishing': typeof AuthenticatedDevCenterPublishingRoute
+  '/dev-center/scheduler': typeof AuthenticatedDevCenterSchedulerRoute
+  '/dev-center/secrets': typeof AuthenticatedDevCenterSecretsRoute
+  '/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
+  '/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
+  '/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
   '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
   '/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
   '/publishing/compose': typeof AuthenticatedPublishingComposeRoute
@@ -431,6 +541,7 @@ export interface FileRoutesByFullPath {
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
+  '/dev-center/': typeof AuthenticatedDevCenterIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -474,6 +585,18 @@ export interface FileRoutesByTo {
   '/analytics/seo': typeof AuthenticatedAnalyticsSeoRoute
   '/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
   '/analytics/website': typeof AuthenticatedAnalyticsWebsiteRoute
+  '/dev-center/analytics-mapping': typeof AuthenticatedDevCenterAnalyticsMappingRoute
+  '/dev-center/connections': typeof AuthenticatedDevCenterConnectionsRoute
+  '/dev-center/health': typeof AuthenticatedDevCenterHealthRoute
+  '/dev-center/integrations': typeof AuthenticatedDevCenterIntegrationsRoute
+  '/dev-center/logs': typeof AuthenticatedDevCenterLogsRoute
+  '/dev-center/oauth': typeof AuthenticatedDevCenterOauthRoute
+  '/dev-center/publishing': typeof AuthenticatedDevCenterPublishingRoute
+  '/dev-center/scheduler': typeof AuthenticatedDevCenterSchedulerRoute
+  '/dev-center/secrets': typeof AuthenticatedDevCenterSecretsRoute
+  '/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
+  '/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
+  '/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
   '/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
   '/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
   '/publishing/compose': typeof AuthenticatedPublishingComposeRoute
@@ -487,6 +610,7 @@ export interface FileRoutesByTo {
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
+  '/dev-center': typeof AuthenticatedDevCenterIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -501,6 +625,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
@@ -533,6 +658,18 @@ export interface FileRoutesById {
   '/_authenticated/analytics/seo': typeof AuthenticatedAnalyticsSeoRoute
   '/_authenticated/analytics/unified': typeof AuthenticatedAnalyticsUnifiedRoute
   '/_authenticated/analytics/website': typeof AuthenticatedAnalyticsWebsiteRoute
+  '/_authenticated/dev-center/analytics-mapping': typeof AuthenticatedDevCenterAnalyticsMappingRoute
+  '/_authenticated/dev-center/connections': typeof AuthenticatedDevCenterConnectionsRoute
+  '/_authenticated/dev-center/health': typeof AuthenticatedDevCenterHealthRoute
+  '/_authenticated/dev-center/integrations': typeof AuthenticatedDevCenterIntegrationsRoute
+  '/_authenticated/dev-center/logs': typeof AuthenticatedDevCenterLogsRoute
+  '/_authenticated/dev-center/oauth': typeof AuthenticatedDevCenterOauthRoute
+  '/_authenticated/dev-center/publishing': typeof AuthenticatedDevCenterPublishingRoute
+  '/_authenticated/dev-center/scheduler': typeof AuthenticatedDevCenterSchedulerRoute
+  '/_authenticated/dev-center/secrets': typeof AuthenticatedDevCenterSecretsRoute
+  '/_authenticated/dev-center/status': typeof AuthenticatedDevCenterStatusRoute
+  '/_authenticated/dev-center/sync': typeof AuthenticatedDevCenterSyncRoute
+  '/_authenticated/dev-center/webhooks': typeof AuthenticatedDevCenterWebhooksRoute
   '/_authenticated/publishing/approvals': typeof AuthenticatedPublishingApprovalsRoute
   '/_authenticated/publishing/calendar': typeof AuthenticatedPublishingCalendarRoute
   '/_authenticated/publishing/compose': typeof AuthenticatedPublishingComposeRoute
@@ -546,6 +683,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/_authenticated/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
   '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
+  '/_authenticated/dev-center/': typeof AuthenticatedDevCenterIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
   '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
@@ -560,6 +698,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/analytics'
     | '/dashboard'
+    | '/dev-center'
     | '/goals'
     | '/insights'
     | '/onboarding'
@@ -592,6 +731,18 @@ export interface FileRouteTypes {
     | '/analytics/seo'
     | '/analytics/unified'
     | '/analytics/website'
+    | '/dev-center/analytics-mapping'
+    | '/dev-center/connections'
+    | '/dev-center/health'
+    | '/dev-center/integrations'
+    | '/dev-center/logs'
+    | '/dev-center/oauth'
+    | '/dev-center/publishing'
+    | '/dev-center/scheduler'
+    | '/dev-center/secrets'
+    | '/dev-center/status'
+    | '/dev-center/sync'
+    | '/dev-center/webhooks'
     | '/publishing/approvals'
     | '/publishing/calendar'
     | '/publishing/compose'
@@ -605,6 +756,7 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/settings/social-health'
     | '/analytics/'
+    | '/dev-center/'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
@@ -648,6 +800,18 @@ export interface FileRouteTypes {
     | '/analytics/seo'
     | '/analytics/unified'
     | '/analytics/website'
+    | '/dev-center/analytics-mapping'
+    | '/dev-center/connections'
+    | '/dev-center/health'
+    | '/dev-center/integrations'
+    | '/dev-center/logs'
+    | '/dev-center/oauth'
+    | '/dev-center/publishing'
+    | '/dev-center/scheduler'
+    | '/dev-center/secrets'
+    | '/dev-center/status'
+    | '/dev-center/sync'
+    | '/dev-center/webhooks'
     | '/publishing/approvals'
     | '/publishing/calendar'
     | '/publishing/compose'
@@ -661,6 +825,7 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/settings/social-health'
     | '/analytics'
+    | '/dev-center'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
@@ -674,6 +839,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
+    | '/_authenticated/dev-center'
     | '/_authenticated/goals'
     | '/_authenticated/insights'
     | '/_authenticated/onboarding'
@@ -706,6 +872,18 @@ export interface FileRouteTypes {
     | '/_authenticated/analytics/seo'
     | '/_authenticated/analytics/unified'
     | '/_authenticated/analytics/website'
+    | '/_authenticated/dev-center/analytics-mapping'
+    | '/_authenticated/dev-center/connections'
+    | '/_authenticated/dev-center/health'
+    | '/_authenticated/dev-center/integrations'
+    | '/_authenticated/dev-center/logs'
+    | '/_authenticated/dev-center/oauth'
+    | '/_authenticated/dev-center/publishing'
+    | '/_authenticated/dev-center/scheduler'
+    | '/_authenticated/dev-center/secrets'
+    | '/_authenticated/dev-center/status'
+    | '/_authenticated/dev-center/sync'
+    | '/_authenticated/dev-center/webhooks'
     | '/_authenticated/publishing/approvals'
     | '/_authenticated/publishing/calendar'
     | '/_authenticated/publishing/compose'
@@ -719,6 +897,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/profile'
     | '/_authenticated/settings/social-health'
     | '/_authenticated/analytics/'
+    | '/_authenticated/dev-center/'
     | '/api/public/cron/publish'
     | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
@@ -874,6 +1053,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedGoalsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dev-center': {
+      id: '/_authenticated/dev-center'
+      path: '/dev-center'
+      fullPath: '/dev-center'
+      preLoaderRoute: typeof AuthenticatedDevCenterRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -887,6 +1073,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/analytics'
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dev-center/': {
+      id: '/_authenticated/dev-center/'
+      path: '/'
+      fullPath: '/dev-center/'
+      preLoaderRoute: typeof AuthenticatedDevCenterIndexRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
     }
     '/_authenticated/analytics/': {
       id: '/_authenticated/analytics/'
@@ -978,6 +1171,90 @@ declare module '@tanstack/react-router' {
       fullPath: '/publishing/approvals'
       preLoaderRoute: typeof AuthenticatedPublishingApprovalsRouteImport
       parentRoute: typeof AuthenticatedPublishingRoute
+    }
+    '/_authenticated/dev-center/webhooks': {
+      id: '/_authenticated/dev-center/webhooks'
+      path: '/webhooks'
+      fullPath: '/dev-center/webhooks'
+      preLoaderRoute: typeof AuthenticatedDevCenterWebhooksRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/sync': {
+      id: '/_authenticated/dev-center/sync'
+      path: '/sync'
+      fullPath: '/dev-center/sync'
+      preLoaderRoute: typeof AuthenticatedDevCenterSyncRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/status': {
+      id: '/_authenticated/dev-center/status'
+      path: '/status'
+      fullPath: '/dev-center/status'
+      preLoaderRoute: typeof AuthenticatedDevCenterStatusRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/secrets': {
+      id: '/_authenticated/dev-center/secrets'
+      path: '/secrets'
+      fullPath: '/dev-center/secrets'
+      preLoaderRoute: typeof AuthenticatedDevCenterSecretsRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/scheduler': {
+      id: '/_authenticated/dev-center/scheduler'
+      path: '/scheduler'
+      fullPath: '/dev-center/scheduler'
+      preLoaderRoute: typeof AuthenticatedDevCenterSchedulerRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/publishing': {
+      id: '/_authenticated/dev-center/publishing'
+      path: '/publishing'
+      fullPath: '/dev-center/publishing'
+      preLoaderRoute: typeof AuthenticatedDevCenterPublishingRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/oauth': {
+      id: '/_authenticated/dev-center/oauth'
+      path: '/oauth'
+      fullPath: '/dev-center/oauth'
+      preLoaderRoute: typeof AuthenticatedDevCenterOauthRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/logs': {
+      id: '/_authenticated/dev-center/logs'
+      path: '/logs'
+      fullPath: '/dev-center/logs'
+      preLoaderRoute: typeof AuthenticatedDevCenterLogsRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/integrations': {
+      id: '/_authenticated/dev-center/integrations'
+      path: '/integrations'
+      fullPath: '/dev-center/integrations'
+      preLoaderRoute: typeof AuthenticatedDevCenterIntegrationsRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/health': {
+      id: '/_authenticated/dev-center/health'
+      path: '/health'
+      fullPath: '/dev-center/health'
+      preLoaderRoute: typeof AuthenticatedDevCenterHealthRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/connections': {
+      id: '/_authenticated/dev-center/connections'
+      path: '/connections'
+      fullPath: '/dev-center/connections'
+      preLoaderRoute: typeof AuthenticatedDevCenterConnectionsRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
+    }
+    '/_authenticated/dev-center/analytics-mapping': {
+      id: '/_authenticated/dev-center/analytics-mapping'
+      path: '/analytics-mapping'
+      fullPath: '/dev-center/analytics-mapping'
+      preLoaderRoute: typeof AuthenticatedDevCenterAnalyticsMappingRouteImport
+      parentRoute: typeof AuthenticatedDevCenterRoute
     }
     '/_authenticated/analytics/website': {
       id: '/_authenticated/analytics/website'
@@ -1192,6 +1469,48 @@ const AuthenticatedAnalyticsRouteWithChildren =
     AuthenticatedAnalyticsRouteChildren,
   )
 
+interface AuthenticatedDevCenterRouteChildren {
+  AuthenticatedDevCenterAnalyticsMappingRoute: typeof AuthenticatedDevCenterAnalyticsMappingRoute
+  AuthenticatedDevCenterConnectionsRoute: typeof AuthenticatedDevCenterConnectionsRoute
+  AuthenticatedDevCenterHealthRoute: typeof AuthenticatedDevCenterHealthRoute
+  AuthenticatedDevCenterIntegrationsRoute: typeof AuthenticatedDevCenterIntegrationsRoute
+  AuthenticatedDevCenterLogsRoute: typeof AuthenticatedDevCenterLogsRoute
+  AuthenticatedDevCenterOauthRoute: typeof AuthenticatedDevCenterOauthRoute
+  AuthenticatedDevCenterPublishingRoute: typeof AuthenticatedDevCenterPublishingRoute
+  AuthenticatedDevCenterSchedulerRoute: typeof AuthenticatedDevCenterSchedulerRoute
+  AuthenticatedDevCenterSecretsRoute: typeof AuthenticatedDevCenterSecretsRoute
+  AuthenticatedDevCenterStatusRoute: typeof AuthenticatedDevCenterStatusRoute
+  AuthenticatedDevCenterSyncRoute: typeof AuthenticatedDevCenterSyncRoute
+  AuthenticatedDevCenterWebhooksRoute: typeof AuthenticatedDevCenterWebhooksRoute
+  AuthenticatedDevCenterIndexRoute: typeof AuthenticatedDevCenterIndexRoute
+}
+
+const AuthenticatedDevCenterRouteChildren: AuthenticatedDevCenterRouteChildren =
+  {
+    AuthenticatedDevCenterAnalyticsMappingRoute:
+      AuthenticatedDevCenterAnalyticsMappingRoute,
+    AuthenticatedDevCenterConnectionsRoute:
+      AuthenticatedDevCenterConnectionsRoute,
+    AuthenticatedDevCenterHealthRoute: AuthenticatedDevCenterHealthRoute,
+    AuthenticatedDevCenterIntegrationsRoute:
+      AuthenticatedDevCenterIntegrationsRoute,
+    AuthenticatedDevCenterLogsRoute: AuthenticatedDevCenterLogsRoute,
+    AuthenticatedDevCenterOauthRoute: AuthenticatedDevCenterOauthRoute,
+    AuthenticatedDevCenterPublishingRoute:
+      AuthenticatedDevCenterPublishingRoute,
+    AuthenticatedDevCenterSchedulerRoute: AuthenticatedDevCenterSchedulerRoute,
+    AuthenticatedDevCenterSecretsRoute: AuthenticatedDevCenterSecretsRoute,
+    AuthenticatedDevCenterStatusRoute: AuthenticatedDevCenterStatusRoute,
+    AuthenticatedDevCenterSyncRoute: AuthenticatedDevCenterSyncRoute,
+    AuthenticatedDevCenterWebhooksRoute: AuthenticatedDevCenterWebhooksRoute,
+    AuthenticatedDevCenterIndexRoute: AuthenticatedDevCenterIndexRoute,
+  }
+
+const AuthenticatedDevCenterRouteWithChildren =
+  AuthenticatedDevCenterRoute._addFileChildren(
+    AuthenticatedDevCenterRouteChildren,
+  )
+
 interface AuthenticatedPublishingRouteChildren {
   AuthenticatedPublishingApprovalsRoute: typeof AuthenticatedPublishingApprovalsRoute
   AuthenticatedPublishingCalendarRoute: typeof AuthenticatedPublishingCalendarRoute
@@ -1231,6 +1550,7 @@ const AuthenticatedReportsRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDevCenterRoute: typeof AuthenticatedDevCenterRouteWithChildren
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
@@ -1248,6 +1568,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDevCenterRoute: AuthenticatedDevCenterRouteWithChildren,
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
@@ -1308,13 +1629,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
