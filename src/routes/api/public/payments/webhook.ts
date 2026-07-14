@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { type StripeEnv, verifyWebhook } from "@/lib/stripe.server";
+import { type StripeEnv, createStripeClient, verifyWebhook } from "@/lib/stripe.server";
 
 let _supabase: SupabaseClient<Database> | null = null;
 function getSupabase(): SupabaseClient<Database> {
@@ -18,7 +18,13 @@ function ts(sec?: number | null) {
   return sec ? new Date(sec * 1000).toISOString() : null;
 }
 
-async function applyPlanToOrg(orgId: string, plan: "pro" | "free", status: string, renewsAt: string | null, customerId: string | null) {
+async function applyPlanToOrg(
+  orgId: string,
+  plan: "pro" | "free",
+  status: string,
+  renewsAt: string | null,
+  customerId: string | null,
+) {
   const supabase = getSupabase();
   const patch = {
     plan,
@@ -30,7 +36,13 @@ async function applyPlanToOrg(orgId: string, plan: "pro" | "free", status: strin
   await supabase.from("organizations").update(patch).eq("id", orgId);
 }
 
-async function logActivity(orgId: string | null, userId: string | null, verb: string, summary: string, metadata: Record<string, unknown>) {
+async function logActivity(
+  orgId: string | null,
+  userId: string | null,
+  verb: string,
+  summary: string,
+  metadata: Record<string, unknown>,
+) {
   if (!orgId || !userId) return;
   try {
     await getSupabase().from("activity_events").insert({
@@ -103,7 +115,6 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
   const orgId: string | undefined = subscription.metadata?.orgId;
   const userId: string | undefined = subscription.metadata?.userId;
   if (orgId) {
-    // Grace period: keep pro until period end. If already past, revoke.
     const periodEndMs = periodEnd ? periodEnd * 1000 : 0;
     const stillGrace = periodEndMs > Date.now();
     await applyPlanToOrg(
@@ -113,37 +124,69 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
       ts(periodEnd),
       subscription.customer as string,
     );
-    await logActivity(orgId, userId ?? null, "subscription.canceled", "Pro subscription canceled — access continues until period end", {
-      subscription_id: subscription.id,
-      access_until: ts(periodEnd),
-    });
+    await logActivity(orgId, userId ?? null, "subscription.canceled",
+      "Pro subscription canceled — access continues until period end",
+      { subscription_id: subscription.id, access_until: ts(periodEnd) });
   }
 }
 
-async function handleCheckoutCompleted(session: any) {
+async function handleCheckoutCompleted(session: any, env: StripeEnv) {
   const orgId: string | undefined = session.metadata?.orgId;
   const userId: string | undefined = session.metadata?.userId;
-  await logActivity(orgId ?? null, userId ?? null, "subscription.activated", "ROTHME Pro activated", {
-    session_id: session.id,
-    amount_total: session.amount_total,
-    currency: session.currency,
-  });
+
+  // Idempotent fallback: don't wait for customer.subscription.created.
+  // Fetch the subscription now and upsert so entitlement activates
+  // even if event ordering slips.
+  if (session.mode === "subscription" && session.subscription) {
+    try {
+      const stripe = createStripeClient(env);
+      const sub = await stripe.subscriptions.retrieve(session.subscription as string, {
+        expand: ["items.data.price"],
+      });
+      // Merge session metadata onto the subscription object so downstream
+      // handler picks up userId/orgId even if Stripe hasn't propagated yet.
+      const merged = {
+        ...sub,
+        metadata: { ...(sub.metadata ?? {}), ...(session.metadata ?? {}) },
+      };
+      await handleSubscriptionUpsert(merged, env);
+    } catch (e) {
+      console.warn("checkout.session.completed: subscription fetch failed", e);
+    }
+  }
+
+  await logActivity(orgId ?? null, userId ?? null, "subscription.activated",
+    "ROTHME Pro activated",
+    { session_id: session.id, amount_total: session.amount_total, currency: session.currency });
 }
 
-async function handleInvoicePaymentFailed(invoice: any) {
+async function handleInvoicePaymentSucceeded(invoice: any, env: StripeEnv) {
+  const subId = invoice.subscription;
+  if (!subId) return;
+  // Clear past_due proactively; also captures renewal-succeeded case.
+  await getSupabase()
+    .from("subscriptions")
+    .update({ status: "active", updated_at: new Date().toISOString() })
+    .eq("stripe_subscription_id", subId)
+    .eq("environment", env)
+    .eq("status", "past_due");
+}
+
+async function handleInvoicePaymentFailed(invoice: any, env: StripeEnv) {
   const subId = invoice.subscription;
   if (!subId) return;
   await getSupabase()
     .from("subscriptions")
     .update({ status: "past_due", updated_at: new Date().toISOString() })
-    .eq("stripe_subscription_id", subId);
+    .eq("stripe_subscription_id", subId)
+    .eq("environment", env);
 }
 
 async function handleWebhook(req: Request, env: StripeEnv) {
   const event = await verifyWebhook(req, env);
   switch (event.type) {
     case "checkout.session.completed":
-      await handleCheckoutCompleted(event.data.object);
+      await handleCheckoutCompleted(event.data.object, env);
       break;
     case "customer.subscription.created":
     case "customer.subscription.updated":
@@ -152,8 +195,11 @@ async function handleWebhook(req: Request, env: StripeEnv) {
     case "customer.subscription.deleted":
       await handleSubscriptionDeleted(event.data.object, env);
       break;
+    case "invoice.payment_succeeded":
+      await handleInvoicePaymentSucceeded(event.data.object, env);
+      break;
     case "invoice.payment_failed":
-      await handleInvoicePaymentFailed(event.data.object);
+      await handleInvoicePaymentFailed(event.data.object, env);
       break;
     default:
       console.log("Unhandled event:", event.type);
