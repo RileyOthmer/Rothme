@@ -62,6 +62,7 @@ import { Route as AuthenticatedAnalyticsAiInsightsRouteImport } from './routes/_
 import { Route as AuthenticatedAnalyticsAdvertisingRouteImport } from './routes/_authenticated/analytics.advertising'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
 import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './routes/api/public/hooks/generate-weekly-reports'
+import { Route as ApiPublicCronSocialSyncRouteImport } from './routes/api/public/cron/social-sync'
 import { Route as ApiPublicCronPublishRouteImport } from './routes/api/public/cron/publish'
 
 const NotificationsRoute = NotificationsRouteImport.update({
@@ -359,6 +360,11 @@ const ApiPublicHooksGenerateWeeklyReportsRoute =
     path: '/api/public/hooks/generate-weekly-reports',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicCronSocialSyncRoute = ApiPublicCronSocialSyncRouteImport.update({
+  id: '/api/public/cron/social-sync',
+  path: '/api/public/cron/social-sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicCronPublishRoute = ApiPublicCronPublishRouteImport.update({
   id: '/api/public/cron/publish',
   path: '/api/public/cron/publish',
@@ -418,6 +424,7 @@ export interface FileRoutesByFullPath {
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
+  '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesByTo {
@@ -472,6 +479,7 @@ export interface FileRoutesByTo {
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
+  '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRoutesById {
@@ -529,6 +537,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/api/public/cron/publish': typeof ApiPublicCronPublishRoute
+  '/api/public/cron/social-sync': typeof ApiPublicCronSocialSyncRoute
   '/api/public/hooks/generate-weekly-reports': typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 export interface FileRouteTypes {
@@ -586,6 +595,7 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/analytics/'
     | '/api/public/cron/publish'
+    | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -640,6 +650,7 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/analytics'
     | '/api/public/cron/publish'
+    | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
   id:
     | '__root__'
@@ -696,6 +707,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/profile'
     | '/_authenticated/analytics/'
     | '/api/public/cron/publish'
+    | '/api/public/cron/social-sync'
     | '/api/public/hooks/generate-weekly-reports'
   fileRoutesById: FileRoutesById
 }
@@ -710,6 +722,7 @@ export interface RootRouteChildren {
   InviteTokenRoute: typeof InviteTokenRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
   ApiPublicCronPublishRoute: typeof ApiPublicCronPublishRoute
+  ApiPublicCronSocialSyncRoute: typeof ApiPublicCronSocialSyncRoute
   ApiPublicHooksGenerateWeeklyReportsRoute: typeof ApiPublicHooksGenerateWeeklyReportsRoute
 }
 
@@ -1086,6 +1099,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksGenerateWeeklyReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/cron/social-sync': {
+      id: '/api/public/cron/social-sync'
+      path: '/api/public/cron/social-sync'
+      fullPath: '/api/public/cron/social-sync'
+      preLoaderRoute: typeof ApiPublicCronSocialSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/cron/publish': {
       id: '/api/public/cron/publish'
       path: '/api/public/cron/publish'
@@ -1258,6 +1278,7 @@ const rootRouteChildren: RootRouteChildren = {
   InviteTokenRoute: InviteTokenRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
   ApiPublicCronPublishRoute: ApiPublicCronPublishRoute,
+  ApiPublicCronSocialSyncRoute: ApiPublicCronSocialSyncRoute,
   ApiPublicHooksGenerateWeeklyReportsRoute:
     ApiPublicHooksGenerateWeeklyReportsRoute,
 }

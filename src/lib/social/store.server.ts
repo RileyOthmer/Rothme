@@ -94,7 +94,7 @@ export function createSupabaseSocialStore(): SocialStore {
         level: entry.level,
         scope: entry.scope,
         event: entry.event,
-        data: meta,
+        data: meta as any,
         request_id: entry.requestId ?? null,
       });
     },
