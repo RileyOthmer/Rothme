@@ -42,9 +42,9 @@ function BillingPage() {
   };
 
   const planLabel = subscription?.price_id === "pro_annual"
-    ? "ROTHME Pro — Annual ($490/year)"
+    ? "ROTHME Pro — Annual ($499.99/year)"
     : subscription?.price_id === "pro_monthly"
-      ? "ROTHME Pro — Monthly ($49/month)"
+      ? "ROTHME Pro — Monthly ($49.99/month)"
       : "Free";
 
   const periodEnd = subscription?.current_period_end
