@@ -9,14 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhyRouteImport } from './routes/why'
+import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as DesignRouteImport } from './routes/design'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GetStartedIndexRouteImport } from './routes/get-started.index'
 import { Route as SettingsNotificationsRouteImport } from './routes/settings.notifications'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
+import { Route as GetStartedSolutionRouteImport } from './routes/get-started.solution'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthForgotRouteImport } from './routes/auth.forgot'
 import { Route as AssistantThreadIdRouteImport } from './routes/assistant.$threadId'
@@ -80,9 +85,24 @@ import { Route as ApiPublicHooksGenerateWeeklyReportsRouteImport } from './route
 import { Route as ApiPublicCronSocialSyncRouteImport } from './routes/api/public/cron/social-sync'
 import { Route as ApiPublicCronPublishRouteImport } from './routes/api/public/cron/publish'
 
+const WhyRoute = WhyRouteImport.update({
+  id: '/why',
+  path: '/why',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PricingRoute = PricingRouteImport.update({
+  id: '/pricing',
+  path: '/pricing',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NotificationsRoute = NotificationsRouteImport.update({
   id: '/notifications',
   path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GetStartedRoute = GetStartedRouteImport.update({
+  id: '/get-started',
+  path: '/get-started',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DesignRoute = DesignRouteImport.update({
@@ -109,6 +129,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GetStartedIndexRoute = GetStartedIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => GetStartedRoute,
+} as any)
 const SettingsNotificationsRoute = SettingsNotificationsRouteImport.update({
   id: '/settings/notifications',
   path: '/settings/notifications',
@@ -118,6 +143,11 @@ const InviteTokenRoute = InviteTokenRouteImport.update({
   id: '/invite/$token',
   path: '/invite/$token',
   getParentRoute: () => rootRouteImport,
+} as any)
+const GetStartedSolutionRoute = GetStartedSolutionRouteImport.update({
+  id: '/solution',
+  path: '/solution',
+  getParentRoute: () => GetStartedRoute,
 } as any)
 const AuthResetPasswordRoute = AuthResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -480,7 +510,10 @@ export interface FileRoutesByFullPath {
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
+  '/get-started': typeof GetStartedRouteWithChildren
   '/notifications': typeof NotificationsRoute
+  '/pricing': typeof PricingRoute
+  '/why': typeof WhyRoute
   '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
@@ -495,8 +528,10 @@ export interface FileRoutesByFullPath {
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
+  '/get-started/': typeof GetStartedIndexRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
   '/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
@@ -552,6 +587,8 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
   '/notifications': typeof NotificationsRoute
+  '/pricing': typeof PricingRoute
+  '/why': typeof WhyRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
@@ -564,8 +601,10 @@ export interface FileRoutesByTo {
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
+  '/get-started': typeof GetStartedIndexRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
   '/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
@@ -622,7 +661,10 @@ export interface FileRoutesById {
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/design': typeof DesignRoute
+  '/get-started': typeof GetStartedRouteWithChildren
   '/notifications': typeof NotificationsRoute
+  '/pricing': typeof PricingRoute
+  '/why': typeof WhyRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
@@ -637,8 +679,10 @@ export interface FileRoutesById {
   '/assistant/$threadId': typeof AssistantThreadIdRoute
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
+  '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
+  '/get-started/': typeof GetStartedIndexRoute
   '/_authenticated/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/_authenticated/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
   '/_authenticated/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
@@ -695,7 +739,10 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/auth'
     | '/design'
+    | '/get-started'
     | '/notifications'
+    | '/pricing'
+    | '/why'
     | '/analytics'
     | '/dashboard'
     | '/dev-center'
@@ -710,8 +757,10 @@ export interface FileRouteTypes {
     | '/assistant/$threadId'
     | '/auth/forgot'
     | '/auth/reset-password'
+    | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
+    | '/get-started/'
     | '/analytics/$metric'
     | '/analytics/advertising'
     | '/analytics/ai-insights'
@@ -767,6 +816,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/design'
     | '/notifications'
+    | '/pricing'
+    | '/why'
     | '/dashboard'
     | '/goals'
     | '/insights'
@@ -779,8 +830,10 @@ export interface FileRouteTypes {
     | '/assistant/$threadId'
     | '/auth/forgot'
     | '/auth/reset-password'
+    | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
+    | '/get-started'
     | '/analytics/$metric'
     | '/analytics/advertising'
     | '/analytics/ai-insights'
@@ -836,7 +889,10 @@ export interface FileRouteTypes {
     | '/assistant'
     | '/auth'
     | '/design'
+    | '/get-started'
     | '/notifications'
+    | '/pricing'
+    | '/why'
     | '/_authenticated/analytics'
     | '/_authenticated/dashboard'
     | '/_authenticated/dev-center'
@@ -851,8 +907,10 @@ export interface FileRouteTypes {
     | '/assistant/$threadId'
     | '/auth/forgot'
     | '/auth/reset-password'
+    | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
+    | '/get-started/'
     | '/_authenticated/analytics/$metric'
     | '/_authenticated/analytics/advertising'
     | '/_authenticated/analytics/ai-insights'
@@ -909,7 +967,10 @@ export interface RootRouteChildren {
   AssistantRoute: typeof AssistantRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   DesignRoute: typeof DesignRoute
+  GetStartedRoute: typeof GetStartedRouteWithChildren
   NotificationsRoute: typeof NotificationsRoute
+  PricingRoute: typeof PricingRoute
+  WhyRoute: typeof WhyRoute
   ApiChatRoute: typeof ApiChatRoute
   InviteTokenRoute: typeof InviteTokenRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
@@ -920,11 +981,32 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/why': {
+      id: '/why'
+      path: '/why'
+      fullPath: '/why'
+      preLoaderRoute: typeof WhyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pricing': {
+      id: '/pricing'
+      path: '/pricing'
+      fullPath: '/pricing'
+      preLoaderRoute: typeof PricingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/notifications': {
       id: '/notifications'
       path: '/notifications'
       fullPath: '/notifications'
       preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/get-started': {
+      id: '/get-started'
+      path: '/get-started'
+      fullPath: '/get-started'
+      preLoaderRoute: typeof GetStartedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/design': {
@@ -962,6 +1044,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/get-started/': {
+      id: '/get-started/'
+      path: '/'
+      fullPath: '/get-started/'
+      preLoaderRoute: typeof GetStartedIndexRouteImport
+      parentRoute: typeof GetStartedRoute
+    }
     '/settings/notifications': {
       id: '/settings/notifications'
       path: '/settings/notifications'
@@ -975,6 +1064,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/invite/$token'
       preLoaderRoute: typeof InviteTokenRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/get-started/solution': {
+      id: '/get-started/solution'
+      path: '/solution'
+      fullPath: '/get-started/solution'
+      preLoaderRoute: typeof GetStartedSolutionRouteImport
+      parentRoute: typeof GetStartedRoute
     }
     '/auth/reset-password': {
       id: '/auth/reset-password'
@@ -1611,13 +1707,30 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface GetStartedRouteChildren {
+  GetStartedSolutionRoute: typeof GetStartedSolutionRoute
+  GetStartedIndexRoute: typeof GetStartedIndexRoute
+}
+
+const GetStartedRouteChildren: GetStartedRouteChildren = {
+  GetStartedSolutionRoute: GetStartedSolutionRoute,
+  GetStartedIndexRoute: GetStartedIndexRoute,
+}
+
+const GetStartedRouteWithChildren = GetStartedRoute._addFileChildren(
+  GetStartedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AssistantRoute: AssistantRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   DesignRoute: DesignRoute,
+  GetStartedRoute: GetStartedRouteWithChildren,
   NotificationsRoute: NotificationsRoute,
+  PricingRoute: PricingRoute,
+  WhyRoute: WhyRoute,
   ApiChatRoute: ApiChatRoute,
   InviteTokenRoute: InviteTokenRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
@@ -1629,13 +1742,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
