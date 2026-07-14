@@ -52,12 +52,19 @@ function AuthPage() {
     e.preventDefault();
     setLoading(true);
     try {
+      // Only preserve same-origin relative paths, so OAuth consent URLs
+      // (e.g. /.lovable/oauth/consent?...) survive the sign-in round-trip.
+      const safeRedirect =
+        redirect && redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : undefined;
+      const returnQuery = safeRedirect
+        ? `?redirect=${encodeURIComponent(safeRedirect)}`
+        : "";
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth`,
+            emailRedirectTo: `${window.location.origin}/auth${returnQuery}`,
             data: { full_name: fullName },
           },
         });
@@ -67,7 +74,7 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate({ to: redirect ?? "/dashboard", replace: true });
+        navigate({ to: safeRedirect ?? "/dashboard", replace: true });
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Something went wrong.");
@@ -79,19 +86,25 @@ function AuthPage() {
   const handleGoogle = async () => {
     setLoading(true);
     try {
+      const safeRedirect =
+        redirect && redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : undefined;
+      const returnQuery = safeRedirect
+        ? `?redirect=${encodeURIComponent(safeRedirect)}`
+        : "";
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin,
+        redirect_uri: `${window.location.origin}/auth${returnQuery}`,
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
       // Session set by helper — navigate.
-      navigate({ to: redirect ?? "/dashboard", replace: true });
+      navigate({ to: safeRedirect ?? "/dashboard", replace: true });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed.");
     } finally {
       setLoading(false);
     }
   };
+
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
