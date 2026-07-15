@@ -70,11 +70,11 @@ function PricingPage() {
   const { subscription, isActive } = useSubscription(userId);
   const currentPlan = isActive ? subscription?.price_id : null;
 
-  const handleStart = async (plan: "monthly" | "annual") => {
+  const handleStart = async () => {
     setLoading(true);
     try {
       const { data } = await supabase.auth.getSession();
-      const priceId = plan === "monthly" ? "pro_monthly" : "pro_annual";
+      const priceId = "pro_monthly";
       if (!data.session) {
         navigate({ to: "/auth", search: { redirect: `/checkout?plan=${priceId}` } as never });
         return;
