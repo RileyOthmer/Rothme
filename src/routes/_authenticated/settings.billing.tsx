@@ -43,28 +43,9 @@ function BillingPage() {
     }
   };
 
-  const switchToAnnual = async () => {
-    if (!confirm("Switch to annual billing? You'll be charged the pro-rated difference today and save ~17% going forward.")) return;
-    setSwitchLoading(true);
-    setSwitchMsg(null);
-    try {
-      const result = await changeSubscriptionPlan({
-        data: { priceId: "pro_annual", environment: getStripeEnvironment() },
-      });
-      if ("error" in result) throw new Error(result.error);
-      setSwitchMsg("You're on the annual plan. Renewals now bill yearly.");
-    } catch (e) {
-      setSwitchMsg(e instanceof Error ? e.message : "Failed to switch plan");
-    } finally {
-      setSwitchLoading(false);
-    }
-  };
-
-  const planLabel = subscription?.price_id === "pro_annual"
-    ? "ROTHME Pro — Annual ($499.99/year)"
-    : subscription?.price_id === "pro_monthly"
-      ? "ROTHME Pro — Monthly ($49.99/month)"
-      : "Free";
+  const planLabel = subscription?.price_id === "pro_monthly"
+    ? "ROTHME Pro — Monthly ($200.00/month)"
+    : "Free";
 
   const periodEnd = subscription?.current_period_end
     ? new Date(subscription.current_period_end).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
