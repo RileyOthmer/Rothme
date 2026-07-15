@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { isPaymentsConfigured } from "@/lib/stripe";
 
 const searchSchema = z.object({
-  plan: z.enum(["pro_monthly", "pro_annual"]).default("pro_annual"),
+  plan: z.enum(["pro_monthly"]).default("pro_monthly"),
 });
 
 export const Route = createFileRoute("/checkout")({
