@@ -130,7 +130,7 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     }
   });
 
-async function getActiveCustomerAndSub(
+async function findActiveCustomerAndSub(
   supabase: ReturnType<typeof createStripeClient> extends never ? never : any,
   userId: string,
   environment: StripeEnv,
@@ -168,7 +168,7 @@ export const createPortalSession = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<PortalSessionResult> => {
     try {
       const { supabase, userId } = context;
-      const found = await getActiveCustomerAndSub(supabase, userId, data.environment);
+      const found = await findActiveCustomerAndSub(supabase, userId, data.environment);
       if (!found) {
         return { error: "No subscription found. Start one from the pricing page." };
       }
@@ -183,45 +183,3 @@ export const createPortalSession = createServerFn({ method: "POST" })
     }
   });
 
-// Change the plan of the current subscription (e.g. monthly → annual).
-// Pro-rates immediately and invoices the difference right away.
-export const changeSubscriptionPlan = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: { priceId: "pro_monthly" | "pro_annual"; environment: StripeEnv }) => {
-    if (data.priceId !== "pro_monthly" && data.priceId !== "pro_annual") {
-      throw new Error("Invalid priceId");
-    }
-    if (data.environment !== "sandbox" && data.environment !== "live") {
-      throw new Error("Invalid environment");
-    }
-    return data;
-  })
-  .handler(async ({ data, context }): Promise<{ ok: true } | { error: string }> => {
-    try {
-      const { supabase, userId } = context;
-      const found = await getActiveCustomerAndSub(supabase, userId, data.environment);
-      if (!found?.subscriptionId) {
-        return { error: "No active subscription to change." };
-      }
-      const stripe = createStripeClient(data.environment);
-      const newPriceId = resolvePriceId(data.priceId);
-
-      const sub = await stripe.subscriptions.retrieve(found.subscriptionId);
-      const currentItemId = sub.items.data[0]?.id;
-      if (!currentItemId) return { error: "Subscription has no items." };
-
-      await stripe.subscriptions.update(found.subscriptionId, {
-        items: [{ id: currentItemId, price: newPriceId }],
-        proration_behavior: "always_invoice",
-        cancel_at_period_end: false,
-        metadata: {
-          ...(sub.metadata ?? {}),
-          userId,
-        },
-      });
-
-      return { ok: true };
-    } catch (error) {
-      return { error: getStripeErrorMessage(error) };
-    }
-  });
