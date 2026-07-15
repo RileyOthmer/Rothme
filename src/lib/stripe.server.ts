@@ -6,37 +6,56 @@ const getEnv = (key: string): string => {
   return value;
 };
 
+const optEnv = (key: string): string | undefined => process.env[key] || undefined;
+
+/**
+ * StripeEnv is kept for backwards-compatibility with UI/DB filters
+ * (subscriptions.environment). With BYOK Stripe we detect it from the
+ * secret key prefix — a single Stripe account is used per project.
+ */
 export type StripeEnv = "sandbox" | "live";
 
-const GATEWAY_STRIPE_BASE = "https://connector-gateway.lovable.dev/stripe";
-
-export function getConnectionApiKey(env: StripeEnv): string {
-  return env === "sandbox"
-    ? getEnv("STRIPE_SANDBOX_API_KEY")
-    : getEnv("STRIPE_LIVE_API_KEY");
+export function getStripeEnvironmentFromKey(): StripeEnv {
+  const key = getEnv("STRIPE_SECRET_KEY");
+  if (key.startsWith("sk_test_") || key.startsWith("rk_test_")) return "sandbox";
+  return "live";
 }
 
-export function createStripeClient(env: StripeEnv): Stripe {
-  const connectionApiKey = getConnectionApiKey(env);
-  const lovableApiKey = getEnv("LOVABLE_API_KEY");
-
-  return new Stripe(connectionApiKey, {
+/**
+ * BYOK Stripe client — talks directly to api.stripe.com using the
+ * customer's STRIPE_SECRET_KEY. The `env` argument is accepted for
+ * signature compatibility with existing callers but ignored: the
+ * environment is derived from the key prefix.
+ */
+export function createStripeClient(_env?: StripeEnv): Stripe {
+  const secret = getEnv("STRIPE_SECRET_KEY");
+  return new Stripe(secret, {
     apiVersion: "2026-03-25.dahlia",
-    httpClient: Stripe.createFetchHttpClient((input, init) => {
-      const stripeUrl = input instanceof Request ? input.url : input.toString();
-      const gatewayUrl = stripeUrl.replace("https://api.stripe.com", GATEWAY_STRIPE_BASE);
-      return fetch(gatewayUrl, {
-        ...init,
-        headers: {
-          ...Object.fromEntries(
-            new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined)).entries(),
-          ),
-          "X-Connection-Api-Key": connectionApiKey,
-          "Lovable-API-Key": lovableApiKey,
-        },
-      });
-    }),
+    httpClient: Stripe.createFetchHttpClient(),
   });
+}
+
+/**
+ * Map the app's stable plan slugs to real Stripe price IDs from env.
+ * Falls back to the raw input if it already looks like a Stripe price ID.
+ */
+export function resolvePriceId(slug: string): string {
+  if (slug.startsWith("price_")) return slug;
+  if (slug === "pro_monthly") return getEnv("STRIPE_PRICE_MONTHLY");
+  if (slug === "pro_annual") return getEnv("STRIPE_PRICE_ANNUAL");
+  throw new Error(`Unknown price slug: ${slug}`);
+}
+
+/**
+ * Inverse of resolvePriceId — turn a Stripe price ID (as seen in webhook
+ * events) back into the app's stable slug, so DB/UI keep using
+ * "pro_monthly"/"pro_annual" for tier gating.
+ */
+export function slugFromPriceId(priceId: string | undefined | null): string | null {
+  if (!priceId) return null;
+  if (priceId === optEnv("STRIPE_PRICE_MONTHLY")) return "pro_monthly";
+  if (priceId === optEnv("STRIPE_PRICE_ANNUAL")) return "pro_annual";
+  return priceId;
 }
 
 export function getStripeErrorMessage(error: unknown): string {
@@ -62,13 +81,11 @@ export function getStripeErrorMessage(error: unknown): string {
 
 export async function verifyWebhook(
   req: Request,
-  env: StripeEnv,
+  _env?: StripeEnv,
 ): Promise<{ type: string; data: { object: any } }> {
   const signature = req.headers.get("stripe-signature");
   const body = await req.text();
-  const secret = env === "sandbox"
-    ? getEnv("PAYMENTS_SANDBOX_WEBHOOK_SECRET")
-    : getEnv("PAYMENTS_LIVE_WEBHOOK_SECRET");
+  const secret = getEnv("STRIPE_WEBHOOK_SECRET");
 
   if (!signature || !body) throw new Error("Missing signature or body");
 
