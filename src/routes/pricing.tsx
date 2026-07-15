@@ -49,16 +49,12 @@ const FAQ = [
     a: "Yes. You can cancel from your billing settings at any time. Your subscription remains active through the end of the current billing period.",
   },
   {
-    q: "Can I switch between monthly and annual?",
-    a: "Yes. You can change your billing cycle anytime through the customer billing portal.",
+    q: "Is my payment secure?",
+    a: "Yes. All payments are securely processed by Stripe. Rothme never stores your full payment information.",
   },
   {
     q: "Are there contracts?",
     a: "No. Rothme Pro is a recurring subscription with no long-term commitment.",
-  },
-  {
-    q: "Is my payment secure?",
-    a: "Yes. All payments are securely processed by Stripe. Rothme never stores your full payment information.",
   },
 ];
 
@@ -117,15 +113,15 @@ function PricingPage() {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
+        <div className="mt-12 grid gap-6">
           {/* Monthly */}
-          <div className="rounded-2xl border border-border/70 bg-card p-8">
+          <div className="mx-auto w-full max-w-md rounded-2xl border-2 border-foreground bg-card p-8 shadow-sm">
             <div>
               <h2 className="text-2xl font-semibold">Rothme Pro</h2>
               <p className="mt-1 text-sm text-muted-foreground">Monthly</p>
             </div>
             <div className="mt-6 flex items-baseline gap-2">
-              <span className="text-5xl font-semibold tracking-tight">$49.99</span>
+              <span className="text-5xl font-semibold tracking-tight">$200</span>
               <span className="text-muted-foreground">/ month</span>
             </div>
 
@@ -138,53 +134,7 @@ function PricingPage() {
                 ? "Loading…"
                 : currentPlan === "pro_monthly"
                   ? "Current plan — Manage"
-                  : currentPlan === "pro_annual"
-                    ? "Manage subscription"
-                    : "Start Monthly"} <ArrowRight className="h-4 w-4" />
-            </button>
-
-            <ul className="mt-8 space-y-3">
-              {PRO_FEATURES.map((f) => (
-                <li key={f} className="flex items-start gap-3 text-sm">
-                  <Check className="mt-0.5 h-4 w-4 flex-none text-foreground" />
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Annual */}
-          <div className="relative rounded-2xl border-2 border-foreground bg-card p-8 shadow-sm">
-            <div className="absolute -top-3 left-8 rounded-full bg-foreground px-3 py-1 text-xs font-medium text-background">
-              Best value
-            </div>
-            <div>
-              <h2 className="text-2xl font-semibold">Rothme Pro Annual</h2>
-              <p className="mt-1 text-sm text-muted-foreground">Annual billing</p>
-            </div>
-            <div className="mt-6 flex items-baseline gap-2">
-              <span className="text-5xl font-semibold tracking-tight">$499.99</span>
-              <span className="text-muted-foreground">/ year</span>
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Save $99.89 every year (about 17% compared to monthly billing)
-            </p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Everything included in Rothme Pro, plus the convenience of one annual payment.
-            </p>
-
-            <button
-              onClick={() => handleStart("annual")}
-              disabled={loading}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-foreground px-4 py-3 text-sm font-medium text-background transition hover:opacity-90 disabled:opacity-50"
-            >
-              {loading
-                ? "Loading…"
-                : currentPlan === "pro_annual"
-                  ? "Current plan — Manage"
-                  : currentPlan === "pro_monthly"
-                    ? "Switch to Annual"
-                    : "Start Annual"} <ArrowRight className="h-4 w-4" />
+                  : "Start Monthly"} <ArrowRight className="h-4 w-4" />
             </button>
 
             <ul className="mt-8 space-y-3">
