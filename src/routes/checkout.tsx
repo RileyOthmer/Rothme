@@ -41,7 +41,7 @@ function CheckoutPage() {
     })();
   }, [navigate, plan]);
 
-  const planLabel = plan === "pro_monthly" ? "ROTHME Pro — Monthly ($49.99/mo)" : "ROTHME Pro — Annual ($499.99/yr, save ~17%)";
+  const planLabel = "Rothme Monthly Subscription ($200/mo)";
 
   if (!isPaymentsConfigured()) {
     return (
