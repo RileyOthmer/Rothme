@@ -2,8 +2,9 @@ import { loadStripe, type Stripe } from "@stripe/stripe-js";
 
 type StripeEnv = "sandbox" | "live";
 
-// BYOK Stripe: read the merchant's publishable key directly.
-const publishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as string | undefined;
+// BYOK Stripe publishable key. Safe to commit — publishable keys are public
+// by design and only usable client-side to tokenize card details.
+const publishableKey: string | undefined = "pk_test_51TszN09RrcGTTZDqy5u4VuKWZ6PtlvY8sy3nT01x9oVwCDuKuxl9g2kEQ9t72KEvthwCSwrybxvISQUy377FwKoL007DhnuJpr";
 
 function paymentsEnvironment(): StripeEnv {
   if (publishableKey?.startsWith("pk_test_")) return "sandbox";
