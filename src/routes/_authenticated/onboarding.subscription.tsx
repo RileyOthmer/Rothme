@@ -18,8 +18,6 @@ export const Route = createFileRoute("/_authenticated/onboarding/subscription")(
   component: SubscriptionStep,
 });
 
-type Cycle = "monthly" | "annual";
-
 function SubscriptionStep() {
   const navigate = useNavigate();
   const getSession = useServerFn(getOnboardingSession);
@@ -32,9 +30,8 @@ function SubscriptionStep() {
   }, []);
   const { isActive, loading } = useSubscription(userId);
 
-  const [cycle, setCycle] = useState<Cycle>("annual");
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const priceId = cycle === "monthly" ? "pro_monthly" : "pro_annual";
+  const priceId = "pro_monthly";
 
   // Skip step entirely if org already active
   useEffect(() => {
