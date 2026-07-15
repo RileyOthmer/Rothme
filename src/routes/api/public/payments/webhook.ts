@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { type StripeEnv, createStripeClient, verifyWebhook } from "@/lib/stripe.server";
+import { type StripeEnv, createStripeClient, verifyWebhook, getStripeEnvironmentFromKey, slugFromPriceId } from "@/lib/stripe.server";
 
 let _supabase: SupabaseClient<Database> | null = null;
 function getSupabase(): SupabaseClient<Database> {
@@ -66,9 +66,13 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
     return;
   }
   const item = subscription.items?.data?.[0];
+  const rawPriceId = item?.price?.id;
+  // Prefer app-stable slug (pro_monthly / pro_annual) so entitlement gating
+  // works across test/live. Falls back to the raw Stripe id for unknown prices.
   const priceId = item?.price?.lookup_key
     || item?.price?.metadata?.lovable_external_id
-    || item?.price?.id;
+    || slugFromPriceId(rawPriceId)
+    || rawPriceId;
   const productId = item?.price?.product;
   const periodStart = item?.current_period_start ?? subscription.current_period_start;
   const periodEnd = item?.current_period_end ?? subscription.current_period_end;
@@ -210,13 +214,18 @@ export const Route = createFileRoute("/api/public/payments/webhook")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const rawEnv = new URL(request.url).searchParams.get("env");
-        if (rawEnv !== "sandbox" && rawEnv !== "live") {
-          console.error("Webhook received with invalid env:", rawEnv);
-          return Response.json({ received: true, ignored: "invalid env" });
+        // BYOK Stripe: env is derived from the configured secret key
+        // (test vs live) instead of a ?env= query param, since one project
+        // uses one Stripe account at a time.
+        let env: StripeEnv;
+        try {
+          env = getStripeEnvironmentFromKey();
+        } catch (e) {
+          console.error("Webhook: STRIPE_SECRET_KEY not configured", e);
+          return new Response("Stripe not configured", { status: 500 });
         }
         try {
-          await handleWebhook(request, rawEnv);
+          await handleWebhook(request, env);
           return Response.json({ received: true });
         } catch (e) {
           console.error("Webhook error:", e);

@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type Stripe from "stripe";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
+import { type StripeEnv, createStripeClient, getStripeErrorMessage, resolvePriceId } from "@/lib/stripe.server";
 
 type CheckoutSessionResult = { clientSecret: string } | { error: string };
 type PortalSessionResult = { url: string } | { error: string };
@@ -93,9 +93,9 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
         }
       }
 
-      const prices = await stripe.prices.list({ lookup_keys: [data.priceId] });
-      if (!prices.data.length) throw new Error("Price not found");
-      const stripePrice = prices.data[0];
+      const resolvedPriceId = resolvePriceId(data.priceId);
+      const stripePrice = await stripe.prices.retrieve(resolvedPriceId);
+      if (!stripePrice) throw new Error("Price not found");
 
       const customerId = await resolveOrCreateCustomer(stripe, {
         email,
@@ -121,12 +121,6 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
             ...(orgId && { orgId }),
           },
         },
-      };
-
-      // Stripe's dahlia-preview end-to-end compliance handling. Cast because
-      // the current SDK type doesn't yet include `managed_payments`.
-      (sessionParams as unknown as { managed_payments: { enabled: boolean } }).managed_payments = {
-        enabled: true,
       };
 
       const session = await stripe.checkout.sessions.create(sessionParams);
@@ -211,9 +205,7 @@ export const changeSubscriptionPlan = createServerFn({ method: "POST" })
         return { error: "No active subscription to change." };
       }
       const stripe = createStripeClient(data.environment);
-      const prices = await stripe.prices.list({ lookup_keys: [data.priceId] });
-      if (!prices.data.length) return { error: "Target price not found." };
-      const newPriceId = prices.data[0].id;
+      const newPriceId = resolvePriceId(data.priceId);
 
       const sub = await stripe.subscriptions.retrieve(found.subscriptionId);
       const currentItemId = sub.items.data[0]?.id;
