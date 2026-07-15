@@ -106,45 +106,32 @@ function BillingPage() {
               </div>
             )}
             {!loading && !isActive && (
-              <div className="mt-1 text-sm text-muted-foreground">Start your 7-day free trial to unlock the full ROTHME platform.</div>
+              <div className="mt-1 text-sm text-muted-foreground">Upgrade to ROTHME Pro to unlock the full platform.</div>
             )}
           </div>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
           {isActive ? (
-            <>
-              <button
-                onClick={openPortal}
-                disabled={portalLoading}
-                className="inline-flex items-center gap-2 rounded-lg border border-border/70 px-4 py-2 text-sm hover:bg-muted/50 disabled:opacity-50"
-              >
-                <CreditCard className="h-4 w-4" />
-                {portalLoading ? "Opening…" : "Manage subscription & invoices"}
-                <ExternalLink className="h-3 w-3" />
-              </button>
-              {subscription?.price_id === "pro_monthly" && !isCancelling && (
-                <button
-                  onClick={switchToAnnual}
-                  disabled={switchLoading}
-                  className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm text-background hover:opacity-90 disabled:opacity-50"
-                >
-                  <ArrowUpRight className="h-4 w-4" />
-                  {switchLoading ? "Switching…" : "Switch to annual — save ~17%"}
-                </button>
-              )}
-            </>
+            <button
+              onClick={openPortal}
+              disabled={portalLoading}
+              className="inline-flex items-center gap-2 rounded-lg border border-border/70 px-4 py-2 text-sm hover:bg-muted/50 disabled:opacity-50"
+            >
+              <CreditCard className="h-4 w-4" />
+              {portalLoading ? "Opening…" : "Manage subscription & invoices"}
+              <ExternalLink className="h-3 w-3" />
+            </button>
           ) : (
             <Link
               to="/pricing"
               className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm text-background hover:opacity-90"
             >
-              Start free trial
+              Upgrade to Pro
             </Link>
           )}
         </div>
         {portalError && <p className="mt-3 text-sm text-red-600">{portalError}</p>}
-        {switchMsg && <p className="mt-3 text-sm text-muted-foreground">{switchMsg}</p>}
       </section>
 
       <p className="text-xs text-muted-foreground">
