@@ -49,8 +49,8 @@ const FAQ = [
     a: "Yes. You can cancel from your billing settings at any time. Your subscription remains active through the end of the current billing period.",
   },
   {
-    q: "Can I switch between monthly and annual?",
-    a: "Yes. You can change your billing cycle anytime through the customer billing portal.",
+    q: "Is my payment secure?",
+    a: "Yes. All payments are securely processed by Stripe. Rothme never stores your full payment information.",
   },
   {
     q: "Are there contracts?",
