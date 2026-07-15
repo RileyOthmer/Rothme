@@ -1,10 +1,8 @@
-import { Link } from "@tanstack/react-router";
-
 export function Wordmark({ size = "sm" }: { size?: "sm" | "md" }) {
   const dim = size === "md" ? "h-6 w-6" : "h-5 w-5";
   const text = size === "md" ? "text-base" : "text-[15px]";
   return (
-    <Link to="/" className="group inline-flex items-center gap-2">
+    <span className="group inline-flex items-center gap-2">
       <span
         aria-hidden
         className={
@@ -23,6 +21,6 @@ export function Wordmark({ size = "sm" }: { size?: "sm" | "md" }) {
       >
         ROTHME
       </span>
-    </Link>
+    </span>
   );
 }
