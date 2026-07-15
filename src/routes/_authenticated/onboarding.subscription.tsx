@@ -11,14 +11,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
 import { isPaymentsConfigured } from "@/lib/stripe";
 import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/session.functions";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/subscription")({
-  head: () => ({ meta: [{ title: "Start your trial — ROTHME" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Subscribe to ROTHME Pro" }, { name: "robots", content: "noindex" }] }),
   component: SubscriptionStep,
 });
-
-type Cycle = "monthly" | "annual";
 
 function SubscriptionStep() {
   const navigate = useNavigate();
@@ -32,9 +29,8 @@ function SubscriptionStep() {
   }, []);
   const { isActive, loading } = useSubscription(userId);
 
-  const [cycle, setCycle] = useState<Cycle>("annual");
   const [checkoutOpen, setCheckoutOpen] = useState(false);
-  const priceId = cycle === "monthly" ? "pro_monthly" : "pro_annual";
+  const priceId = "pro_monthly";
 
   // Skip step entirely if org already active
   useEffect(() => {
@@ -44,7 +40,7 @@ function SubscriptionStep() {
     }
   }, [loading, isActive, navigate, save]);
 
-  const skipTrial = async () => {
+  const skipForNow = async () => {
     await save({ data: { step: "configuration" } }).catch(() => {});
     navigate({ to: "/onboarding/configuration" });
   };
@@ -53,48 +49,24 @@ function SubscriptionStep() {
     <OnboardingShell currentStepId="subscription" session={session ?? null}>
       <div className="mx-auto max-w-3xl">
         <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/50 px-3 py-1 text-xs text-muted-foreground">
-          <Sparkles className="h-3.5 w-3.5" /> 7-day free trial · Cancel anytime
+          <Sparkles className="h-3.5 w-3.5" /> Cancel anytime
         </div>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">Start your ROTHME Pro trial.</h1>
+        <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">Subscribe to ROTHME Pro.</h1>
         <p className="mt-3 text-muted-foreground">
-          Full access for 7 days. No charge until day 8 — cancel from Settings → Billing anytime.
+          Unlock the full platform with a single monthly subscription. Cancel from Settings → Billing anytime.
         </p>
 
         {!checkoutOpen ? (
           <>
-            <div className="mt-8 inline-flex rounded-full border border-border/60 bg-card/50 p-1 backdrop-blur-xl">
-              <button
-                onClick={() => setCycle("monthly")}
-                className={cn("rounded-full px-4 py-1.5 text-sm transition-all", cycle === "monthly" && "bg-primary text-primary-foreground")}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setCycle("annual")}
-                className={cn("rounded-full px-4 py-1.5 text-sm transition-all", cycle === "annual" && "bg-primary text-primary-foreground")}
-              >
-                Annual · save ~17%
-              </button>
-            </div>
-
             <div className="mt-6 rounded-2xl border border-primary/40 bg-gradient-to-br from-primary/10 to-transparent p-6">
               <div className="flex items-baseline justify-between gap-4">
                 <div>
                   <div className="text-xs uppercase tracking-wider text-muted-foreground">ROTHME Pro</div>
                   <div className="mt-1 flex items-baseline gap-1">
-                    <span className="text-4xl font-semibold tracking-tight">
-                      ${cycle === "monthly" ? 49 : 490}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      /{cycle === "monthly" ? "month" : "year"}
-                    </span>
+                    <span className="text-4xl font-semibold tracking-tight">$200</span>
+                    <span className="text-sm text-muted-foreground">/month</span>
                   </div>
-                  <div className="mt-1 text-xs text-muted-foreground">
-                    {cycle === "annual" ? "Two months free vs monthly ($588)" : "Billed monthly. Cancel anytime."}
-                  </div>
-                </div>
-                <div className="hidden sm:block text-xs text-muted-foreground text-right">
-                  Charged after your 7-day trial
+                  <div className="mt-1 text-xs text-muted-foreground">Billed monthly. Cancel anytime.</div>
                 </div>
               </div>
 
@@ -118,9 +90,9 @@ function SubscriptionStep() {
                 <ShieldCheck className="h-3.5 w-3.5" /> Secure checkout by Stripe · Test mode active in preview
               </div>
               <div className="flex gap-3">
-                <Button variant="ghost" onClick={skipTrial}>Skip for now</Button>
+                <Button variant="ghost" onClick={skipForNow}>Skip for now</Button>
                 <Button size="lg" onClick={() => setCheckoutOpen(true)} disabled={!isPaymentsConfigured()} className="gap-2">
-                  Start 7-day trial <ArrowRight className="h-4 w-4" />
+                  Subscribe now <ArrowRight className="h-4 w-4" />
                 </Button>
               </div>
             </div>
@@ -135,7 +107,7 @@ function SubscriptionStep() {
             <PaymentTestModeBanner />
             <div className="mb-3 flex items-center justify-between text-sm">
               <div className="text-muted-foreground">
-                Starting trial: <strong className="text-foreground">ROTHME Pro — {cycle === "monthly" ? "Monthly" : "Annual"}</strong>
+                Subscribing to: <strong className="text-foreground">ROTHME Pro — Monthly</strong>
               </div>
               <button onClick={() => setCheckoutOpen(false)} className="text-muted-foreground hover:text-foreground">
                 ← Back

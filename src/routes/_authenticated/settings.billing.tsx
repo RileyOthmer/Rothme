@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CreditCard, ExternalLink, AlertTriangle, Sparkles, Clock, ArrowUpRight } from "lucide-react";
+import { CreditCard, ExternalLink, AlertTriangle, Sparkles, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
 import { getStripeEnvironment, isPaymentsConfigured } from "@/lib/stripe";
-import { createPortalSession, changeSubscriptionPlan } from "@/lib/payments.functions";
+import { createPortalSession } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/_authenticated/settings/billing")({
   head: () => ({ meta: [{ title: "Billing — ROTHME" }, { name: "robots", content: "noindex" }] }),
@@ -15,8 +15,6 @@ function BillingPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
-  const [switchLoading, setSwitchLoading] = useState(false);
-  const [switchMsg, setSwitchMsg] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
@@ -43,28 +41,9 @@ function BillingPage() {
     }
   };
 
-  const switchToAnnual = async () => {
-    if (!confirm("Switch to annual billing? You'll be charged the pro-rated difference today and save ~17% going forward.")) return;
-    setSwitchLoading(true);
-    setSwitchMsg(null);
-    try {
-      const result = await changeSubscriptionPlan({
-        data: { priceId: "pro_annual", environment: getStripeEnvironment() },
-      });
-      if ("error" in result) throw new Error(result.error);
-      setSwitchMsg("You're on the annual plan. Renewals now bill yearly.");
-    } catch (e) {
-      setSwitchMsg(e instanceof Error ? e.message : "Failed to switch plan");
-    } finally {
-      setSwitchLoading(false);
-    }
-  };
-
-  const planLabel = subscription?.price_id === "pro_annual"
-    ? "ROTHME Pro — Annual ($499.99/year)"
-    : subscription?.price_id === "pro_monthly"
-      ? "ROTHME Pro — Monthly ($49.99/month)"
-      : "Free";
+  const planLabel = subscription?.price_id === "pro_monthly"
+    ? "ROTHME Pro — Monthly ($200.00/month)"
+    : "Free";
 
   const periodEnd = subscription?.current_period_end
     ? new Date(subscription.current_period_end).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })
@@ -127,45 +106,32 @@ function BillingPage() {
               </div>
             )}
             {!loading && !isActive && (
-              <div className="mt-1 text-sm text-muted-foreground">Start your 7-day free trial to unlock the full ROTHME platform.</div>
+              <div className="mt-1 text-sm text-muted-foreground">Upgrade to ROTHME Pro to unlock the full platform.</div>
             )}
           </div>
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
           {isActive ? (
-            <>
-              <button
-                onClick={openPortal}
-                disabled={portalLoading}
-                className="inline-flex items-center gap-2 rounded-lg border border-border/70 px-4 py-2 text-sm hover:bg-muted/50 disabled:opacity-50"
-              >
-                <CreditCard className="h-4 w-4" />
-                {portalLoading ? "Opening…" : "Manage subscription & invoices"}
-                <ExternalLink className="h-3 w-3" />
-              </button>
-              {subscription?.price_id === "pro_monthly" && !isCancelling && (
-                <button
-                  onClick={switchToAnnual}
-                  disabled={switchLoading}
-                  className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm text-background hover:opacity-90 disabled:opacity-50"
-                >
-                  <ArrowUpRight className="h-4 w-4" />
-                  {switchLoading ? "Switching…" : "Switch to annual — save ~17%"}
-                </button>
-              )}
-            </>
+            <button
+              onClick={openPortal}
+              disabled={portalLoading}
+              className="inline-flex items-center gap-2 rounded-lg border border-border/70 px-4 py-2 text-sm hover:bg-muted/50 disabled:opacity-50"
+            >
+              <CreditCard className="h-4 w-4" />
+              {portalLoading ? "Opening…" : "Manage subscription & invoices"}
+              <ExternalLink className="h-3 w-3" />
+            </button>
           ) : (
             <Link
               to="/pricing"
               className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm text-background hover:opacity-90"
             >
-              Start free trial
+              Upgrade to Pro
             </Link>
           )}
         </div>
         {portalError && <p className="mt-3 text-sm text-red-600">{portalError}</p>}
-        {switchMsg && <p className="mt-3 text-sm text-muted-foreground">{switchMsg}</p>}
       </section>
 
       <p className="text-xs text-muted-foreground">
