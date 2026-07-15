@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { CreditCard, ExternalLink, AlertTriangle, Sparkles, Clock, ArrowUpRight } from "lucide-react";
+import { CreditCard, ExternalLink, AlertTriangle, Sparkles, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useSubscription } from "@/hooks/useSubscription";
 import { getStripeEnvironment, isPaymentsConfigured } from "@/lib/stripe";
-import { createPortalSession, changeSubscriptionPlan } from "@/lib/payments.functions";
+import { createPortalSession } from "@/lib/payments.functions";
 
 export const Route = createFileRoute("/_authenticated/settings/billing")({
   head: () => ({ meta: [{ title: "Billing — ROTHME" }, { name: "robots", content: "noindex" }] }),
@@ -15,8 +15,6 @@ function BillingPage() {
   const [userId, setUserId] = useState<string | null>(null);
   const [portalLoading, setPortalLoading] = useState(false);
   const [portalError, setPortalError] = useState<string | null>(null);
-  const [switchLoading, setSwitchLoading] = useState(false);
-  const [switchMsg, setSwitchMsg] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => setUserId(data.user?.id ?? null));
