@@ -115,7 +115,6 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
           ...(orgId && { orgId }),
         },
         subscription_data: {
-          trial_period_days: TRIAL_DAYS,
           metadata: {
             userId,
             ...(orgId && { orgId }),
