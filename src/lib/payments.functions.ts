@@ -168,7 +168,7 @@ export const createPortalSession = createServerFn({ method: "POST" })
   .handler(async ({ data, context }): Promise<PortalSessionResult> => {
     try {
       const { supabase, userId } = context;
-      const found = await getActiveCustomerAndSub(supabase, userId, data.environment);
+      const found = await findActiveCustomerAndSub(supabase, userId, data.environment);
       if (!found) {
         return { error: "No subscription found. Start one from the pricing page." };
       }
