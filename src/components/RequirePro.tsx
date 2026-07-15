@@ -32,14 +32,14 @@ export function RequirePro({ children, featureName = "This feature" }: Props) {
       </div>
       <h1 className="mt-6 text-2xl font-semibold">{featureName} is on ROTHME Pro</h1>
       <p className="mt-3 text-muted-foreground">
-        Start your 7-day free trial to unlock unified analytics, the AI strategist, and every connector.
+        Upgrade to ROTHME Pro to unlock unified analytics, the AI strategist, and every connector.
       </p>
       <div className="mt-8 flex justify-center gap-3">
         <Link
           to="/pricing"
           className="inline-flex items-center gap-2 rounded-lg bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90"
         >
-          <Sparkles className="h-4 w-4" /> Start free trial
+          <Sparkles className="h-4 w-4" /> Upgrade to Pro
         </Link>
         <Link
           to="/settings/billing"
