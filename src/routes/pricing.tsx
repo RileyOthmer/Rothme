@@ -56,10 +56,6 @@ const FAQ = [
     q: "Are there contracts?",
     a: "No. Rothme Pro is a recurring subscription with no long-term commitment.",
   },
-  {
-    q: "Is my payment secure?",
-    a: "Yes. All payments are securely processed by Stripe. Rothme never stores your full payment information.",
-  },
 ];
 
 function PricingPage() {
