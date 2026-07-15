@@ -130,33 +130,6 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     }
   });
 
-async function getActiveCustomerAndSub(
-  supabase: ReturnType<typeof createStripeClient> extends never ? never : any,
-  userId: string,
-  environment: StripeEnv,
-): Promise<{ customerId: string; subscriptionId: string | null } | null> {
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("active_org_id")
-    .eq("id", userId)
-    .maybeSingle();
-  const activeOrg = (profile?.active_org_id as string | null) ?? null;
-
-  let q = supabase
-    .from("subscriptions")
-    .select("stripe_customer_id, stripe_subscription_id")
-    .eq("environment", environment)
-    .order("created_at", { ascending: false })
-    .limit(1);
-  q = activeOrg ? q.eq("org_id", activeOrg) : q.eq("user_id", userId);
-  const { data: sub } = await q.maybeSingle();
-  if (!sub?.stripe_customer_id) return null;
-  return {
-    customerId: sub.stripe_customer_id as string,
-    subscriptionId: (sub.stripe_subscription_id as string | null) ?? null,
-  };
-}
-
 export const createPortalSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { returnUrl?: string; environment: StripeEnv; flow?: "cancel" | "invoices" | "payment_method" }) => {
