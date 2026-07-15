@@ -6,7 +6,7 @@ import { type StripeEnv, createStripeClient, getStripeErrorMessage, resolvePrice
 type CheckoutSessionResult = { clientSecret: string } | { error: string };
 type PortalSessionResult = { url: string } | { error: string };
 
-const TRIAL_DAYS = 7;
+
 
 async function resolveOrCreateCustomer(
   stripe: ReturnType<typeof createStripeClient>,
@@ -115,7 +115,6 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
           ...(orgId && { orgId }),
         },
         subscription_data: {
-          trial_period_days: TRIAL_DAYS,
           metadata: {
             userId,
             ...(orgId && { orgId }),
