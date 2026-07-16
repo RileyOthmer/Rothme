@@ -116,7 +116,7 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        const t = navTarget(safeRedirect);
+        const t = await resolveLandingRoute(safeRedirect);
         navigate({ to: t.to, search: t.search, replace: true } as never);
       }
     } catch (err) {
