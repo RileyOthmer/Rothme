@@ -181,3 +181,82 @@ export const getHealthStats = createServerFn({ method: "GET" })
       aiAudits7d: aiAudits ?? 0,
     };
   });
+
+
+// ---------- Financial + churn stats (Rothme is a single $200/mo plan) ----------
+
+const ROTHME_MONTHLY_PRICE_USD = 200;
+
+export const getFinancialStats = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { environment?: "sandbox" | "live" }) => d ?? {})
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const env = data.environment ?? "live";
+
+    const [{ count: activeCount }, { count: trialingCount }, { count: pastDueCount }, { count: canceled30d }, { count: activeAtStart }] = await Promise.all([
+      supabaseAdmin.from("subscriptions").select("id", { count: "exact", head: true }).eq("environment", env).eq("status", "active"),
+      supabaseAdmin.from("subscriptions").select("id", { count: "exact", head: true }).eq("environment", env).eq("status", "trialing"),
+      supabaseAdmin.from("subscriptions").select("id", { count: "exact", head: true }).eq("environment", env).eq("status", "past_due"),
+      supabaseAdmin
+        .from("subscriptions")
+        .select("id", { count: "exact", head: true })
+        .eq("environment", env)
+        .eq("status", "canceled")
+        .gte("updated_at", isoDaysAgo(30)),
+      // Approx active-at-start = current active + churned in window
+      supabaseAdmin
+        .from("subscriptions")
+        .select("id", { count: "exact", head: true })
+        .eq("environment", env)
+        .in("status", ["active", "canceled"])
+        .lte("created_at", isoDaysAgo(30)),
+    ]);
+
+    const active = activeCount ?? 0;
+    const trialing = trialingCount ?? 0;
+    const pastDue = pastDueCount ?? 0;
+    const churned = canceled30d ?? 0;
+    const base = activeAtStart ?? active + churned;
+    const churnRate = base > 0 ? churned / base : 0;
+
+    const mrr = active * ROTHME_MONTHLY_PRICE_USD;
+    const arr = mrr * 12;
+
+    return {
+      environment: env,
+      activeSubscribers: active,
+      trialing,
+      pastDue,
+      churned30d: churned,
+      churnRate,
+      mrrUsd: mrr,
+      arrUsd: arr,
+      priceUsd: ROTHME_MONTHLY_PRICE_USD,
+    };
+  });
+
+export const getRecentCancellations = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { environment?: "sandbox" | "live" }) => d ?? {})
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const env = data.environment ?? "live";
+    const { data: rows } = await supabaseAdmin
+      .from("subscriptions")
+      .select("id, customer_email, status, cancel_at_period_end, current_period_end, updated_at")
+      .eq("environment", env)
+      .or("status.eq.canceled,cancel_at_period_end.eq.true")
+      .order("updated_at", { ascending: false })
+      .limit(10);
+    return (rows ?? []) as unknown as Array<{
+      id: string;
+      customer_email: string | null;
+      status: string | null;
+      cancel_at_period_end: boolean | null;
+      current_period_end: string | null;
+      updated_at: string | null;
+    }>;
+  });
