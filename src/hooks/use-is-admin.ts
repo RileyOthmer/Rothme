@@ -9,5 +9,9 @@ export function useIsAdmin() {
     queryFn: () => fn({}),
     staleTime: 60_000,
   });
-  return { isAdmin: q.data?.isAdmin ?? false, isLoading: q.isLoading };
+  return {
+    isAdmin: q.data?.isAdmin ?? false,
+    anyAdminExists: q.data?.anyAdminExists ?? true,
+    isLoading: q.isLoading,
+  };
 }
