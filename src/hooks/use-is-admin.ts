@@ -11,7 +11,6 @@ export function useIsAdmin() {
   });
   return {
     isAdmin: q.data?.isAdmin ?? false,
-    anyAdminExists: q.data?.anyAdminExists ?? true,
     isLoading: q.isLoading,
   };
 }

@@ -9,7 +9,7 @@ export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
       { title: "Pricing — Rothme" },
-      { name: "description", content: "Choose the plan that's right for you. Every Rothme Pro subscription includes the complete platform — no feature tiers, no hidden upgrades." },
+      { name: "description", content: "Choose the plan that's right for you. Every Rothme subscription includes the complete platform — no feature tiers, no hidden upgrades." },
       { property: "og:title", content: "Pricing — ROTHME" },
       { property: "og:description", content: "Everything you need to grow your business with AI." },
       { property: "og:type", content: "website" },
@@ -40,7 +40,7 @@ const INCLUDED_FEATURES = [
   "Unlimited projects",
   "Secure cloud storage",
   "Automatic updates",
-  "Access to all future Rothme Pro features",
+  "Access to all future Rothme features",
 ];
 
 const FAQ = [
@@ -54,7 +54,7 @@ const FAQ = [
   },
   {
     q: "Are there contracts?",
-    a: "No. Rothme Pro is a recurring subscription with no long-term commitment.",
+    a: "No. Rothme is a recurring subscription with no long-term commitment.",
   },
 ];
 
@@ -109,7 +109,7 @@ function PricingPage() {
             Everything you need to grow your business with AI.
           </p>
           <p className="mt-2 text-sm text-muted-foreground">
-            Choose the plan that's right for you. Every Rothme Pro subscription includes the complete platform — no feature tiers, no hidden upgrades.
+            Choose the plan that's right for you. Every Rothme subscription includes the complete platform — no feature tiers, no hidden upgrades.
           </p>
         </div>
 
@@ -117,7 +117,7 @@ function PricingPage() {
           {/* Monthly */}
           <div className="mx-auto w-full max-w-md rounded-2xl border-2 border-foreground bg-card p-8 shadow-sm">
             <div>
-              <h2 className="text-2xl font-semibold">Rothme Pro</h2>
+              <h2 className="text-2xl font-semibold">Rothme</h2>
               <p className="mt-1 text-sm text-muted-foreground">Monthly</p>
             </div>
             <div className="mt-6 flex items-baseline gap-2">

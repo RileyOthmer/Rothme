@@ -1,65 +1,91 @@
-# Admin Console
+# Rothme — One-plan pricing + role-based access
 
-A dedicated `/admin` area, gated to users with the `admin` role, where you can manage every OAuth credential and see live health/stats for the whole platform.
+## Business rules to enforce
 
-## What you'll get
+- One plan only: **Rothme Pro — $200/month**.
+- No access before Stripe confirms payment; full access after.
+- Two roles: **Admin** and **Customer**. Everything in the app is unlocked for any active-subscription customer. Admin is a superset with the `/admin` surface added.
+- Admin role is granted **only in the database** (via the migration tool or a SQL query). No frontend claim flow, no self-promotion endpoint.
 
-**Nav:** an "Admin" chip appears in the app header only when your account has the admin role. Non-admins never see the link and get bounced from `/admin/*` back to the dashboard.
+## 1. Strip every "tier / upgrade / premium" surface
 
-**Six pages under `/admin/`:**
+Files to edit or delete (already surveyed):
 
-1. **Dashboard** — snapshot of every stat category, updates when you land on the page.
-2. **Credentials** — one row per social platform (Facebook → Bluesky). Shows configured / missing state, last-updated timestamp, and lets you paste a new Client ID + Client Secret inline. Values are AES-256-GCM encrypted using your existing `INTEGRATION_ENCRYPTION_KEY`. Secrets are never sent back to the browser (masked "••••1234").
-3. **Users & growth** — total users, new signups (7d / 30d), 30d active users, latest sign-ups list.
-4. **Revenue & subscriptions** — active subscribers by plan, trialing / past-due / canceled counts, MRR estimate, latest 20 subscription events, environment (test/live) filter.
-5. **Connections health** — connected accounts per platform, healthy vs degraded vs disconnected, sync success/failure rate over 7d, tokens expiring in 7d.
-6. **System health** — recent errors from `sync_history`, `plugin_events` and `platform_integration_logs`; AI audit counts; last cron run.
+- **Delete** `src/routes/pricing.tsx` if it renders a comparison table; replace with a single-plan page that shows "$200/month" and one Subscribe CTA (kept because unauthenticated visitors still need a way to start checkout).
+- **`src/routes/_authenticated/settings.billing.tsx`** — remove any remaining "Upgrade" / "Pro" language; label the plan simply "Rothme — $200/month".
+- **`src/routes/_authenticated/onboarding.subscription.tsx`** — remove the plan-comparison card if present; leave a single confirm-and-subscribe screen.
+- **`src/routes/checkout.tsx`, `checkout.return.tsx`** — replace remaining "Pro" wording with "Rothme".
+- **`src/features/dashboard/ProWelcome.tsx`** — rename to `SubscriberWelcome`, remove "Pro" wording.
+- **`src/components/RequirePro.tsx`** — already a passthrough; delete the file and replace its two import sites (`dev-center.tsx`, `analytics.tsx`) with the children directly.
+- Grep for "premium", "Pro", "Upgrade", "tier", "plan comparison" and remove any remaining copy.
 
-## How credential storage works
+## 2. Role model
 
-Two-tier lookup: the OAuth adapter now checks the encrypted `admin_credentials` row for a platform first, and falls back to the `<PLATFORM>_CLIENT_ID` / `_CLIENT_SECRET` env vars if the row is missing. This means:
+- Keep the existing `user_roles` table + `app_role` enum + `has_role` security-definer function. Already correct.
+- Everyone signed in with an active subscription is a Customer implicitly — no DB row needed.
+- Admins have an explicit `('admin')` row in `user_roles`. **Granted only via SQL** — no UI, no server function to self-grant.
+- **Migration**: drop the `claimFirstAdmin` server function; the frontend no longer exposes a way to become admin.
 
-- Editing a platform in `/admin/credentials` immediately activates real OAuth for that platform — no redeploy, no secret rotation.
-- Infra secrets (Stripe, encryption key, Lovable API key) stay in the Lovable secret store — the Credentials page shows them in a read-only "Infrastructure" panel with configured/missing badges so you can see status at a glance.
+## 3. Access control for `/admin/*`
 
-## Security
+- Keep the `_authenticated/admin.tsx` layout gate (`useIsAdmin`).
+- Replace the "not found" fallback with an explicit **403 Access Denied** panel (title, short message, "Back to dashboard" button). No claim button.
+- Every admin server function (`listAdminCredentials`, `upsertAdminCredential`, `deleteAdminCredential`, `getUserStats`, `getRevenueStats`, `getConnectionsHealth`, `getSystemHealth`) already calls `assertAdmin(context.userId)` — verify and add it to any new ones.
+- Sidebar `Admin Console` link stays hidden for non-admins (already the case via `useIsAdmin`).
 
-- New table `public.admin_credentials` — RLS restricted to `private.has_role(auth.uid(), 'admin')` for every operation. Server_role has ALL for edge functions.
-- All admin server functions use `requireSupabaseAuth` and re-verify `has_role('admin')` server-side before returning any data.
-- Encrypted values are never returned in list responses; only masked previews.
-- A route-level `beforeLoad` check in `_authenticated/admin/route.tsx` redirects non-admins to `/dashboard`.
+## 4. Admin dashboard — what to build now vs defer
 
-## Files
+The spec lists ~20 metrics. Only some have real data sources in this project today. I'll build the ones I can populate with real data and mark the rest as "Coming soon" cards so the layout is complete but never shows fake numbers.
 
-**Migration** (new)
-- `admin_credentials` table + admin-only RLS + updated_at trigger.
+**Built with real data (from Supabase / Stripe):**
 
-**Server** (new)
-- `src/lib/admin/credentials.functions.ts` — list / upsert / delete credential (admin-gated).
-- `src/lib/admin/stats.functions.ts` — users, revenue, connections, health aggregates.
-- `src/lib/admin/credential-resolver.server.ts` — DB-first, env-fallback secret loader.
+- Total Users — `auth.users` count (already in `getUserStats`)
+- Recent User Signups — last 10 signups (already in `getUserStats`)
+- Active Subscribers — `subscriptions.status in ('active','trialing')`
+- Monthly Recurring Revenue — active subs * $200
+- Annual Recurring Revenue — MRR * 12
+- Churn Rate (30d) — canceled in last 30d ÷ active-at-start-of-window
+- Subscription Cancellations — recent `subscriptions` with `cancel_at_period_end=true` or `canceled_at not null`
+- Stripe Revenue — `getStripeData`-style read for the last 30d of paid invoices (server fn, admin-gated)
+- Connected Integrations — `platform_integrations` + `social_connections` counts (already partly in `getConnectionsHealth`)
+- Recent Errors — `platform_integration_logs` where severity=error
+- OAuth Status — `oauth_states` recent successes / failures
+- System / Server Status — DB latency ping + `getSystemHealth` uptime signals
 
-**Server** (edit)
-- `src/lib/social-connections/adapter.server.ts` — read client_id/secret through the resolver instead of `process.env` directly.
+**Placeholder cards ("Not wired yet") — no fake data:**
 
-**Routes** (new)
-- `src/routes/_authenticated/admin/route.tsx` — role gate + shared shell/nav.
-- `src/routes/_authenticated/admin/index.tsx` — dashboard.
-- `src/routes/_authenticated/admin/credentials.tsx`
-- `src/routes/_authenticated/admin/users.tsx`
-- `src/routes/_authenticated/admin/revenue.tsx`
-- `src/routes/_authenticated/admin/connections.tsx`
-- `src/routes/_authenticated/admin/health.tsx`
+- AI Usage — needs an `ai_usage` events table; deferred.
+- Total API Requests — needs request logging; deferred.
+- Email Delivery Statistics — no email provider connected in DB; deferred.
+- SMS Delivery Statistics — no SMS provider; deferred.
+- Background Job Status — no job runner in project; deferred.
+- Feature Flags — no flags table; deferred.
+- Support Tickets — no tickets table; deferred.
+- Announcements — no announcements table; deferred.
+- Impersonate users — needs Supabase Auth Admin flow + audit; **explicitly out of scope for this pass** (call out risk).
 
-**UI** (edit)
-- `src/components/layout/AppHeader.tsx` — conditional "Admin" chip via a `useIsAdmin` hook.
+Each deferred card renders "Coming soon — needs the [X] data source" so nothing is fabricated.
 
-**Hook** (new)
-- `src/hooks/use-is-admin.ts` — small React Query wrapper around a `checkIsAdmin` server function.
+## 5. Admin dashboard UI
 
-## Notes / trade-offs
+- Redesign `admin.index.tsx` as a **premium enterprise dashboard**: 4-column stat grid, MRR/ARR/Churn hero row, a 30-day revenue sparkline (Recharts, already installed if we use it — verify), recent signups table, recent errors table, and integration health strip.
+- Add a top toolbar with **search** (across users by email/name) and **date range filter** (7d / 30d / 90d) that scopes revenue + churn + errors.
+- Responsive: single column on mobile, 2 cols on tablet, 4 cols on desktop.
+- Skeletons for every card; no layout shift.
 
-- MRR is an estimate derived from the `subscriptions` table price_id + plan mapping already used by `useSubscription`; it isn't a Stripe API roundtrip (fast, no rate limits).
-- The Credentials page never re-displays a secret you typed — once submitted it's encrypted and only the last 4 chars are echoed back. To rotate, paste a new value.
-- The adapter fallback preserves the current behaviour: if you never open the Credentials page, everything keeps working the same way it does today via env vars.
-- You'll need to be granted the `admin` role once. The existing `claim_first_admin` function handles this — I'll surface a one-click button on the admin gate's "access denied" screen so you can self-promote on first visit if no admin exists yet.
+## 6. Files touched (summary)
+
+- Migration: drop `claimFirstAdmin` (or leave function but disable via revoke); keep `user_roles` schema. Add a helpful `SELECT` comment showing how to grant admin.
+- `src/lib/admin/credentials.functions.ts` — delete `claimFirstAdmin` export.
+- `src/hooks/use-is-admin.ts` — drop `anyAdminExists`.
+- `src/routes/_authenticated/admin.tsx` — replace claim UI with 403 Access Denied.
+- `src/routes/_authenticated/admin.index.tsx` — full dashboard rebuild.
+- `src/lib/admin/stats.functions.ts` — add churn, MRR/ARR, stripe revenue, errors, oauth status queries.
+- Remove/rename `RequirePro`, `ProWelcome`; strip remaining "Pro/Upgrade" copy in `checkout.*`, `settings.billing.tsx`, `onboarding.subscription.tsx`.
+- `src/routes/pricing.tsx` — collapse to single-plan page (if it currently shows tiers).
+
+## Out of scope (call out explicitly)
+
+- User impersonation (needs careful audit + Supabase Auth Admin session mint; separate hardened change).
+- Building the email/SMS/jobs/flags/tickets/announcements data models — each is its own feature; today they'd only be placeholders.
+- Any change to Stripe products or price IDs.

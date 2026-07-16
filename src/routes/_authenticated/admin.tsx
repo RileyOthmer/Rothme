@@ -1,17 +1,12 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
-import { Shield, KeyRound, Users, DollarSign, Network, Activity, LayoutDashboard } from "lucide-react";
+import { Shield, KeyRound, Users, DollarSign, Network, Activity, LayoutDashboard, ShieldAlert } from "lucide-react";
 import { useIsAdmin } from "@/hooks/use-is-admin";
-import { useServerFn } from "@tanstack/react-start";
-import { claimFirstAdmin } from "@/lib/admin/credentials.functions";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: "Admin Console — ROTHME" },
-      { name: "description", content: "Manage social platform credentials, users, revenue, and system health." },
+      { name: "description", content: "Platform administration, subscriptions, integrations, and system health." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -28,7 +23,7 @@ const TABS: Array<{ to: string; label: string; icon: typeof Shield; exact?: bool
 ];
 
 function AdminLayout() {
-  const { isAdmin, anyAdminExists, isLoading } = useIsAdmin();
+  const { isAdmin, isLoading } = useIsAdmin();
   const { pathname } = useLocation();
 
   if (isLoading) {
@@ -38,13 +33,7 @@ function AdminLayout() {
       </main>
     );
   }
-  if (!isAdmin) {
-    // Hide the admin surface entirely from non-admins. Only expose the
-    // one-time claim flow when no admin exists yet (first-run bootstrap).
-    if (anyAdminExists) return <NotFound />;
-    return <ClaimFirstAdmin />;
-  }
-
+  if (!isAdmin) return <AccessDenied />;
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -54,7 +43,7 @@ function AdminLayout() {
         </div>
         <div>
           <h1 className="text-xl font-semibold">Admin Console</h1>
-          <p className="text-sm text-muted-foreground">Platform credentials, revenue, connections, and health — all in one place.</p>
+          <p className="text-sm text-muted-foreground">Platform administration, subscriptions, integrations, and system health.</p>
         </div>
       </header>
 
@@ -82,51 +71,25 @@ function AdminLayout() {
   );
 }
 
-function NotFound() {
+function AccessDenied() {
   return (
-    <main className="mx-auto max-w-md px-4 py-24 sm:px-6 text-center">
-      <h1 className="text-lg font-semibold">Page not found</h1>
-      <p className="mt-2 text-sm text-muted-foreground">
-        The page you're looking for doesn't exist.
-      </p>
-      <Link to="/dashboard" className="mt-6 inline-flex h-9 items-center rounded-lg bg-foreground px-4 text-xs font-medium text-background">
-        Back to dashboard
-      </Link>
-    </main>
-  );
-}
-
-function ClaimFirstAdmin() {
-  const claim = useServerFn(claimFirstAdmin);
-  const qc = useQueryClient();
-  const [error, setError] = useState<string | null>(null);
-  const mut = useMutation({
-    mutationFn: () => claim({}),
-    onSuccess: () => {
-      toast.success("You are now the platform admin");
-      qc.invalidateQueries({ queryKey: ["admin", "is-admin"] });
-    },
-    onError: (e: Error) => setError(e.message),
-  });
-
-  return (
-    <main className="mx-auto max-w-md px-4 py-24 sm:px-6">
+    <main className="mx-auto max-w-md px-4 py-24 sm:px-6" role="alert" aria-labelledby="access-denied-title">
       <div className="rounded-2xl border border-border bg-surface p-8 text-center">
-        <Shield className="mx-auto h-8 w-8 text-muted-foreground" />
-        <h1 className="mt-4 text-lg font-semibold">Claim admin access</h1>
+        <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-destructive/10 text-destructive">
+          <ShieldAlert className="h-6 w-6" />
+        </div>
+        <div className="mt-4 text-xs font-medium uppercase tracking-wider text-destructive">403 · Forbidden</div>
+        <h1 id="access-denied-title" className="mt-2 text-lg font-semibold">Access Denied</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          No platform admin exists yet. Claim it now to configure the workspace.
+          You don't have permission to view this page. Admin access is granted by the platform team.
         </p>
-        <button
-          onClick={() => mut.mutate()}
-          disabled={mut.isPending}
-          className="mt-6 inline-flex h-9 items-center rounded-lg bg-foreground px-4 text-xs font-medium text-background disabled:opacity-50"
+        <Link
+          to="/dashboard"
+          className="mt-6 inline-flex h-9 items-center rounded-lg bg-foreground px-4 text-xs font-medium text-background hover:opacity-90"
         >
-          {mut.isPending ? "Claiming…" : "Claim admin role"}
-        </button>
-        {error ? <p className="mt-3 text-xs text-destructive">{error}</p> : null}
+          Back to dashboard
+        </Link>
       </div>
     </main>
   );
 }
-

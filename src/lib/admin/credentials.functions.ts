@@ -147,35 +147,17 @@ export const checkIsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const [mine, all] = await Promise.all([
-      supabaseAdmin
-        .from("user_roles")
-        .select("id")
-        .eq("user_id", context.userId)
-        .eq("role", "admin")
-        .maybeSingle(),
-      supabaseAdmin
-        .from("user_roles")
-        .select("id", { count: "exact", head: true })
-        .eq("role", "admin"),
-    ]);
-    return { isAdmin: Boolean(mine.data), anyAdminExists: (all.count ?? 0) > 0 };
+    const { data } = await supabaseAdmin
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", context.userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    return { isAdmin: Boolean(data) };
   });
 
+// NOTE: There is intentionally no server function to grant admin from the
+// UI. Admin roles are assigned only via SQL, e.g.:
+//   INSERT INTO public.user_roles (user_id, role) VALUES ('<uuid>', 'admin');
 
-export const claimFirstAdmin = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    // Only allow if no admins currently exist.
-    const { count } = await supabaseAdmin
-      .from("user_roles")
-      .select("id", { count: "exact", head: true })
-      .eq("role", "admin");
-    if ((count ?? 0) > 0) throw new Error("An admin already exists");
-    const { error } = await supabaseAdmin
-      .from("user_roles")
-      .insert({ user_id: context.userId, role: "admin" } as never);
-    if (error) throw new Error(error.message);
-    return { ok: true };
-  });
+
