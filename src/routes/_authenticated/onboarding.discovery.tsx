@@ -59,6 +59,28 @@ const SUB_STEPS: SubStep[] = [
     ],
   },
   {
+    id: "location",
+    title: "Where can customers reach you?",
+    subtitle: "Location and contact help us tailor local recommendations.",
+    fields: [
+      { key: "city", label: "City", type: "text", placeholder: "e.g. Austin" },
+      { key: "state", label: "State / Region", type: "text", placeholder: "e.g. Texas" },
+      { key: "phoneNumber", label: "Phone number", type: "text", placeholder: "+1 (555) 123-4567" },
+      { key: "googleBusinessUrl", label: "Google Business Profile URL", type: "text", placeholder: "https://g.page/…", optional: true },
+    ],
+  },
+  {
+    id: "presence",
+    title: "Where do you show up online?",
+    subtitle: "Paste the links you have — skip the ones you don't.",
+    fields: [
+      { key: "facebookUrl", label: "Facebook URL", type: "text", placeholder: "https://facebook.com/…", optional: true },
+      { key: "instagramUrl", label: "Instagram URL", type: "text", placeholder: "https://instagram.com/…", optional: true },
+      { key: "linkedinUrl", label: "LinkedIn URL", type: "text", placeholder: "https://linkedin.com/company/…", optional: true },
+      { key: "tiktokUrl", label: "TikTok URL", type: "text", placeholder: "https://tiktok.com/@…", optional: true },
+    ],
+  },
+  {
     id: "scale",
     title: "Tell us about the shape of your team.",
     subtitle: "This helps ROTHME right-size recommendations.",
