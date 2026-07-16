@@ -139,8 +139,8 @@ function AuthPage() {
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
-      // Session set by helper — navigate.
-      const t = navTarget(safeRedirect);
+      // Session set by helper — navigate to role-appropriate landing page.
+      const t = await resolveLandingRoute(safeRedirect);
       navigate({ to: t.to, search: t.search, replace: true } as never);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed.");
