@@ -1,10 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowRight,
   BarChart3,
   Bot,
   Calendar,
   Check,
+  LogOut,
   MessageSquare,
   Sparkles,
   Users,
@@ -15,6 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -94,6 +96,24 @@ function Index() {
 }
 
 function Header() {
+  const [user, setUser] = useState<null | object>(null);
+  const [mounted, setMounted] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setMounted(true);
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate({ to: "/", replace: true });
+  };
+
   return (
     <header className="sticky top-0 z-30 border-b border-border/70 bg-background/80 backdrop-blur">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 sm:px-6">
@@ -105,14 +125,29 @@ function Header() {
           <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
         </nav>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild>
-            <Link to="/auth">Login</Link>
-          </Button>
-          <Button size="sm" asChild>
-            <Link to="/get-started" className="inline-flex items-center gap-1">
-              Start free <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </Button>
+          {mounted && user ? (
+            <>
+              <Button size="sm" asChild>
+                <Link to="/dashboard" className="inline-flex items-center gap-1">
+                  Dashboard <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </Button>
+              <Button variant="outline" size="sm" onClick={handleLogout} className="inline-flex items-center gap-1.5">
+                <LogOut className="h-3.5 w-3.5" /> Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/auth">Login</Link>
+              </Button>
+              <Button size="sm" asChild>
+                <Link to="/get-started" className="inline-flex items-center gap-1">
+                  Start free <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
