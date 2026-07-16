@@ -1488,52 +1488,88 @@ export type Database = {
           },
         ]
       }
+      stripe_webhook_events: {
+        Row: {
+          event_id: string
+          received_at: string
+          type: string
+        }
+        Insert: {
+          event_id: string
+          received_at?: string
+          type: string
+        }
+        Update: {
+          event_id?: string
+          received_at?: string
+          type?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
+          billing_cycle: string | null
           cancel_at_period_end: boolean | null
           created_at: string | null
           current_period_end: string | null
           current_period_start: string | null
+          customer_email: string | null
           environment: string
           id: string
+          next_billing_date: string | null
           org_id: string | null
+          plan: string | null
           price_id: string
           product_id: string
           status: string
           stripe_customer_id: string
           stripe_subscription_id: string
+          subscription_started_at: string | null
+          subscription_status: string | null
           updated_at: string | null
           user_id: string
         }
         Insert: {
+          billing_cycle?: string | null
           cancel_at_period_end?: boolean | null
           created_at?: string | null
           current_period_end?: string | null
           current_period_start?: string | null
+          customer_email?: string | null
           environment?: string
           id?: string
+          next_billing_date?: string | null
           org_id?: string | null
+          plan?: string | null
           price_id: string
           product_id: string
           status?: string
           stripe_customer_id: string
           stripe_subscription_id: string
+          subscription_started_at?: string | null
+          subscription_status?: string | null
           updated_at?: string | null
           user_id: string
         }
         Update: {
+          billing_cycle?: string | null
           cancel_at_period_end?: boolean | null
           created_at?: string | null
           current_period_end?: string | null
           current_period_start?: string | null
+          customer_email?: string | null
           environment?: string
           id?: string
+          next_billing_date?: string | null
           org_id?: string | null
+          plan?: string | null
           price_id?: string
           product_id?: string
           status?: string
           stripe_customer_id?: string
           stripe_subscription_id?: string
+          subscription_started_at?: string | null
+          subscription_status?: string | null
           updated_at?: string | null
           user_id?: string
         }
