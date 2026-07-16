@@ -9,7 +9,7 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 // Configuration
-const SITE_NAME = "ignite-simple"
+const SITE_NAME = "ROTHME"
 const SENDER_DOMAIN = "notify.rothme.app"
 const ROOT_DOMAIN = "rothme.app"
 const FROM_DOMAIN = "rothme.app"
