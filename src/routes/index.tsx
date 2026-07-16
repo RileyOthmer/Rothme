@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -104,12 +105,14 @@ function Header() {
           <Link to="/pricing" className="hover:text-foreground">Pricing</Link>
         </nav>
         <div className="flex items-center gap-2">
-          <Link to="/auth" className="hidden h-8 items-center rounded-md px-3 text-xs font-medium text-muted-foreground hover:text-foreground sm:inline-flex">
-            Sign in
-          </Link>
-          <Link to="/get-started" className="inline-flex h-8 items-center gap-1 rounded-md bg-primary px-3 text-xs font-medium text-primary-foreground transition-all hover:opacity-90">
-            Start free <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/auth">Login</Link>
+          </Button>
+          <Button size="sm" asChild>
+            <Link to="/get-started" className="inline-flex items-center gap-1">
+              Start free <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </Button>
         </div>
       </div>
     </header>
