@@ -13,7 +13,7 @@ import { isPaymentsConfigured } from "@/lib/stripe";
 import { getOnboardingSession, saveOnboardingStep } from "@/lib/onboarding/session.functions";
 
 export const Route = createFileRoute("/_authenticated/onboarding/subscription")({
-  head: () => ({ meta: [{ title: "Subscribe to ROTHME Pro" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Subscribe to ROTHME" }, { name: "robots", content: "noindex" }] }),
   component: SubscriptionStep,
 });
 
@@ -51,7 +51,7 @@ function SubscriptionStep() {
         <div className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-card/50 px-3 py-1 text-xs text-muted-foreground">
           <Sparkles className="h-3.5 w-3.5" /> Cancel anytime
         </div>
-        <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">Subscribe to ROTHME Pro.</h1>
+        <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">Subscribe to ROTHME.</h1>
         <p className="mt-3 text-muted-foreground">
           Unlock the full platform with a single monthly subscription. Cancel from Settings → Billing anytime.
         </p>
@@ -61,7 +61,7 @@ function SubscriptionStep() {
             <div className="mt-6 rounded-2xl border border-primary/40 bg-gradient-to-br from-primary/10 to-transparent p-6">
               <div className="flex items-baseline justify-between gap-4">
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-muted-foreground">ROTHME Pro</div>
+                  <div className="text-xs uppercase tracking-wider text-muted-foreground">ROTHME</div>
                   <div className="mt-1 flex items-baseline gap-1">
                     <span className="text-4xl font-semibold tracking-tight">$200</span>
                     <span className="text-sm text-muted-foreground">/month</span>
@@ -75,7 +75,7 @@ function SubscriptionStep() {
                   "Unified analytics across every connected platform",
                   "AI strategist with plain-English explanations",
                   "Unlimited connectors, decisions, and reports",
-                  "All future Pro features included",
+                  "All future features included",
                 ].map((f) => (
                   <li key={f} className="flex items-start gap-2 text-sm text-muted-foreground">
                     <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
@@ -107,7 +107,7 @@ function SubscriptionStep() {
             <PaymentTestModeBanner />
             <div className="mb-3 flex items-center justify-between text-sm">
               <div className="text-muted-foreground">
-                Subscribing to: <strong className="text-foreground">ROTHME Pro — Monthly</strong>
+                Subscribing to: <strong className="text-foreground">ROTHME — Monthly</strong>
               </div>
               <button onClick={() => setCheckoutOpen(false)} className="text-muted-foreground hover:text-foreground">
                 ← Back

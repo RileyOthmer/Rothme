@@ -366,7 +366,7 @@ function BillingPage() {
       )}
 
       <p className="text-xs text-muted-foreground">
-        Billing is powered by Stripe. Cancel anytime — you keep Pro access until your current period ends.
+        Billing is powered by Stripe. Cancel anytime — you keep access until your current period ends.
       </p>
     </div>
   );

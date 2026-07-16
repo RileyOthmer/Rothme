@@ -11,7 +11,7 @@ export const Route = createFileRoute("/checkout/return")({
   }),
   head: () => ({
     meta: [
-      { title: "Welcome to ROTHME Pro" },
+      { title: "Welcome to ROTHME" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -37,7 +37,7 @@ function CheckoutReturn() {
         return;
       }
 
-      // Resume onboarding if incomplete, else send fresh Pro users to onboarding welcome.
+      // Resume onboarding if incomplete, else send fresh subscribers to onboarding welcome.
       const { data: onboarding } = await supabase
         .from("onboarding_sessions")
         .select("current_step, completed_at")
@@ -114,7 +114,7 @@ function CheckoutReturn() {
         {state === "success" && (
           <>
             <CheckCircle2 className="mx-auto h-14 w-14 text-emerald-500" />
-            <h1 className="mt-6 text-3xl font-semibold">Welcome to ROTHME Pro.</h1>
+            <h1 className="mt-6 text-3xl font-semibold">Welcome to ROTHME.</h1>
             <p className="mt-3 text-muted-foreground">
               Every Pro feature is unlocked. Taking you to setup in {countdown}…
             </p>
