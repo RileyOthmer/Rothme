@@ -56,7 +56,6 @@ function DashboardPage() {
   }, [profileQuery.data, router]);
 
   const firstName = profileQuery.data?.full_name?.split(" ")[0] ?? "there";
-  const health = getSeedHealthScore();
 
   const order = prefs?.priority ?? DEFAULT_ORDER;
   const primary = order[0];
