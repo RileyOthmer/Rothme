@@ -10,7 +10,7 @@ export const Route = createFileRoute("/pricing")({
     meta: [
       { title: "Pricing — Rothme" },
       { name: "description", content: "Choose the plan that's right for you. Every Rothme Pro subscription includes the complete platform — no feature tiers, no hidden upgrades." },
-      { property: "og:title", content: "Pricing — Rothme" },
+      { property: "og:title", content: "Pricing — ROTHME" },
       { property: "og:description", content: "Everything you need to grow your business with AI." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
