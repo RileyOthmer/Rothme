@@ -42,7 +42,7 @@ function DashboardPage() {
     queryKey: ["profile"],
     queryFn: () => fetchProfile(),
   });
-  const { hasConnections, isLoading: connLoading } = useHasConnections();
+  const { hasConnections } = useHasConnections();
 
   const [prefs, setPrefs] = useState<DashboardPrefs | null>(null);
   useEffect(() => {
