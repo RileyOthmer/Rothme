@@ -8,6 +8,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateText, Output } from "ai";
 import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
 
 const AnswersSchema = z.object({
   businessName: z.string().optional(),
@@ -40,6 +42,7 @@ const SolutionSchema = z.object({
 export type PersonalizedSolution = z.infer<typeof SolutionSchema>;
 
 export const generatePersonalizedSolution = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => AnswersSchema.parse(input))
   .handler(async ({ data }): Promise<PersonalizedSolution> => {
     const key = process.env.LOVABLE_API_KEY;
