@@ -58,7 +58,7 @@ function AdminLayout() {
           return (
             <Link
               key={t.to}
-              to={t.to}
+              to={t.to as "/admin"}
               className={
                 "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors " +
                 (active ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground")
