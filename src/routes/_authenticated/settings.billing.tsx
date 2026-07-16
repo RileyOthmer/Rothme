@@ -89,12 +89,12 @@ function BillingPage() {
 
   const planLabel =
     subscription?.price_id === "pro_monthly"
-      ? "Rothme Pro — Monthly"
+      ? "Rothme — Monthly"
       : subscription?.price_id === "pro_annual"
-      ? "Rothme Pro — Annual"
+      ? "Rothme — Annual"
       : isActive
-      ? "Rothme Pro"
-      : "Free";
+      ? "Rothme"
+      : "Not subscribed";
 
   const planPrice =
     subscription?.price_id === "pro_monthly"
@@ -102,6 +102,7 @@ function BillingPage() {
       : subscription?.price_id === "pro_annual"
       ? "$2,000.00 / year"
       : null;
+
 
   const periodEnd = subscription?.current_period_end
     ? new Date(subscription.current_period_end).toLocaleDateString(undefined, {
