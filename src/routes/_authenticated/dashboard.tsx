@@ -11,6 +11,7 @@ import { HealthScoreCard } from "@/features/health/HealthScoreCard";
 import { getSeedHealthScore } from "@/features/health/seed";
 import { DashboardWidget, WIDGETS } from "@/features/dashboard/DashboardWidget";
 import { DashboardInsightsSection } from "@/features/dashboard/DashboardInsights";
+import { ProWelcome, ProChecklist } from "@/features/dashboard/ProWelcome";
 import {
   loadDashboardPrefs,
   type DashboardPrefs,
@@ -63,6 +64,7 @@ function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ProWelcome />
       <AppHeader />
 
       <main className="mx-auto max-w-5xl space-y-10 px-4 py-10 sm:px-6 sm:py-14">
@@ -81,6 +83,8 @@ function DashboardPage() {
               : "Start by connecting an account or asking ROTHME anything."}
           </p>
         </section>
+
+        <ProChecklist />
 
         <HealthScoreCard score={health} />
 
