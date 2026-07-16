@@ -1,6 +1,8 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { FloatingAssistant } from "@/components/assistant/FloatingAssistant";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/layout/AppSidebar";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -14,11 +16,19 @@ export const Route = createFileRoute("/_authenticated")({
     }
     return { user: data.user };
   },
-  component: () => (
-    <>
-      <Outlet />
-      <FloatingAssistant />
-    </>
-  ),
+  component: AuthenticatedLayout,
 });
 
+function AuthenticatedLayout() {
+  return (
+    <SidebarProvider>
+      <div className="flex min-h-screen w-full">
+        <AppSidebar />
+        <SidebarInset className="min-w-0 flex-1">
+          <Outlet />
+          <FloatingAssistant />
+        </SidebarInset>
+      </div>
+    </SidebarProvider>
+  );
+}
