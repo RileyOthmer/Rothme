@@ -22,7 +22,8 @@ function CheckoutReturn() {
   const { session_id } = Route.useSearch();
   const navigate = useNavigate();
   const [state, setState] = useState<"loading" | "success" | "pending">("loading");
-  const [nextPath, setNextPath] = useState<string>("/dashboard");
+  const [nextPath, setNextPath] = useState<string>("/onboarding/welcome");
+  const [countdown, setCountdown] = useState(3);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,7 +37,7 @@ function CheckoutReturn() {
         return;
       }
 
-      // Decide next destination: resume onboarding if incomplete, else dashboard
+      // Resume onboarding if incomplete, else send fresh Pro users to onboarding welcome.
       const { data: onboarding } = await supabase
         .from("onboarding_sessions")
         .select("current_step, completed_at")
@@ -45,17 +46,17 @@ function CheckoutReturn() {
         .limit(1)
         .maybeSingle();
 
-      if (onboarding && !onboarding.completed_at) {
-        const step = (onboarding.current_step as string | null) || "welcome";
-        setNextPath(`/onboarding/${step}`);
-      } else {
-        setNextPath("/dashboard");
-      }
+      const dest = onboarding && !onboarding.completed_at
+        ? `/onboarding/${(onboarding.current_step as string | null) || "welcome"}`
+        : onboarding?.completed_at
+          ? "/dashboard"
+          : "/onboarding/welcome";
+      setNextPath(dest);
 
       const env = getStripeEnvironment();
       const { data: sub } = await supabase
         .from("subscriptions")
-        .select("status")
+        .select("status, subscription_status")
         .eq("user_id", userId)
         .eq("environment", env)
         .order("created_at", { ascending: false })
@@ -64,7 +65,15 @@ function CheckoutReturn() {
 
       if (cancelled) return;
 
-      if (sub && ["active", "trialing"].includes(sub.status as string)) {
+      const active = sub && (
+        ["active", "trialing"].includes(sub.status as string) ||
+        sub.subscription_status === "active"
+      );
+
+      if (active) {
+        // Force-refresh the auth session so JWT claims / listeners pick up Pro
+        // immediately — no manual reload required.
+        await supabase.auth.refreshSession().catch(() => undefined);
         setState("success");
         return;
       }
@@ -79,6 +88,15 @@ function CheckoutReturn() {
     poll();
     return () => { cancelled = true; };
   }, [navigate]);
+
+  // Auto-redirect to onboarding once Pro is confirmed — users shouldn't click.
+  useEffect(() => {
+    if (state !== "success") return;
+    setCountdown(3);
+    const tick = setInterval(() => setCountdown((c) => Math.max(0, c - 1)), 1000);
+    const timer = setTimeout(() => navigate({ to: nextPath }), 3000);
+    return () => { clearInterval(tick); clearTimeout(timer); };
+  }, [state, nextPath, navigate]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -96,15 +114,15 @@ function CheckoutReturn() {
         {state === "success" && (
           <>
             <CheckCircle2 className="mx-auto h-14 w-14 text-emerald-500" />
-            <h1 className="mt-6 text-3xl font-semibold">You're on ROTHME Pro.</h1>
+            <h1 className="mt-6 text-3xl font-semibold">Welcome to ROTHME Pro.</h1>
             <p className="mt-3 text-muted-foreground">
-              All Pro features are unlocked. A receipt is on the way to your inbox.
+              Every Pro feature is unlocked. Taking you to setup in {countdown}…
             </p>
             <Link
               to={nextPath}
               className="mt-8 inline-flex items-center justify-center rounded-lg bg-foreground px-5 py-3 text-sm font-medium text-background hover:opacity-90"
             >
-              {nextPath.startsWith("/onboarding") ? "Continue setup" : "Go to dashboard"}
+              Continue now
             </Link>
             {session_id && <p className="mt-8 text-xs text-muted-foreground/70">Ref: {session_id.slice(0, 24)}…</p>}
           </>
@@ -113,8 +131,8 @@ function CheckoutReturn() {
           <>
             <h1 className="text-2xl font-semibold">Payment received</h1>
             <p className="mt-2 text-muted-foreground">
-              Stripe is still confirming your subscription. Refresh in a moment, or head to your dashboard —
-              your access will unlock automatically.
+              Stripe is still confirming your subscription. You'll be redirected automatically
+              the moment it activates.
             </p>
             <Link
               to="/dashboard"
