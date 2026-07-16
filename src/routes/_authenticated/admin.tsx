@@ -28,7 +28,7 @@ const TABS: Array<{ to: string; label: string; icon: typeof Shield; exact?: bool
 ];
 
 function AdminLayout() {
-  const { isAdmin, isLoading } = useIsAdmin();
+  const { isAdmin, anyAdminExists, isLoading } = useIsAdmin();
   const { pathname } = useLocation();
 
   if (isLoading) {
@@ -38,7 +38,13 @@ function AdminLayout() {
       </main>
     );
   }
-  if (!isAdmin) return <AccessDenied />;
+  if (!isAdmin) {
+    // Hide the admin surface entirely from non-admins. Only expose the
+    // one-time claim flow when no admin exists yet (first-run bootstrap).
+    if (anyAdminExists) return <NotFound />;
+    return <ClaimFirstAdmin />;
+  }
+
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
