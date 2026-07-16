@@ -18,11 +18,16 @@ import {
 export const Route = createFileRoute("/assistant/$threadId")({
   head: () => ({
     meta: [
-      { title: "Strategist — ROTHME" },
+      { title: "AI Strategist — ROTHME" },
       {
         name: "description",
         content:
-          "Ask your senior marketing strategist anything. Plain English, always with the why.",
+          "Ask your senior marketing strategist anything. Plain English, always with the why and the evidence.",
+      },
+      { property: "og:title", content: "AI Strategist — ROTHME" },
+      {
+        property: "og:description",
+        content: "Chat with your ROTHME AI strategist — plain-English marketing answers, always with the why.",
       },
     ],
   }),
@@ -107,6 +112,7 @@ function AssistantThreadPage() {
 
   return (
     <div className="flex h-screen flex-col bg-background text-foreground">
+      <h1 className="sr-only">AI Strategist</h1>
       <header className="flex items-center justify-between border-b border-border bg-background/80 px-4 py-3 backdrop-blur-md sm:px-6">
         <div className="flex items-center gap-4">
           <Wordmark />

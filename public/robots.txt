@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /auth
+Disallow: /checkout
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /lovable/
+Disallow: /api/
+
+Sitemap: https://rothme.app/sitemap.xml

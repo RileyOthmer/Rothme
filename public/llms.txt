@@ -1,0 +1,15 @@
+# ROTHME
+
+> ROTHME is an AI-powered business growth platform. It brings marketing, analytics, publishing, automation, and reporting into one workspace, with an AI strategist that explains — in plain English — what happened, why, and what to do next.
+
+## Pages
+
+- [Home](/): What ROTHME is and how it works.
+- [Why ROTHME](/why): The philosophy behind the product.
+- [Pricing](/pricing): Plans and pricing.
+- [Get started](/get-started): Onboarding entry point.
+- [Design](/design): Design principles and system.
+
+## Optional
+
+- [AI Strategist](/assistant): The plain-English AI marketing strategist.

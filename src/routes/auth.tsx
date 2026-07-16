@@ -18,7 +18,16 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in — ROTHME" },
-      { name: "description", content: "Sign in or create a ROTHME account." },
+      {
+        name: "description",
+        content:
+          "Sign in to ROTHME or create an account to access your AI marketing strategist, unified analytics, publishing, and automations in one workspace.",
+      },
+      { property: "og:title", content: "Sign in to ROTHME" },
+      {
+        property: "og:description",
+        content: "Access your AI marketing workspace — sign in or create a free account to get started.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
