@@ -95,13 +95,29 @@ export const TOOLS = [
   "Meta Business Suite",
   "Google Ads",
   "Google Analytics",
-  "Hootsuite / Buffer",
-  "Mailchimp",
   "Shopify",
   "HubSpot",
+  "Mailchimp",
+  "Resend",
+  "Twilio",
+  "Hootsuite / Buffer",
   "Notion / spreadsheets",
   "Nothing yet",
 ] as const;
+
+/** External URLs for each tool shown in the "What are you using today?" step. */
+export const TOOL_LINKS: Record<string, string> = {
+  "Meta Business Suite": "https://business.facebook.com/",
+  "Google Ads": "https://ads.google.com/",
+  "Google Analytics": "https://analytics.google.com/",
+  "Shopify": "https://www.shopify.com/",
+  "HubSpot": "https://www.hubspot.com/",
+  "Mailchimp": "https://mailchimp.com/",
+  "Resend": "https://resend.com/",
+  "Twilio": "https://www.twilio.com/",
+  "Hootsuite / Buffer": "https://buffer.com/",
+  "Notion / spreadsheets": "https://www.notion.so/",
+};
 
 export const BUDGETS = [
   "Under $500 / month",
