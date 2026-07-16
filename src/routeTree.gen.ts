@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhyRouteImport } from './routes/why'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PricingRouteImport } from './routes/pricing'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -111,6 +112,11 @@ import { Route as ApiPublicCronPublishRouteImport } from './routes/api/public/cr
 const WhyRoute = WhyRouteImport.update({
   id: '/why',
   path: '/why',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PricingRoute = PricingRouteImport.update({
@@ -670,6 +676,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/why': typeof WhyRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -768,6 +775,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/why': typeof WhyRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -866,6 +874,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/why': typeof WhyRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -967,6 +976,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/notifications'
     | '/pricing'
+    | '/sitemap.xml'
     | '/why'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -1065,6 +1075,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/notifications'
     | '/pricing'
+    | '/sitemap.xml'
     | '/why'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -1162,6 +1173,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/notifications'
     | '/pricing'
+    | '/sitemap.xml'
     | '/why'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
@@ -1263,6 +1275,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   NotificationsRoute: typeof NotificationsRoute
   PricingRoute: typeof PricingRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WhyRoute: typeof WhyRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -1286,6 +1299,13 @@ declare module '@tanstack/react-router' {
       path: '/why'
       fullPath: '/why'
       preLoaderRoute: typeof WhyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/pricing': {
@@ -2252,6 +2272,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   NotificationsRoute: NotificationsRoute,
   PricingRoute: PricingRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   WhyRoute: WhyRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:

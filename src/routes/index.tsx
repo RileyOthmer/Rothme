@@ -18,16 +18,16 @@ import { Wordmark } from "@/components/brand/Wordmark";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "ROTHME — Marketing made simpler. Business growth made smarter." },
+      { title: "ROTHME — Marketing made simpler" },
       {
         name: "description",
         content:
           "ROTHME brings AI, marketing, social, analytics, automation, and reporting into one workspace — so you can focus on growing your business.",
       },
-      { property: "og:title", content: "ROTHME — Marketing made simpler. Business growth made smarter." },
+      { property: "og:title", content: "ROTHME — Marketing made simpler" },
       { property: "og:description", content: "One workspace. One AI strategist. Everything you need to grow." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://rothme.app/" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [{ rel: "canonical", href: "/" }],

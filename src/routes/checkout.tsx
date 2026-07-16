@@ -16,7 +16,16 @@ export const Route = createFileRoute("/checkout")({
   head: () => ({
     meta: [
       { title: "Checkout — ROTHME" },
-      { name: "description", content: "Complete your ROTHME Pro subscription." },
+      {
+        name: "description",
+        content:
+          "Complete your ROTHME Pro subscription — $200/month for unlimited AI strategist, unified analytics, publishing, and automations across every connected platform.",
+      },
+      { property: "og:title", content: "Checkout — ROTHME Pro" },
+      {
+        property: "og:description",
+        content: "Subscribe to ROTHME Pro and unlock your full AI marketing workspace.",
+      },
       { name: "robots", content: "noindex" },
     ],
   }),
