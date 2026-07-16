@@ -58,7 +58,16 @@ async function logActivity(
   }
 }
 
-async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
+function billingCycleFromPrice(price: any): "monthly" | "annual" | null {
+  const interval = price?.recurring?.interval;
+  const count = price?.recurring?.interval_count ?? 1;
+  if (interval === "month" && count === 1) return "monthly";
+  if (interval === "year" && count === 1) return "annual";
+  if (interval === "month" && count === 12) return "annual";
+  return null;
+}
+
+async function handleSubscriptionUpsert(subscription: any, env: StripeEnv, customerEmail?: string | null) {
   const userId: string | undefined = subscription.metadata?.userId;
   const orgId: string | undefined = subscription.metadata?.orgId;
   if (!userId) {
@@ -67,8 +76,6 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
   }
   const item = subscription.items?.data?.[0];
   const rawPriceId = item?.price?.id;
-  // Prefer app-stable slug (pro_monthly / pro_annual) so entitlement gating
-  // works across test/live. Falls back to the raw Stripe id for unknown prices.
   const priceId = item?.price?.lookup_key
     || item?.price?.metadata?.lovable_external_id
     || slugFromPriceId(rawPriceId)
@@ -76,6 +83,8 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
   const productId = item?.price?.product;
   const periodStart = item?.current_period_start ?? subscription.current_period_start;
   const periodEnd = item?.current_period_end ?? subscription.current_period_end;
+  const billingCycle = billingCycleFromPrice(item?.price);
+  const active = ["active", "trialing", "past_due"].includes(subscription.status);
 
   await getSupabase().from("subscriptions").upsert({
     user_id: userId,
@@ -85,6 +94,12 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
     product_id: productId,
     price_id: priceId,
     status: subscription.status,
+    subscription_status: active ? "active" : subscription.status,
+    plan: active ? "Rothme Pro" : "free",
+    billing_cycle: billingCycle,
+    customer_email: customerEmail ?? null,
+    subscription_started_at: ts(subscription.start_date ?? subscription.created),
+    next_billing_date: ts(periodEnd),
     current_period_start: ts(periodStart),
     current_period_end: ts(periodEnd),
     cancel_at_period_end: !!subscription.cancel_at_period_end,
@@ -93,7 +108,6 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
   }, { onConflict: "stripe_subscription_id" });
 
   if (orgId) {
-    const active = ["active", "trialing", "past_due"].includes(subscription.status);
     await applyPlanToOrg(
       orgId,
       active ? "pro" : "free",
@@ -138,22 +152,33 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
   const orgId: string | undefined = session.metadata?.orgId;
   const userId: string | undefined = session.metadata?.userId;
 
-  // Idempotent fallback: don't wait for customer.subscription.created.
-  // Fetch the subscription now and upsert so entitlement activates
-  // even if event ordering slips.
+  // SECURITY: never trust client — require Stripe-confirmed payment.
+  // Subscription mode: "paid" for immediate charge, "no_payment_required" for trials.
+  if (
+    session.mode === "subscription" &&
+    session.payment_status !== "paid" &&
+    session.payment_status !== "no_payment_required"
+  ) {
+    console.warn("checkout.session.completed ignored — unpaid", {
+      session: session.id, payment_status: session.payment_status,
+    });
+    return;
+  }
+
+  const customerEmail: string | null =
+    session.customer_details?.email ?? session.customer_email ?? null;
+
   if (session.mode === "subscription" && session.subscription) {
     try {
       const stripe = createStripeClient(env);
       const sub = await stripe.subscriptions.retrieve(session.subscription as string, {
         expand: ["items.data.price"],
       });
-      // Merge session metadata onto the subscription object so downstream
-      // handler picks up userId/orgId even if Stripe hasn't propagated yet.
       const merged = {
         ...sub,
         metadata: { ...(sub.metadata ?? {}), ...(session.metadata ?? {}) },
       };
-      await handleSubscriptionUpsert(merged, env);
+      await handleSubscriptionUpsert(merged, env, customerEmail);
     } catch (e) {
       console.warn("checkout.session.completed: subscription fetch failed", e);
     }
@@ -161,16 +186,15 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
 
   await logActivity(orgId ?? null, userId ?? null, "subscription.activated",
     "ROTHME Pro activated",
-    { session_id: session.id, amount_total: session.amount_total, currency: session.currency });
+    { session_id: session.id, amount_total: session.amount_total, currency: session.currency, email: customerEmail });
 }
 
 async function handleInvoicePaymentSucceeded(invoice: any, env: StripeEnv) {
   const subId = invoice.subscription;
   if (!subId) return;
-  // Clear past_due proactively; also captures renewal-succeeded case.
   await getSupabase()
     .from("subscriptions")
-    .update({ status: "active", updated_at: new Date().toISOString() })
+    .update({ status: "active", subscription_status: "active", updated_at: new Date().toISOString() })
     .eq("stripe_subscription_id", subId)
     .eq("environment", env)
     .eq("status", "past_due");
@@ -181,13 +205,34 @@ async function handleInvoicePaymentFailed(invoice: any, env: StripeEnv) {
   if (!subId) return;
   await getSupabase()
     .from("subscriptions")
-    .update({ status: "past_due", updated_at: new Date().toISOString() })
+    .update({ status: "past_due", subscription_status: "past_due", updated_at: new Date().toISOString() })
     .eq("stripe_subscription_id", subId)
     .eq("environment", env);
 }
 
+/**
+ * Idempotency guard. Insert the event id; if it already exists (unique
+ * violation), Stripe delivered this event before and we skip processing.
+ */
+async function markEventProcessed(eventId: string, type: string): Promise<boolean> {
+  const { error } = await getSupabase()
+    .from("stripe_webhook_events")
+    .insert({ event_id: eventId, type });
+  if (!error) return true;
+  // 23505 = unique_violation
+  if ((error as any).code === "23505") return false;
+  throw error;
+}
+
 async function handleWebhook(req: Request, env: StripeEnv) {
   const event = await verifyWebhook(req, env);
+
+  const fresh = await markEventProcessed(event.id, event.type);
+  if (!fresh) {
+    console.log("Duplicate Stripe event ignored:", event.id, event.type);
+    return;
+  }
+
   switch (event.type) {
     case "checkout.session.completed":
       await handleCheckoutCompleted(event.data.object, env);
