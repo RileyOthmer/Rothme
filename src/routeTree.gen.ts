@@ -22,6 +22,7 @@ import { Route as AssistantRouteImport } from './routes/assistant'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GetStartedIndexRouteImport } from './routes/get-started.index'
+import { Route as WhyAutomationRouteImport } from './routes/why.automation'
 import { Route as SettingsNotificationsRouteImport } from './routes/settings.notifications'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as GetStartedSolutionRouteImport } from './routes/get-started.solution'
@@ -172,6 +173,11 @@ const GetStartedIndexRoute = GetStartedIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => GetStartedRoute,
+} as any)
+const WhyAutomationRoute = WhyAutomationRouteImport.update({
+  id: '/automation',
+  path: '/automation',
+  getParentRoute: () => WhyRoute,
 } as any)
 const SettingsNotificationsRoute = SettingsNotificationsRouteImport.update({
   id: '/settings/notifications',
@@ -677,7 +683,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/why': typeof WhyRoute
+  '/why': typeof WhyRouteWithChildren
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
@@ -698,6 +704,7 @@ export interface FileRoutesByFullPath {
   '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
+  '/why/automation': typeof WhyAutomationRoute
   '/get-started/': typeof GetStartedIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -776,7 +783,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/why': typeof WhyRoute
+  '/why': typeof WhyRouteWithChildren
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -794,6 +801,7 @@ export interface FileRoutesByTo {
   '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
+  '/why/automation': typeof WhyAutomationRoute
   '/get-started': typeof GetStartedIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -875,7 +883,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/why': typeof WhyRoute
+  '/why': typeof WhyRouteWithChildren
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
@@ -896,6 +904,7 @@ export interface FileRoutesById {
   '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
+  '/why/automation': typeof WhyAutomationRoute
   '/get-started/': typeof GetStartedIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
@@ -998,6 +1007,7 @@ export interface FileRouteTypes {
     | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
+    | '/why/automation'
     | '/get-started/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -1094,6 +1104,7 @@ export interface FileRouteTypes {
     | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
+    | '/why/automation'
     | '/get-started'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -1195,6 +1206,7 @@ export interface FileRouteTypes {
     | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
+    | '/why/automation'
     | '/get-started/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
@@ -1276,7 +1288,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  WhyRoute: typeof WhyRoute
+  WhyRoute: typeof WhyRouteWithChildren
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -1384,6 +1396,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/get-started/'
       preLoaderRoute: typeof GetStartedIndexRouteImport
       parentRoute: typeof GetStartedRoute
+    }
+    '/why/automation': {
+      id: '/why/automation'
+      path: '/automation'
+      fullPath: '/why/automation'
+      preLoaderRoute: typeof WhyAutomationRouteImport
+      parentRoute: typeof WhyRoute
     }
     '/settings/notifications': {
       id: '/settings/notifications'
@@ -2261,6 +2280,16 @@ const GetStartedRouteWithChildren = GetStartedRoute._addFileChildren(
   GetStartedRouteChildren,
 )
 
+interface WhyRouteChildren {
+  WhyAutomationRoute: typeof WhyAutomationRoute
+}
+
+const WhyRouteChildren: WhyRouteChildren = {
+  WhyAutomationRoute: WhyAutomationRoute,
+}
+
+const WhyRouteWithChildren = WhyRoute._addFileChildren(WhyRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -2273,7 +2302,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  WhyRoute: WhyRoute,
+  WhyRoute: WhyRouteWithChildren,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
