@@ -10,6 +10,7 @@ import { DecisionCenter } from "@/features/decisions/DecisionCenter";
 import { HealthScoreCard } from "@/features/health/HealthScoreCard";
 import { getSeedHealthScore } from "@/features/health/seed";
 import { DashboardWidget, WIDGETS } from "@/features/dashboard/DashboardWidget";
+import { DashboardInsightsSection } from "@/features/dashboard/DashboardInsights";
 import {
   loadDashboardPrefs,
   type DashboardPrefs,
@@ -82,6 +83,8 @@ function DashboardPage() {
         </section>
 
         <HealthScoreCard score={health} />
+
+        <DashboardInsightsSection />
 
         <section aria-labelledby="widgets-heading" className="space-y-4">
           <h2 id="widgets-heading" className="sr-only">Recommended for you</h2>
