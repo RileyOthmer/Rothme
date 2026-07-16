@@ -25,6 +25,7 @@ import { Route as GetStartedIndexRouteImport } from './routes/get-started.index'
 import { Route as SettingsNotificationsRouteImport } from './routes/settings.notifications'
 import { Route as InviteTokenRouteImport } from './routes/invite.$token'
 import { Route as GetStartedSolutionRouteImport } from './routes/get-started.solution'
+import { Route as FeaturesAutomationRouteImport } from './routes/features.automation'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout.return'
 import { Route as AuthResetPasswordRouteImport } from './routes/auth.reset-password'
 import { Route as AuthForgotRouteImport } from './routes/auth.forgot'
@@ -187,6 +188,11 @@ const GetStartedSolutionRoute = GetStartedSolutionRouteImport.update({
   id: '/solution',
   path: '/solution',
   getParentRoute: () => GetStartedRoute,
+} as any)
+const FeaturesAutomationRoute = FeaturesAutomationRouteImport.update({
+  id: '/features/automation',
+  path: '/features/automation',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
   id: '/return',
@@ -695,6 +701,7 @@ export interface FileRoutesByFullPath {
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/features/automation': typeof FeaturesAutomationRoute
   '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
@@ -791,6 +798,7 @@ export interface FileRoutesByTo {
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/features/automation': typeof FeaturesAutomationRoute
   '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
@@ -893,6 +901,7 @@ export interface FileRoutesById {
   '/auth/forgot': typeof AuthForgotRoute
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/checkout/return': typeof CheckoutReturnRoute
+  '/features/automation': typeof FeaturesAutomationRoute
   '/get-started/solution': typeof GetStartedSolutionRoute
   '/invite/$token': typeof InviteTokenRoute
   '/settings/notifications': typeof SettingsNotificationsRoute
@@ -995,6 +1004,7 @@ export interface FileRouteTypes {
     | '/auth/forgot'
     | '/auth/reset-password'
     | '/checkout/return'
+    | '/features/automation'
     | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
@@ -1091,6 +1101,7 @@ export interface FileRouteTypes {
     | '/auth/forgot'
     | '/auth/reset-password'
     | '/checkout/return'
+    | '/features/automation'
     | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
@@ -1192,6 +1203,7 @@ export interface FileRouteTypes {
     | '/auth/forgot'
     | '/auth/reset-password'
     | '/checkout/return'
+    | '/features/automation'
     | '/get-started/solution'
     | '/invite/$token'
     | '/settings/notifications'
@@ -1280,6 +1292,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   ApiChatRoute: typeof ApiChatRoute
+  FeaturesAutomationRoute: typeof FeaturesAutomationRoute
   InviteTokenRoute: typeof InviteTokenRoute
   SettingsNotificationsRoute: typeof SettingsNotificationsRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
@@ -1405,6 +1418,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/get-started/solution'
       preLoaderRoute: typeof GetStartedSolutionRouteImport
       parentRoute: typeof GetStartedRoute
+    }
+    '/features/automation': {
+      id: '/features/automation'
+      path: '/features/automation'
+      fullPath: '/features/automation'
+      preLoaderRoute: typeof FeaturesAutomationRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/checkout/return': {
       id: '/checkout/return'
@@ -2278,6 +2298,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   ApiChatRoute: ApiChatRoute,
+  FeaturesAutomationRoute: FeaturesAutomationRoute,
   InviteTokenRoute: InviteTokenRoute,
   SettingsNotificationsRoute: SettingsNotificationsRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
