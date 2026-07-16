@@ -11,7 +11,7 @@ export const Route = createFileRoute("/checkout/return")({
   }),
   head: () => ({
     meta: [
-      { title: "Welcome to ROTHME Pro" },
+      { title: "Welcome to ROTHME" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -37,7 +37,7 @@ function CheckoutReturn() {
         return;
       }
 
-      // Resume onboarding if incomplete, else send fresh Pro users to onboarding welcome.
+      // Resume onboarding if incomplete, else send fresh subscribers to onboarding welcome.
       const { data: onboarding } = await supabase
         .from("onboarding_sessions")
         .select("current_step, completed_at")
@@ -71,7 +71,7 @@ function CheckoutReturn() {
       );
 
       if (active) {
-        // Force-refresh the auth session so JWT claims / listeners pick up Pro
+        // Force-refresh the auth session so JWT claims / listeners pick up subscription
         // immediately — no manual reload required.
         await supabase.auth.refreshSession().catch(() => undefined);
         setState("success");
@@ -89,7 +89,7 @@ function CheckoutReturn() {
     return () => { cancelled = true; };
   }, [navigate]);
 
-  // Auto-redirect to onboarding once Pro is confirmed — users shouldn't click.
+  // Auto-redirect to onboarding once payment is confirmed — users shouldn't click.
   useEffect(() => {
     if (state !== "success") return;
     setCountdown(3);
@@ -114,9 +114,9 @@ function CheckoutReturn() {
         {state === "success" && (
           <>
             <CheckCircle2 className="mx-auto h-14 w-14 text-emerald-500" />
-            <h1 className="mt-6 text-3xl font-semibold">Welcome to ROTHME Pro.</h1>
+            <h1 className="mt-6 text-3xl font-semibold">Welcome to ROTHME.</h1>
             <p className="mt-3 text-muted-foreground">
-              Every Pro feature is unlocked. Taking you to setup in {countdown}…
+              Everything is unlocked. Taking you to setup in {countdown}…
             </p>
             <Link
               to={nextPath}

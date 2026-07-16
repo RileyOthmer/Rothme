@@ -89,7 +89,7 @@ export function ProWelcome() {
   return (
     <div
       role="dialog"
-      aria-label="Welcome to ROTHME Pro"
+      aria-label="Welcome to ROTHME"
       className={cn(
         "fixed inset-0 z-50 flex items-center justify-center bg-background/70 backdrop-blur-xl",
         closing ? "animate-fade-out" : "animate-fade-in",
@@ -111,7 +111,7 @@ export function ProWelcome() {
           <Sparkles className="h-3 w-3 text-primary" />
           <span className="text-muted-foreground">You're in</span>
         </div>
-        <h2 className="text-3xl font-semibold tracking-tight">Welcome to ROTHME Pro</h2>
+        <h2 className="text-3xl font-semibold tracking-tight">Welcome to ROTHME</h2>
         <p className="mt-3 text-sm text-muted-foreground">
           Your AI Marketing Operating System is unlocked. Let's set up the essentials.
         </p>
@@ -140,9 +140,9 @@ export function ProChecklist() {
         <div>
           <div className="mb-1 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1 text-xs">
             <Sparkles className="h-3 w-3 text-primary" />
-            <span className="text-muted-foreground">Pro setup</span>
+            <span className="text-muted-foreground">setup</span>
           </div>
-          <h2 className="text-xl font-semibold tracking-tight">Finish setting up ROTHME Pro</h2>
+          <h2 className="text-xl font-semibold tracking-tight">Finish setting up ROTHME</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             Each step makes the AI smarter about your business.
           </p>

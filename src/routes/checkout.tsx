@@ -19,12 +19,12 @@ export const Route = createFileRoute("/checkout")({
       {
         name: "description",
         content:
-          "Complete your ROTHME Pro subscription — $200/month for unlimited AI strategist, unified analytics, publishing, and automations across every connected platform.",
+          "Complete your ROTHME subscription — $200/month for unlimited AI strategist, unified analytics, publishing, and automations across every connected platform.",
       },
-      { property: "og:title", content: "Checkout — ROTHME Pro" },
+      { property: "og:title", content: "Checkout — ROTHME" },
       {
         property: "og:description",
-        content: "Subscribe to ROTHME Pro and unlock your full AI marketing workspace.",
+        content: "Subscribe to ROTHME and unlock your full AI marketing workspace.",
       },
       { name: "robots", content: "noindex" },
     ],
@@ -78,7 +78,7 @@ function CheckoutPage() {
           {userEmail && <div className="mt-4 text-sm text-muted-foreground">Signed in as {userEmail}</div>}
           <div className="mt-6 space-y-2 text-sm text-muted-foreground">
             <p>✓ Cancel anytime from Settings → Billing</p>
-            <p>✓ Instant access to all Pro features</p>
+            <p>✓ Instant access to all features</p>
           </div>
         </aside>
 

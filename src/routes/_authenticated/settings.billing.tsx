@@ -89,12 +89,12 @@ function BillingPage() {
 
   const planLabel =
     subscription?.price_id === "pro_monthly"
-      ? "Rothme Pro — Monthly"
+      ? "Rothme — Monthly"
       : subscription?.price_id === "pro_annual"
-      ? "Rothme Pro — Annual"
+      ? "Rothme — Annual"
       : isActive
-      ? "Rothme Pro"
-      : "Free";
+      ? "Rothme"
+      : "Not subscribed";
 
   const planPrice =
     subscription?.price_id === "pro_monthly"
@@ -102,6 +102,7 @@ function BillingPage() {
       : subscription?.price_id === "pro_annual"
       ? "$2,000.00 / year"
       : null;
+
 
   const periodEnd = subscription?.current_period_end
     ? new Date(subscription.current_period_end).toLocaleDateString(undefined, {
@@ -148,7 +149,7 @@ function BillingPage() {
 
       {isCancelling && periodEnd && (
         <div className="rounded-lg border border-border/70 bg-card p-4 text-sm">
-          Your subscription will end on <strong>{periodEnd}</strong>. You'll keep Pro access until then.
+          Your subscription will end on <strong>{periodEnd}</strong>. You'll keep full access until then.
         </div>
       )}
 
@@ -185,7 +186,7 @@ function BillingPage() {
             )}
             {!loading && !isActive && (
               <div className="mt-3 text-sm text-muted-foreground">
-                Upgrade to Rothme Pro to unlock the full platform.
+                Complete your subscription to activate your Rothme workspace.
               </div>
             )}
           </div>
@@ -194,11 +195,12 @@ function BillingPage() {
               to="/pricing"
               className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm text-background hover:opacity-90"
             >
-              Upgrade to Pro
+              Subscribe
             </Link>
           )}
         </div>
       </section>
+
 
       {isActive && (
         <>
@@ -364,7 +366,7 @@ function BillingPage() {
       )}
 
       <p className="text-xs text-muted-foreground">
-        Billing is powered by Stripe. Cancel anytime — you keep Pro access until your current period ends.
+        Billing is powered by Stripe. Cancel anytime — you keep access until your current period ends.
       </p>
     </div>
   );
