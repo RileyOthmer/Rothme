@@ -12,6 +12,8 @@ import { getSeedHealthScore } from "@/features/health/seed";
 import { DashboardWidget, WIDGETS } from "@/features/dashboard/DashboardWidget";
 import { DashboardInsightsSection } from "@/features/dashboard/DashboardInsights";
 import { ProWelcome, ProChecklist } from "@/features/dashboard/ProWelcome";
+import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
+import { useHasConnections } from "@/hooks/use-has-connections";
 import {
   loadDashboardPrefs,
   type DashboardPrefs,
@@ -43,6 +45,7 @@ function DashboardPage() {
     queryKey: ["profile"],
     queryFn: () => fetchProfile(),
   });
+  const { hasConnections, isLoading: connLoading } = useHasConnections();
 
   const [prefs, setPrefs] = useState<DashboardPrefs | null>(null);
   useEffect(() => {
@@ -86,20 +89,30 @@ function DashboardPage() {
 
         <ProChecklist />
 
-        <HealthScoreCard score={health} />
+        {!connLoading && !hasConnections ? (
+          <>
+            <ZeroStatGrid labels={["Followers", "Reach", "Engagement", "Revenue"]} />
+            <EmptyDataState />
+            <DecisionCenter firstName={firstName} hasConnections={false} />
+          </>
+        ) : (
+          <>
+            <HealthScoreCard score={health} />
 
-        <DashboardInsightsSection />
+            <DashboardInsightsSection />
 
-        <section aria-labelledby="widgets-heading" className="space-y-4">
-          <h2 id="widgets-heading" className="sr-only">Recommended for you</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {order.map((id, i) => (
-              <DashboardWidget key={id} widgetId={id} primary={i === 0} />
-            ))}
-          </div>
-        </section>
+            <section aria-labelledby="widgets-heading" className="space-y-4">
+              <h2 id="widgets-heading" className="sr-only">Recommended for you</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {order.map((id, i) => (
+                  <DashboardWidget key={id} widgetId={id} primary={i === 0} />
+                ))}
+              </div>
+            </section>
 
-        <DecisionCenter firstName={firstName} hasConnections={true} />
+            <DecisionCenter firstName={firstName} hasConnections={true} />
+          </>
+        )}
       </main>
 
       <Toaster position="bottom-right" />

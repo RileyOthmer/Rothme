@@ -1,6 +1,9 @@
 import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
-import { Shield, KeyRound, Users, DollarSign, Network, Activity, LayoutDashboard, ShieldAlert } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { Shield, KeyRound, Users, DollarSign, Network, Activity, LayoutDashboard, ShieldAlert, Crown } from "lucide-react";
 import { useIsAdmin } from "@/hooks/use-is-admin";
+import { checkIsMasterAdmin } from "@/lib/admin/roles.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -13,8 +16,9 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminLayout,
 });
 
-const TABS: Array<{ to: string; label: string; icon: typeof Shield; exact?: boolean }> = [
+const TABS: Array<{ to: string; label: string; icon: typeof Shield; exact?: boolean; masterOnly?: boolean }> = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
+  { to: "/admin/roles", label: "Roles", icon: Crown, masterOnly: true },
   { to: "/admin/credentials", label: "Credentials", icon: KeyRound },
   { to: "/admin/users", label: "Users", icon: Users },
   { to: "/admin/revenue", label: "Revenue", icon: DollarSign },
@@ -24,6 +28,14 @@ const TABS: Array<{ to: string; label: string; icon: typeof Shield; exact?: bool
 
 function AdminLayout() {
   const { isAdmin, isLoading } = useIsAdmin();
+  const checkMaster = useServerFn(checkIsMasterAdmin);
+  const masterQ = useQuery({
+    queryKey: ["admin", "is-master-admin"],
+    queryFn: () => checkMaster(),
+    staleTime: 60_000,
+    enabled: isAdmin,
+  });
+  const isMaster = masterQ.data?.isMasterAdmin ?? false;
   const { pathname } = useLocation();
 
   if (isLoading) {
@@ -48,7 +60,7 @@ function AdminLayout() {
       </header>
 
       <nav className="mb-6 flex flex-wrap gap-1 rounded-xl border border-border bg-surface p-1" aria-label="Admin sections">
-        {TABS.map((t) => {
+        {TABS.filter((t) => !t.masterOnly || isMaster).map((t) => {
           const active = t.exact ? pathname === t.to : pathname.startsWith(t.to);
           return (
             <Link

@@ -20,6 +20,8 @@ import {
   type PlatformId, type RangePreset,
 } from "@/features/unified/platforms";
 import { cn } from "@/lib/utils";
+import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
+import { useHasConnections } from "@/hooks/use-has-connections";
 
 const platformIds = PLATFORMS.map((p) => p.id) as [PlatformId, ...PlatformId[]];
 
@@ -45,6 +47,7 @@ function OverviewPage() {
   const { range, from, to, platforms } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [mode, setMode] = useState<AnalyticsMode>("unified");
+  const { hasConnections, isLoading: connLoading } = useHasConnections();
 
   const dates = useMemo(
     () => rangeToDates(range as RangePreset, { from: from || undefined, to: to || undefined }),
@@ -114,6 +117,18 @@ function OverviewPage() {
         </div>
 
         <AnalyticsHubNav />
+
+        {!connLoading && !hasConnections ? (
+          <>
+            <ZeroStatGrid labels={kpis.map((k) => k.label)} />
+            <EmptyDataState
+              title="No analytics yet"
+              description="Connect a social account, ad platform, or website provider and this dashboard will populate with your real numbers. Until then, everything reads as zero."
+            />
+          </>
+        ) : (
+          <>
+
 
         <div className="flex flex-wrap items-center justify-between gap-2">
           <ModeSwitcher value={mode} onChange={setMode} disabledModes={["comparison"]} />
@@ -205,6 +220,8 @@ function OverviewPage() {
           Data shown is deterministic sample data until live platform sync is connected. Install and verify plugins in{" "}
           <span className="font-mono">Settings → Plugins</span> to replace with real numbers.
         </p>
+          </>
+        )}
       </main>
     </div>
   );
