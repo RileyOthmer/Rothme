@@ -58,7 +58,16 @@ async function logActivity(
   }
 }
 
-async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
+function billingCycleFromPrice(price: any): "monthly" | "annual" | null {
+  const interval = price?.recurring?.interval;
+  const count = price?.recurring?.interval_count ?? 1;
+  if (interval === "month" && count === 1) return "monthly";
+  if (interval === "year" && count === 1) return "annual";
+  if (interval === "month" && count === 12) return "annual";
+  return null;
+}
+
+async function handleSubscriptionUpsert(subscription: any, env: StripeEnv, customerEmail?: string | null) {
   const userId: string | undefined = subscription.metadata?.userId;
   const orgId: string | undefined = subscription.metadata?.orgId;
   if (!userId) {
@@ -67,8 +76,6 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
   }
   const item = subscription.items?.data?.[0];
   const rawPriceId = item?.price?.id;
-  // Prefer app-stable slug (pro_monthly / pro_annual) so entitlement gating
-  // works across test/live. Falls back to the raw Stripe id for unknown prices.
   const priceId = item?.price?.lookup_key
     || item?.price?.metadata?.lovable_external_id
     || slugFromPriceId(rawPriceId)
@@ -76,6 +83,8 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
   const productId = item?.price?.product;
   const periodStart = item?.current_period_start ?? subscription.current_period_start;
   const periodEnd = item?.current_period_end ?? subscription.current_period_end;
+  const billingCycle = billingCycleFromPrice(item?.price);
+  const active = ["active", "trialing", "past_due"].includes(subscription.status);
 
   await getSupabase().from("subscriptions").upsert({
     user_id: userId,
@@ -85,6 +94,12 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
     product_id: productId,
     price_id: priceId,
     status: subscription.status,
+    subscription_status: active ? "active" : subscription.status,
+    plan: active ? "Rothme Pro" : "free",
+    billing_cycle: billingCycle,
+    customer_email: customerEmail ?? null,
+    subscription_started_at: ts(subscription.start_date ?? subscription.created),
+    next_billing_date: ts(periodEnd),
     current_period_start: ts(periodStart),
     current_period_end: ts(periodEnd),
     cancel_at_period_end: !!subscription.cancel_at_period_end,
@@ -93,7 +108,6 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv) {
   }, { onConflict: "stripe_subscription_id" });
 
   if (orgId) {
-    const active = ["active", "trialing", "past_due"].includes(subscription.status);
     await applyPlanToOrg(
       orgId,
       active ? "pro" : "free",
