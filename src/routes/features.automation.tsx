@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Clock, Sparkles, Zap, Check } from "lucide-react";
 import { Wordmark } from "@/components/brand/Wordmark";
 
-export const Route = createFileRoute("/why/automation")({
+export const Route = createFileRoute("/features/automation")({
   head: () => ({
     meta: [
       { title: "AI Marketing Automation for Small Businesses — ROTHME" },
@@ -18,10 +18,10 @@ export const Route = createFileRoute("/why/automation")({
           "What AI marketing automation actually means for a small business — and how to get started without hiring an agency or learning another dashboard.",
       },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: "https://rothme.app/why/automation" },
+      { property: "og:url", content: "https://rothme.app/features/automation" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://rothme.app/why/automation" }],
+    links: [{ rel: "canonical", href: "https://rothme.app/features/automation" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/why/automation")({
             "A plain-English guide to AI marketing automation for small business owners — what it is, what to automate first, and how ROTHME turns marketing insights into progress.",
           author: { "@type": "Organization", name: "ROTHME" },
           publisher: { "@type": "Organization", name: "ROTHME" },
-          mainEntityOfPage: "https://rothme.app/why/automation",
+          mainEntityOfPage: "https://rothme.app/features/automation",
         }),
       },
       {
