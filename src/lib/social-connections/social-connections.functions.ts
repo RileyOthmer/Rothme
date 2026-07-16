@@ -49,6 +49,14 @@ export const startConnect = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const cfg = getPlatform(data.platform);
     if (!cfg) throw new Error("Unknown platform");
+    if (cfg.availability !== "available") {
+      return {
+        ok: false as const,
+        awaitingCredentials: true as const,
+        message: `${cfg.name} isn't available yet — it's on the Coming Soon list. We'll enable it in a future release.`,
+        docsUrl: cfg.docsUrl,
+      };
+    }
     if (!process.env[cfg.clientIdEnv] || !process.env[cfg.clientSecretEnv]) {
       return {
         ok: false as const,
