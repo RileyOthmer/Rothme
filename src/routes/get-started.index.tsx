@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Check, ExternalLink } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import {
   BUDGETS,
@@ -10,7 +10,6 @@ import {
   PAIN_POINTS,
   PLATFORMS,
   TOOLS,
-  TOOL_LINKS,
   loadDiscovery,
   saveDiscovery,
   type DiscoveryAnswers,
@@ -138,42 +137,23 @@ function Wizard() {
               {step.options!.map((opt) => {
                 const list = (value as string[]) ?? [];
                 const active = list.includes(opt);
-                const url = step.key === "currentTools" ? TOOL_LINKS[opt] : undefined;
-                const toggle = () => {
-                  const next = active ? list.filter((x) => x !== opt) : [...list, opt];
-                  set(step.key, next as DiscoveryAnswers[typeof step.key]);
-                };
                 return (
-                  <div
+                  <button
                     key={opt}
+                    onClick={() => {
+                      const next = active ? list.filter((x) => x !== opt) : [...list, opt];
+                      set(step.key, next as DiscoveryAnswers[typeof step.key]);
+                    }}
                     className={
-                      "flex items-center justify-between rounded-lg border bg-surface pl-4 pr-2 py-2.5 text-[14px] transition-all " +
+                      "flex items-center justify-between rounded-lg border bg-surface px-4 py-3 text-left text-[14px] transition-all " +
                       (active
                         ? "border-foreground/40 ring-1 ring-ring"
                         : "border-border hover:border-foreground/20 hover:bg-surface-2")
                     }
                   >
-                    <button
-                      type="button"
-                      onClick={toggle}
-                      className="flex flex-1 items-center gap-2 text-left"
-                    >
-                      {active ? <Check className="h-4 w-4 text-foreground" /> : <span className="h-4 w-4 rounded border border-border" />}
-                      <span className="text-foreground">{opt}</span>
-                    </button>
-                    {url ? (
-                      <a
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        onClick={(e) => e.stopPropagation()}
-                        aria-label={`Open ${opt} website`}
-                        className="ml-2 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-surface-2 hover:text-foreground"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </a>
-                    ) : null}
-                  </div>
+                    <span className="text-foreground">{opt}</span>
+                    {active ? <Check className="h-4 w-4 text-foreground" /> : <span className="h-4 w-4 rounded border border-border" />}
+                  </button>
                 );
               })}
             </div>
