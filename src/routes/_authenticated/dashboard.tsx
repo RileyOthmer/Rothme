@@ -84,6 +84,8 @@ function DashboardPage() {
 
         <HealthScoreCard score={health} />
 
+        <DashboardInsightsSection />
+
         <section aria-labelledby="widgets-heading" className="space-y-4">
           <h2 id="widgets-heading" className="sr-only">Recommended for you</h2>
           <div className="grid gap-4 sm:grid-cols-2">
