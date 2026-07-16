@@ -38,15 +38,33 @@ export const Route = createFileRoute("/auth")({
 
 // Split "/checkout?plan=pro_monthly" into { to: "/checkout", search: { plan: "pro_monthly" } }
 // so TanStack navigate handles the query string instead of treating it as part of the path.
-function navTarget(redirect: string | undefined) {
+function navTarget(redirect: string | undefined, defaultTo: string = "/dashboard") {
   if (!redirect || !redirect.startsWith("/") || redirect.startsWith("//")) {
-    return { to: "/dashboard", search: undefined as Record<string, string> | undefined };
+    return { to: defaultTo, search: undefined as Record<string, string> | undefined };
   }
   const [path, query] = redirect.split("?", 2);
   if (!query) return { to: path, search: undefined };
   const search: Record<string, string> = {};
   for (const [k, v] of new URLSearchParams(query)) search[k] = v;
   return { to: path, search };
+}
+
+/**
+ * Ask the server whether the just-signed-in user is an admin.
+ * Server-side check (RLS + role table); never trust the client for authorization.
+ * Falls back to "user" if the check fails — never accidentally grant admin.
+ */
+async function resolveLandingRoute(redirect: string | undefined): Promise<{ to: string; search?: Record<string, string> }> {
+  // Honor an explicit redirect param (e.g. deep link, checkout return) as-is.
+  if (redirect && redirect.startsWith("/") && !redirect.startsWith("//")) {
+    return navTarget(redirect);
+  }
+  try {
+    const { isAdmin } = await checkIsAdmin({});
+    return navTarget(undefined, isAdmin ? "/admin" : "/dashboard");
+  } catch {
+    return navTarget(undefined, "/dashboard");
+  }
 }
 
 function AuthPage() {
