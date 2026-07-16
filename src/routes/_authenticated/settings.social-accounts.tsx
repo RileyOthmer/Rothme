@@ -88,10 +88,19 @@ function SocialAccountsPage() {
       const hasReauth = accts.some((a) => a.connection_status === "needs_reauth" || a.connection_status === "error");
       if (filter === "connected") return hasConnected;
       if (filter === "needs_reauth") return hasReauth;
-      if (filter === "not_connected") return accts.length === 0;
+      if (filter === "not_connected") return accts.length === 0 && p.availability === "available";
       return true;
     });
   }, [search, filter, accountsByPlatform]);
+
+  const availablePlatforms = useMemo(
+    () => filtered.filter((p) => p.availability === "available"),
+    [filtered],
+  );
+  const comingSoonPlatforms = useMemo(
+    () => filtered.filter((p) => p.availability === "coming_soon"),
+    [filtered],
+  );
 
   const counts = useMemo(() => {
     let connected = 0, reauth = 0;
@@ -99,8 +108,9 @@ function SocialAccountsPage() {
       if (a.connection_status === "connected" || a.connection_status === "syncing") connected++;
       if (a.connection_status === "needs_reauth" || a.connection_status === "error") reauth++;
     }
-    return { connected, reauth, notConnected: PLATFORMS.length - accountsByPlatform.size };
-  }, [accountsQ.data, accountsByPlatform.size]);
+    const availableCount = PLATFORMS.filter((p) => p.availability === "available").length;
+    return { connected, reauth, notConnected: Math.max(0, availableCount - accountsByPlatform.size) };
+  }, [accountsQ.data, accountsByPlatform]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
