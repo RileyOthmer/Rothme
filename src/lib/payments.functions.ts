@@ -173,13 +173,87 @@ export const createPortalSession = createServerFn({ method: "POST" })
         return { error: "No subscription found. Start one from the pricing page." };
       }
       const stripe = createStripeClient(data.environment);
+
+      let flowData: Stripe.BillingPortal.SessionCreateParams["flow_data"] | undefined;
+      if (data.flow === "cancel" && found.subscriptionId) {
+        flowData = {
+          type: "subscription_cancel",
+          subscription_cancel: { subscription: found.subscriptionId },
+        };
+      } else if (data.flow === "payment_method") {
+        flowData = { type: "payment_method_update" };
+      }
+
       const portal = await stripe.billingPortal.sessions.create({
         customer: found.customerId,
         ...(data.returnUrl && { return_url: data.returnUrl }),
+        ...(flowData && { flow_data: flowData }),
       });
       return { url: portal.url };
     } catch (error) {
       return { error: getStripeErrorMessage(error) };
     }
   });
+
+type InvoiceRow = {
+  id: string;
+  number: string | null;
+  status: string | null;
+  amount_paid: number;
+  currency: string;
+  created: string | null;
+  hosted_invoice_url: string | null;
+  pdf_url: string | null;
+};
+type BillingDetailsResult =
+  | { invoices: InvoiceRow[]; last4: string | null; brand: string | null }
+  | { error: string };
+
+export const getBillingDetails = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { environment: StripeEnv }) => {
+    if (data.environment !== "sandbox" && data.environment !== "live") {
+      throw new Error("Invalid environment");
+    }
+    return data;
+  })
+  .handler(async ({ data, context }): Promise<BillingDetailsResult> => {
+    try {
+      const { supabase, userId } = context;
+      const found = await findActiveCustomerAndSub(supabase, userId, data.environment);
+      if (!found) return { invoices: [], last4: null, brand: null };
+      const stripe = createStripeClient(data.environment);
+
+      const [invoices, customer] = await Promise.all([
+        stripe.invoices.list({ customer: found.customerId, limit: 24 }),
+        stripe.customers.retrieve(found.customerId, { expand: ["invoice_settings.default_payment_method"] }),
+      ]);
+
+      let last4: string | null = null;
+      let brand: string | null = null;
+      if (customer && !("deleted" in customer && customer.deleted)) {
+        const pm = (customer as Stripe.Customer).invoice_settings?.default_payment_method as Stripe.PaymentMethod | string | null;
+        if (pm && typeof pm !== "string" && pm.card) {
+          last4 = pm.card.last4 ?? null;
+          brand = pm.card.brand ?? null;
+        }
+      }
+
+      const rows: InvoiceRow[] = invoices.data.map((inv) => ({
+        id: inv.id ?? "",
+        number: inv.number ?? null,
+        status: inv.status ?? null,
+        amount_paid: (inv.amount_paid ?? 0) / 100,
+        currency: inv.currency,
+        created: inv.created ? new Date(inv.created * 1000).toISOString() : null,
+        hosted_invoice_url: inv.hosted_invoice_url ?? null,
+        pdf_url: inv.invoice_pdf ?? null,
+      }));
+
+      return { invoices: rows, last4, brand };
+    } catch (error) {
+      return { error: getStripeErrorMessage(error) };
+    }
+  });
+
 
