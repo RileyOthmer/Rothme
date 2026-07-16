@@ -190,23 +190,49 @@ function SocialAccountsPage() {
               <div key={i} className="h-40 animate-pulse rounded-2xl border border-border/60 bg-card/40" />
             ))}
           </div>
-        ) : filtered.length === 0 ? (
+        ) : availablePlatforms.length === 0 && comingSoonPlatforms.length === 0 ? (
           <Card className="p-10 text-center">
             <p className="text-muted-foreground">No platforms match your filters.</p>
           </Card>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {filtered.map((p) => (
-              <PlatformCard
-                key={p.id}
-                platform={p}
-                configured={statusMap.get(p.id) ?? false}
-                accounts={accountsByPlatform.get(p.id) ?? []}
-                onChanged={() => {
-                  qc.invalidateQueries({ queryKey: ["social-accounts"] });
-                }}
-              />
-            ))}
+          <div className="space-y-10">
+            {availablePlatforms.length > 0 && (
+              <section aria-labelledby="available-heading">
+                <div className="mb-3 flex items-baseline justify-between gap-3">
+                  <h2 id="available-heading" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Available now
+                  </h2>
+                  <span className="text-xs text-muted-foreground">{availablePlatforms.length} platform{availablePlatforms.length === 1 ? "" : "s"}</span>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {availablePlatforms.map((p) => (
+                    <PlatformCard
+                      key={p.id}
+                      platform={p}
+                      configured={statusMap.get(p.id) ?? false}
+                      accounts={accountsByPlatform.get(p.id) ?? []}
+                      onChanged={() => qc.invalidateQueries({ queryKey: ["social-accounts"] })}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {comingSoonPlatforms.length > 0 && (
+              <section aria-labelledby="coming-soon-heading">
+                <div className="mb-3 flex items-baseline justify-between gap-3">
+                  <h2 id="coming-soon-heading" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Coming soon
+                  </h2>
+                  <span className="text-xs text-muted-foreground">Planned integrations — not yet available</span>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {comingSoonPlatforms.map((p) => (
+                    <ComingSoonCard key={p.id} platform={p} />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         )}
       </main>
