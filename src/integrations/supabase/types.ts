@@ -143,6 +143,57 @@ export type Database = {
           },
         ]
       }
+      business_profiles: {
+        Row: {
+          business_summary: string
+          confidence: string
+          created_at: string
+          generated_at: string
+          growth_potential: Json
+          ideal_customer_profile: Json
+          recommended_channels: Json
+          recommended_monthly_budget: Json
+          strength_score: number
+          swot: Json
+          top_opportunities: Json
+          updated_at: string
+          user_id: string
+          weakness_score: number
+        }
+        Insert: {
+          business_summary?: string
+          confidence?: string
+          created_at?: string
+          generated_at?: string
+          growth_potential?: Json
+          ideal_customer_profile?: Json
+          recommended_channels?: Json
+          recommended_monthly_budget?: Json
+          strength_score?: number
+          swot?: Json
+          top_opportunities?: Json
+          updated_at?: string
+          user_id: string
+          weakness_score?: number
+        }
+        Update: {
+          business_summary?: string
+          confidence?: string
+          created_at?: string
+          generated_at?: string
+          growth_potential?: Json
+          ideal_customer_profile?: Json
+          recommended_channels?: Json
+          recommended_monthly_budget?: Json
+          strength_score?: number
+          swot?: Json
+          top_opportunities?: Json
+          updated_at?: string
+          user_id?: string
+          weakness_score?: number
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           author_id: string
