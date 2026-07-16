@@ -10,6 +10,7 @@ import {
   PAIN_POINTS,
   PLATFORMS,
   TOOLS,
+  TOOL_LINKS,
   loadDiscovery,
   saveDiscovery,
   type DiscoveryAnswers,
