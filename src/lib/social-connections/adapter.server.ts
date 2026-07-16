@@ -14,6 +14,7 @@
  *                       .syncAnalytics({ accessToken })
  */
 import { createHash, randomBytes } from "node:crypto";
+import { resolvePlatformCredentials } from "@/lib/admin/credential-resolver.server";
 import { getPlatform, type PlatformConfig, type PlatformId } from "./platforms";
 
 export type TokenBundle = {
