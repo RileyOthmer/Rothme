@@ -160,4 +160,4 @@ export const checkIsAdmin = createServerFn({ method: "GET" })
 // UI. Admin roles are assigned only via SQL, e.g.:
 //   INSERT INTO public.user_roles (user_id, role) VALUES ('<uuid>', 'admin');
 
-  });
+
