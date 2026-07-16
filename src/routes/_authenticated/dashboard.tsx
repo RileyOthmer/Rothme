@@ -11,6 +11,7 @@ import { HealthScoreCard } from "@/features/health/HealthScoreCard";
 import { getSeedHealthScore } from "@/features/health/seed";
 import { DashboardWidget, WIDGETS } from "@/features/dashboard/DashboardWidget";
 import { DashboardInsightsSection } from "@/features/dashboard/DashboardInsights";
+import { ProWelcome, ProChecklist } from "@/features/dashboard/ProWelcome";
 import {
   loadDashboardPrefs,
   type DashboardPrefs,
