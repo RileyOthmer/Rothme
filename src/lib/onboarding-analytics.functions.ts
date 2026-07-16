@@ -116,8 +116,19 @@ const STEP_ORDER = [
 
 export const getOnboardingInsights = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
-  .handler(async (): Promise<OnboardingInsights> => {
+  .handler(async ({ context }): Promise<OnboardingInsights> => {
+    // Admin-only: cross-user analytics must not leak to regular users.
+    const { data: roleRow, error: roleErr } = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (roleErr) throw new Error(roleErr.message);
+    if (!roleRow) throw new Error("Forbidden: admin only");
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
 
     const [{ data: responses }, { data: events }] = await Promise.all([
       supabaseAdmin.from("onboarding_responses").select("*"),
