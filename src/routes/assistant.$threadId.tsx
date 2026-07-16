@@ -18,13 +18,13 @@ import {
 export const Route = createFileRoute("/assistant/$threadId")({
   head: () => ({
     meta: [
-      { title: "AI Strategist — ROTHME" },
+      { title: "Strategist Conversation — ROTHME" },
       {
         name: "description",
         content:
           "Ask your senior marketing strategist anything. Plain English, always with the why and the evidence.",
       },
-      { property: "og:title", content: "AI Strategist — ROTHME" },
+      { property: "og:title", content: "Strategist Conversation — ROTHME" },
       {
         property: "og:description",
         content: "Chat with your ROTHME AI strategist — plain-English marketing answers, always with the why.",
