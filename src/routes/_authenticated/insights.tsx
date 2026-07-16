@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
 
 import { AppHeader } from "@/components/layout/AppHeader";
+import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
+import { useHasConnections } from "@/hooks/use-has-connections";
 import {
   getOnboardingInsights,
   type OnboardingInsights,
@@ -25,12 +27,34 @@ export const Route = createFileRoute("/_authenticated/insights")({
 });
 
 function InsightsPage() {
+  const { hasConnections, isLoading: connLoading } = useHasConnections();
   const fetchInsights = useServerFn(getOnboardingInsights);
   const q = useQuery({
     queryKey: ["onboarding-insights"],
     queryFn: () => fetchInsights(),
     refetchOnWindowFocus: false,
+    enabled: hasConnections,
   });
+
+  if (!connLoading && !hasConnections) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <AppHeader />
+        <main className="mx-auto max-w-5xl space-y-6 px-4 py-10 sm:px-6 sm:py-14">
+          <header>
+            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Insights</p>
+            <h1 className="mt-1 text-2xl font-semibold tracking-tight sm:text-3xl">No insights yet</h1>
+          </header>
+          <ZeroStatGrid labels={["Signals", "Recommendations", "Explanations", "Actions"]} />
+          <EmptyDataState
+            title="Connect a data source to unlock insights"
+            description="Insights need real activity to analyze. Connect a channel and Rothme will start surfacing what happened, why, and what to do next."
+          />
+        </main>
+      </div>
+    );
+  }
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
