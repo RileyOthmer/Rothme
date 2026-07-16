@@ -157,7 +157,7 @@ export function DashboardInsightsSection() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
-          <ScoreCard key={c.key} {...c} />
+          <ScoreCard {...c} />
         ))}
       </div>
 
