@@ -87,7 +87,17 @@ export const getRevenueStats = createServerFn({ method: "GET" })
       pastDue: pastDue ?? 0,
       canceled: canceled ?? 0,
       byPlan: Array.from(byPlan.entries()).map(([label, count]) => ({ label, count })),
-      recent: (rows ?? []) as Array<Record<string, unknown>>,
+      recent: (rows ?? []) as unknown as Array<{
+        id: string;
+        status: string | null;
+        plan: string | null;
+        billing_cycle: string | null;
+        price_id: string | null;
+        customer_email: string | null;
+        current_period_end: string | null;
+        cancel_at_period_end: boolean | null;
+        updated_at: string | null;
+      }>,
     };
   });
 
