@@ -6,10 +6,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { PLATFORMS, type PlatformId } from "@/lib/social-connections/platforms";
 
-async function assertAdmin(ctx: { supabase: { rpc: (name: string, args: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }> }; userId: string }) {
-  const { data, error } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" });
-  if (error) throw new Error("Role check failed");
-  if (data !== true) throw new Error("Forbidden");
+async function assertAdmin(userId: string): Promise<void> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error || !data) throw new Error("Forbidden");
 }
 
 export type CredentialStatus = {
@@ -31,11 +36,12 @@ export type CredentialStatus = {
 export const listAdminCredentials = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }): Promise<CredentialStatus[]> => {
-    await assertAdmin(context);
+    await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows } = await supabaseAdmin
-      .from("admin_credentials" as never)
+      .from("admin_credentials")
       .select("platform_id, client_id_last4, client_secret_last4, client_id_ciphertext, client_secret_ciphertext, updated_at");
+
     type Row = {
       platform_id: string;
       client_id_last4: string | null;
@@ -45,7 +51,7 @@ export const listAdminCredentials = createServerFn({ method: "GET" })
       updated_at: string;
     };
     const byPlatform = new Map<string, Row>();
-    for (const r of ((rows ?? []) as Row[])) byPlatform.set(r.platform_id, r);
+    for (const r of ((rows ?? []) as unknown as Row[])) byPlatform.set(r.platform_id, r);
 
     return PLATFORMS.map((p): CredentialStatus => {
       const row = byPlatform.get(p.id);
@@ -74,7 +80,7 @@ export const upsertAdminCredential = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { platformId: PlatformId; clientId?: string; clientSecret?: string; notes?: string }) => data)
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { encryptJson } = await import("@/lib/integrations/crypto.server");
     const { invalidateCredentialCache } = await import("./credential-resolver.server");
@@ -95,8 +101,8 @@ export const upsertAdminCredential = createServerFn({ method: "POST" })
     if (data.notes !== undefined) patch.notes = data.notes;
 
     const { error } = await supabaseAdmin
-      .from("admin_credentials" as never)
-      .upsert(patch, { onConflict: "platform_id" });
+      .from("admin_credentials")
+      .upsert(patch as never, { onConflict: "platform_id" });
     if (error) throw new Error(error.message);
     invalidateCredentialCache(data.platformId);
     return { ok: true };
@@ -106,10 +112,10 @@ export const deleteAdminCredential = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { platformId: PlatformId }) => data)
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { invalidateCredentialCache } = await import("./credential-resolver.server");
-    await supabaseAdmin.from("admin_credentials" as never).delete().eq("platform_id", data.platformId);
+    await supabaseAdmin.from("admin_credentials").delete().eq("platform_id", data.platformId);
     invalidateCredentialCache(data.platformId);
     return { ok: true };
   });
@@ -130,7 +136,7 @@ const INFRA_SECRETS = [
 export const listInfraSecrets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context);
+    await assertAdmin(context.userId);
     return INFRA_SECRETS.map((name) => ({
       name,
       configured: Boolean(process.env[name]),
@@ -140,10 +146,29 @@ export const listInfraSecrets = createServerFn({ method: "GET" })
 export const checkIsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data, error } = await context.supabase.rpc("has_role", {
-      _user_id: context.userId,
-      _role: "admin",
-    });
-    if (error) return { isAdmin: false };
-    return { isAdmin: data === true };
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data } = await supabaseAdmin
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", context.userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    return { isAdmin: Boolean(data) };
+  });
+
+export const claimFirstAdmin = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    // Only allow if no admins currently exist.
+    const { count } = await supabaseAdmin
+      .from("user_roles")
+      .select("id", { count: "exact", head: true })
+      .eq("role", "admin");
+    if ((count ?? 0) > 0) throw new Error("An admin already exists");
+    const { error } = await supabaseAdmin
+      .from("user_roles")
+      .insert({ user_id: context.userId, role: "admin" } as never);
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });

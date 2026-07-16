@@ -6,9 +6,15 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { PLATFORMS } from "@/lib/social-connections/platforms";
 
-async function assertAdmin(ctx: { supabase: { rpc: (n: string, a: Record<string, unknown>) => Promise<{ data: unknown; error: unknown }> }; userId: string }) {
-  const { data, error } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" });
-  if (error || data !== true) throw new Error("Forbidden");
+async function assertAdmin(userId: string): Promise<void> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data, error } = await supabaseAdmin
+    .from("user_roles")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("role", "admin")
+    .maybeSingle();
+  if (error || !data) throw new Error("Forbidden");
 }
 
 const DAY = 24 * 60 * 60 * 1000;
@@ -17,7 +23,7 @@ const isoDaysAgo = (n: number) => new Date(Date.now() - n * DAY).toISOString();
 export const getUserStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context);
+    await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const [{ count: total }, { count: last7 }, { count: last30 }] = await Promise.all([
@@ -28,7 +34,7 @@ export const getUserStats = createServerFn({ method: "GET" })
 
     const { data: recent } = await supabaseAdmin
       .from("profiles")
-      .select("id, full_name, avatar_url, created_at")
+      .select("id, full_name, business_name, created_at")
       .order("created_at", { ascending: false })
       .limit(15);
 
@@ -36,7 +42,7 @@ export const getUserStats = createServerFn({ method: "GET" })
       total: total ?? 0,
       newLast7: last7 ?? 0,
       newLast30: last30 ?? 0,
-      recent: recent ?? [],
+      recent: (recent ?? []) as Array<{ id: string; full_name: string | null; business_name: string | null; created_at: string }>,
     };
   });
 
@@ -44,38 +50,33 @@ export const getRevenueStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { environment?: "sandbox" | "live" }) => d ?? {})
   .handler(async ({ data, context }) => {
-    await assertAdmin(context);
+    await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const env = data.environment ?? "live";
 
-    const base = supabaseAdmin.from("subscriptions").select("*", { count: "exact" }).eq("environment", env);
-
-    const [{ data: rows, count: total }, { count: active }, { count: trialing }, { count: pastDue }, { count: canceled }] = await Promise.all([
-      supabaseAdmin
-        .from("subscriptions")
-        .select("id, status, plan_id, price_id, amount, currency, current_period_end, cancel_at_period_end, user_id, updated_at")
-        .eq("environment", env)
-        .order("updated_at", { ascending: false })
-        .limit(20),
-      base.eq("status", "active"),
+    const [{ count: total }, { count: active }, { count: trialing }, { count: pastDue }, { count: canceled }, { data: rows }, { data: activeRows }] = await Promise.all([
+      supabaseAdmin.from("subscriptions").select("id", { count: "exact", head: true }).eq("environment", env),
+      supabaseAdmin.from("subscriptions").select("id", { count: "exact", head: true }).eq("environment", env).eq("status", "active"),
       supabaseAdmin.from("subscriptions").select("id", { count: "exact", head: true }).eq("environment", env).eq("status", "trialing"),
       supabaseAdmin.from("subscriptions").select("id", { count: "exact", head: true }).eq("environment", env).eq("status", "past_due"),
       supabaseAdmin.from("subscriptions").select("id", { count: "exact", head: true }).eq("environment", env).eq("status", "canceled"),
+      supabaseAdmin
+        .from("subscriptions")
+        .select("id, status, plan, billing_cycle, price_id, customer_email, current_period_end, cancel_at_period_end, updated_at")
+        .eq("environment", env)
+        .order("updated_at", { ascending: false })
+        .limit(20),
+      supabaseAdmin
+        .from("subscriptions")
+        .select("plan, billing_cycle")
+        .eq("environment", env)
+        .eq("status", "active"),
     ]);
 
-    // Naive MRR: sum of `amount` for active subs, assume monthly cents.
-    const { data: activeRows } = await supabaseAdmin
-      .from("subscriptions")
-      .select("amount, currency, plan_id")
-      .eq("environment", env)
-      .eq("status", "active");
-    let mrrCents = 0;
     const byPlan = new Map<string, number>();
-    for (const r of (activeRows ?? []) as { amount: number | null; plan_id: string | null }[]) {
-      const a = Number(r.amount ?? 0);
-      if (Number.isFinite(a)) mrrCents += a;
-      const plan = r.plan_id ?? "unknown";
-      byPlan.set(plan, (byPlan.get(plan) ?? 0) + 1);
+    for (const r of ((activeRows ?? []) as Array<{ plan: string | null; billing_cycle: string | null }>)) {
+      const key = `${r.plan ?? "unknown"} · ${r.billing_cycle ?? "monthly"}`;
+      byPlan.set(key, (byPlan.get(key) ?? 0) + 1);
     }
 
     return {
@@ -85,43 +86,42 @@ export const getRevenueStats = createServerFn({ method: "GET" })
       trialing: trialing ?? 0,
       pastDue: pastDue ?? 0,
       canceled: canceled ?? 0,
-      mrrCents,
-      byPlan: Array.from(byPlan.entries()).map(([plan, count]) => ({ plan, count })),
-      recent: rows ?? [],
+      byPlan: Array.from(byPlan.entries()).map(([label, count]) => ({ label, count })),
+      recent: (rows ?? []) as Array<Record<string, unknown>>,
     };
   });
 
 export const getConnectionStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context);
+    await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const { data: accounts } = await supabaseAdmin
       .from("social_accounts")
-      .select("platform, status, expires_at");
+      .select("platform, connection_status, token_expiration");
 
-    type Row = { platform: string; status: string | null; expires_at: string | null };
-    const rows = (accounts ?? []) as Row[];
+    type Row = { platform: string; connection_status: string | null; token_expiration: string | null };
+    const rows = (accounts ?? []) as unknown as Row[];
     const byPlatform: Record<string, { total: number; connected: number; degraded: number; disconnected: number; expiringSoon: number }> = {};
     for (const p of PLATFORMS) byPlatform[p.id] = { total: 0, connected: 0, degraded: 0, disconnected: 0, expiringSoon: 0 };
     const soon = Date.now() + 7 * DAY;
     for (const r of rows) {
       const b = byPlatform[r.platform] ?? (byPlatform[r.platform] = { total: 0, connected: 0, degraded: 0, disconnected: 0, expiringSoon: 0 });
       b.total++;
-      if (r.status === "connected") b.connected++;
-      else if (r.status === "degraded" || r.status === "needs_reauth") b.degraded++;
+      if (r.connection_status === "connected") b.connected++;
+      else if (r.connection_status === "needs_reauth" || r.connection_status === "syncing") b.degraded++;
       else b.disconnected++;
-      if (r.expires_at && new Date(r.expires_at).getTime() < soon) b.expiringSoon++;
+      if (r.token_expiration && new Date(r.token_expiration).getTime() < soon) b.expiringSoon++;
     }
 
     const { data: syncs } = await supabaseAdmin
       .from("sync_history")
-      .select("status, created_at")
+      .select("success")
       .gte("created_at", isoDaysAgo(7));
-    const syncRows = (syncs ?? []) as { status: string | null }[];
-    const ok = syncRows.filter((s) => s.status === "success").length;
-    const fail = syncRows.filter((s) => s.status === "error" || s.status === "failed").length;
+    const syncRows = (syncs ?? []) as unknown as Array<{ success: boolean | null }>;
+    const ok = syncRows.filter((s) => s.success === true).length;
+    const fail = syncRows.filter((s) => s.success === false).length;
 
     return {
       platforms: PLATFORMS.map((p) => ({
@@ -138,24 +138,24 @@ export const getConnectionStats = createServerFn({ method: "GET" })
 export const getHealthStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context);
+    await assertAdmin(context.userId);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
     const [{ data: syncErrors }, { data: pluginEvents }, { data: integrationLogs }, { count: aiAudits }] = await Promise.all([
       supabaseAdmin
         .from("sync_history")
-        .select("id, platform, status, error_message, created_at")
-        .in("status", ["error", "failed"])
+        .select("id, kind, success, error_message, created_at")
+        .eq("success", false)
         .order("created_at", { ascending: false })
         .limit(15),
       supabaseAdmin
         .from("plugin_events")
-        .select("id, plugin_id, level, message, created_at")
+        .select("id, plugin_slug, event_type, success, message, created_at")
         .order("created_at", { ascending: false })
         .limit(15),
       supabaseAdmin
         .from("platform_integration_logs")
-        .select("id, platform_id, level, message, created_at")
+        .select("id, platform, event_type, success, message, created_at")
         .order("created_at", { ascending: false })
         .limit(15),
       supabaseAdmin
@@ -165,9 +165,9 @@ export const getHealthStats = createServerFn({ method: "GET" })
     ]);
 
     return {
-      syncErrors: syncErrors ?? [],
-      pluginEvents: pluginEvents ?? [],
-      integrationLogs: integrationLogs ?? [],
+      syncErrors: (syncErrors ?? []) as Array<Record<string, unknown>>,
+      pluginEvents: (pluginEvents ?? []) as Array<Record<string, unknown>>,
+      integrationLogs: (integrationLogs ?? []) as Array<Record<string, unknown>>,
       aiAudits7d: aiAudits ?? 0,
     };
   });
