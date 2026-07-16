@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target, Users, CheckSquare, BarChart3, LineChart, Send, Boxes } from "lucide-react";
+import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target, Users, CheckSquare, BarChart3, LineChart, Send, Boxes, Shield } from "lucide-react";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { OrgSwitcher } from "@/features/collab/OrgSwitcher";
