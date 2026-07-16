@@ -95,7 +95,7 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv, custo
     price_id: priceId,
     status: subscription.status,
     subscription_status: active ? "active" : subscription.status,
-    plan: active ? "Rothme Pro" : "free",
+    plan: active ? "Rothme" : "free",
     billing_cycle: billingCycle,
     customer_email: customerEmail ?? null,
     subscription_started_at: ts(subscription.start_date ?? subscription.created),
@@ -185,7 +185,7 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
   }
 
   await logActivity(orgId ?? null, userId ?? null, "subscription.activated",
-    "ROTHME Pro activated",
+    "ROTHME activated",
     { session_id: session.id, amount_total: session.amount_total, currency: session.currency, email: customerEmail });
 }
 
