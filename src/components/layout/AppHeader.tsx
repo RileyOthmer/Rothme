@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target, Users, CheckSquare, BarChart3, LineChart, Send, Boxes, Shield } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Settings as SettingsIcon, LogOut, RefreshCw, Shield } from "lucide-react";
 import { useIsAdmin } from "@/hooks/use-is-admin";
-import { Wordmark } from "@/components/brand/Wordmark";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { OrgSwitcher } from "@/features/collab/OrgSwitcher";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,19 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-const NAV = [
-  { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/publishing", label: "Publishing", icon: Send },
-  { to: "/analytics", label: "Analytics", icon: LineChart },
-  { to: "/goals", label: "Goals", icon: Target },
-  { to: "/reports", label: "Reports", icon: FileText },
-  { to: "/tasks", label: "Tasks", icon: CheckSquare },
-  { to: "/team", label: "Team", icon: Users },
-  { to: "/insights", label: "Insights", icon: BarChart3 },
-  { to: "/dev-center/integrations", label: "Dev Center", icon: Boxes },
-  { to: "/settings/profile", label: "Settings", icon: SettingsIcon },
-] as const;
 
 export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
   const [today, setToday] = useState<string>("");
@@ -40,7 +27,6 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
     );
   }, []);
 
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { isAdmin } = useIsAdmin();
@@ -54,54 +40,13 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
 
   return (
     <header className="sticky top-0 z-20 border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
-        <div className="flex items-center gap-6">
-          <Link to="/dashboard" aria-label="ROTHME home">
-            <Wordmark />
-          </Link>
-          <nav className="hidden items-center gap-1 md:flex" aria-label="Main">
-            {NAV.map((item) => {
-              const active =
-                pathname === item.to ||
-                (item.to === "/settings/profile" && pathname.startsWith("/settings")) ||
-                (item.to === "/reports" && pathname.startsWith("/reports")) ||
-                (item.to.startsWith("/dev-center") && pathname.startsWith("/dev-center"));
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className={
-                    "inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-medium transition-colors " +
-                    (active
-                      ? "bg-surface text-foreground"
-                      : "text-muted-foreground hover:bg-surface hover:text-foreground")
-                  }
-                >
-                  <item.icon className="h-3.5 w-3.5" />
-                  {item.label}
-                </Link>
-              );
-            })}
-            {isAdmin ? (
-              <Link
-                to="/admin"
-                className={
-                  "inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-medium transition-colors " +
-                  (pathname.startsWith("/admin")
-                    ? "bg-primary/10 text-primary"
-                    : "text-primary/80 hover:bg-primary/10 hover:text-primary")
-                }
-              >
-                <Shield className="h-3.5 w-3.5" />
-                Admin
-              </Link>
-            ) : null}
-          </nav>
-
+      <div className="flex items-center justify-between gap-3 px-3 py-2.5 sm:px-6 sm:py-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <SidebarTrigger className="shrink-0" />
         </div>
 
-        <div className="flex items-center gap-3">
-          <span className="hidden text-xs text-muted-foreground sm:inline">{today}</span>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <span className="hidden text-xs text-muted-foreground lg:inline">{today}</span>
           {onRefresh ? (
             <button
               type="button"
@@ -109,7 +54,7 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
               className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border bg-surface px-3 text-xs font-medium text-foreground shadow-xs transition-all duration-150 hover:bg-surface-2"
             >
               <RefreshCw className="h-3.5 w-3.5" />
-              Refresh
+              <span className="hidden sm:inline">Refresh</span>
             </button>
           ) : null}
           <OrgSwitcher />
@@ -142,32 +87,6 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
           </DropdownMenu>
         </div>
       </div>
-
-      {/* Mobile nav */}
-      <nav className="flex items-center gap-1 border-t border-border px-3 py-2 md:hidden" aria-label="Main">
-        {NAV.map((item) => {
-          const active =
-            pathname === item.to ||
-            (item.to === "/settings/profile" && pathname.startsWith("/settings")) ||
-            (item.to === "/reports" && pathname.startsWith("/reports")) ||
-            (item.to.startsWith("/dev-center") && pathname.startsWith("/dev-center"));
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={
-                "inline-flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors " +
-                (active
-                  ? "bg-surface text-foreground"
-                  : "text-muted-foreground hover:bg-surface hover:text-foreground")
-              }
-            >
-              <item.icon className="h-3.5 w-3.5" />
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
     </header>
   );
 }
