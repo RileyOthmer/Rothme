@@ -43,6 +43,7 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { isAdmin } = useIsAdmin();
 
   const handleSignOut = async () => {
     await queryClient.cancelQueries();
