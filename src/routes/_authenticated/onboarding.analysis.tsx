@@ -11,6 +11,7 @@ import {
   saveOnboardingStep,
   type OnboardingAnalysis,
 } from "@/lib/onboarding/session.functions";
+import { generateBusinessProfile } from "@/lib/onboarding/business-profile.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/analysis")({
