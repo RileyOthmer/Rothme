@@ -89,5 +89,5 @@ export function useSubscription(userId: string | null | undefined) {
   const isCancelling = !!subscription?.cancel_at_period_end && subscription.status !== "canceled";
   const trialEndsSoon = isTrialing && periodEnd !== null && periodEnd - now < 3 * 24 * 3600 * 1000;
 
-  return { subscription, orgId, loading, isActive, isTrialing, isPastDue, isCancelling, trialEndsSoon };
+  return { subscription, orgId, loading, isActive, isPro: isActive, isTrialing, isPastDue, isCancelling, trialEndsSoon };
 }
