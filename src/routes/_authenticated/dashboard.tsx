@@ -7,10 +7,7 @@ import { Toaster } from "sonner";
 import { getProfile } from "@/lib/profile.functions";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { DecisionCenter } from "@/features/decisions/DecisionCenter";
-import { HealthScoreCard } from "@/features/health/HealthScoreCard";
-import { getSeedHealthScore } from "@/features/health/seed";
 import { DashboardWidget, WIDGETS } from "@/features/dashboard/DashboardWidget";
-import { DashboardInsightsSection } from "@/features/dashboard/DashboardInsights";
 import { ProWelcome, ProChecklist } from "@/features/dashboard/ProWelcome";
 import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
 import { useHasConnections } from "@/hooks/use-has-connections";
@@ -45,7 +42,7 @@ function DashboardPage() {
     queryKey: ["profile"],
     queryFn: () => fetchProfile(),
   });
-  const { hasConnections, isLoading: connLoading } = useHasConnections();
+  const { hasConnections } = useHasConnections();
 
   const [prefs, setPrefs] = useState<DashboardPrefs | null>(null);
   useEffect(() => {
@@ -59,7 +56,6 @@ function DashboardPage() {
   }, [profileQuery.data, router]);
 
   const firstName = profileQuery.data?.full_name?.split(" ")[0] ?? "there";
-  const health = getSeedHealthScore();
 
   const order = prefs?.priority ?? DEFAULT_ORDER;
   const primary = order[0];
@@ -89,30 +85,36 @@ function DashboardPage() {
 
         <ProChecklist />
 
-        {!connLoading && !hasConnections ? (
-          <>
-            <ZeroStatGrid labels={["Followers", "Reach", "Engagement", "Revenue"]} />
-            <EmptyDataState />
-            <DecisionCenter firstName={firstName} hasConnections={false} />
-          </>
-        ) : (
-          <>
-            <HealthScoreCard score={health} />
+        {/*
+         * Zero-until-tracked policy: connecting an account creates a row, but
+         * that alone doesn't mean we have real, ingested analytics yet. Until
+         * the data engine actually has tracked metrics for this user, every
+         * KPI, score, and insight on the dashboard MUST read as 0 / no data —
+         * never seeded, never AI-fabricated. When real ingestion lands, flip
+         * this gate to check for the presence of MetricSnapshots (or similar)
+         * and only then render HealthScoreCard / DashboardInsightsSection.
+         */}
+        <ZeroStatGrid labels={["Followers", "Reach", "Engagement", "Revenue"]} />
+        <ZeroStatGrid labels={["Impressions", "Clicks", "Conversions", "Spend"]} />
+        <EmptyDataState
+          title={hasConnections ? "Connected — waiting on tracked data" : "Nothing to show yet"}
+          description={
+            hasConnections
+              ? "Your accounts are connected. Metrics will populate here as soon as we finish tracking your first sync — until then, every number stays at 0 so nothing looks fabricated."
+              : "Connect your social accounts, ad platforms, or SMS provider and your metrics will start populating here. Until then, everything reads as zero — no made-up numbers."
+          }
+        />
 
-            <DashboardInsightsSection />
+        <section aria-labelledby="widgets-heading" className="space-y-4">
+          <h2 id="widgets-heading" className="sr-only">Shortcuts</h2>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {order.map((id, i) => (
+              <DashboardWidget key={id} widgetId={id} primary={i === 0} />
+            ))}
+          </div>
+        </section>
 
-            <section aria-labelledby="widgets-heading" className="space-y-4">
-              <h2 id="widgets-heading" className="sr-only">Recommended for you</h2>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {order.map((id, i) => (
-                  <DashboardWidget key={id} widgetId={id} primary={i === 0} />
-                ))}
-              </div>
-            </section>
-
-            <DecisionCenter firstName={firstName} hasConnections={true} />
-          </>
-        )}
+        <DecisionCenter firstName={firstName} hasConnections={false} />
       </main>
 
       <Toaster position="bottom-right" />
