@@ -19,6 +19,7 @@ export function KpiCard({ metric, range }: { metric: Metric; range: RangeDays })
     <Link
       to="/analytics/$metric"
       params={{ metric: metric.id }}
+      search={{ range: String(range) as "7" | "30" | "90" }}
       className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 transition-all hover:-translate-y-0.5 hover:border-foreground/20 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
     >
       <div className="flex items-start justify-between gap-3">
