@@ -76,14 +76,14 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // If already signed in, bounce.
+  // If already signed in, bounce to the role-appropriate dashboard.
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (mounted && data.user) {
-        const t = navTarget(redirect);
-        navigate({ to: t.to, search: t.search, replace: true } as never);
-      }
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!mounted || !data.user) return;
+      const t = await resolveLandingRoute(redirect);
+      if (!mounted) return;
+      navigate({ to: t.to, search: t.search, replace: true } as never);
     });
     return () => {
       mounted = false;
