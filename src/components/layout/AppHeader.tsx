@@ -82,7 +82,22 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
                 </Link>
               );
             })}
+            {isAdmin ? (
+              <Link
+                to="/admin"
+                className={
+                  "inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-medium transition-colors " +
+                  (pathname.startsWith("/admin")
+                    ? "bg-primary/10 text-primary"
+                    : "text-primary/80 hover:bg-primary/10 hover:text-primary")
+                }
+              >
+                <Shield className="h-3.5 w-3.5" />
+                Admin
+              </Link>
+            ) : null}
           </nav>
+
         </div>
 
         <div className="flex items-center gap-3">

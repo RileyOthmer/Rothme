@@ -28,7 +28,7 @@ const TABS: Array<{ to: string; label: string; icon: typeof Shield; exact?: bool
 ];
 
 function AdminLayout() {
-  const { isAdmin, isLoading } = useIsAdmin();
+  const { isAdmin, anyAdminExists, isLoading } = useIsAdmin();
   const { pathname } = useLocation();
 
   if (isLoading) {
@@ -38,7 +38,13 @@ function AdminLayout() {
       </main>
     );
   }
-  if (!isAdmin) return <AccessDenied />;
+  if (!isAdmin) {
+    // Hide the admin surface entirely from non-admins. Only expose the
+    // one-time claim flow when no admin exists yet (first-run bootstrap).
+    if (anyAdminExists) return <NotFound />;
+    return <ClaimFirstAdmin />;
+  }
+
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
@@ -76,7 +82,21 @@ function AdminLayout() {
   );
 }
 
-function AccessDenied() {
+function NotFound() {
+  return (
+    <main className="mx-auto max-w-md px-4 py-24 sm:px-6 text-center">
+      <h1 className="text-lg font-semibold">Page not found</h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        The page you're looking for doesn't exist.
+      </p>
+      <Link to="/dashboard" className="mt-6 inline-flex h-9 items-center rounded-lg bg-foreground px-4 text-xs font-medium text-background">
+        Back to dashboard
+      </Link>
+    </main>
+  );
+}
+
+function ClaimFirstAdmin() {
   const claim = useServerFn(claimFirstAdmin);
   const qc = useQueryClient();
   const [error, setError] = useState<string | null>(null);
@@ -93,9 +113,9 @@ function AccessDenied() {
     <main className="mx-auto max-w-md px-4 py-24 sm:px-6">
       <div className="rounded-2xl border border-border bg-surface p-8 text-center">
         <Shield className="mx-auto h-8 w-8 text-muted-foreground" />
-        <h1 className="mt-4 text-lg font-semibold">Admin access required</h1>
+        <h1 className="mt-4 text-lg font-semibold">Claim admin access</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          This area is for platform administrators. If no admin exists yet, you can claim it now.
+          No platform admin exists yet. Claim it now to configure the workspace.
         </p>
         <button
           onClick={() => mut.mutate()}
@@ -109,3 +129,4 @@ function AccessDenied() {
     </main>
   );
 }
+

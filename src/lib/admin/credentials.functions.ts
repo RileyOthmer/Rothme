@@ -147,14 +147,21 @@ export const checkIsAdmin = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data } = await supabaseAdmin
-      .from("user_roles")
-      .select("id")
-      .eq("user_id", context.userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    return { isAdmin: Boolean(data) };
+    const [mine, all] = await Promise.all([
+      supabaseAdmin
+        .from("user_roles")
+        .select("id")
+        .eq("user_id", context.userId)
+        .eq("role", "admin")
+        .maybeSingle(),
+      supabaseAdmin
+        .from("user_roles")
+        .select("id", { count: "exact", head: true })
+        .eq("role", "admin"),
+    ]);
+    return { isAdmin: Boolean(mine.data), anyAdminExists: (all.count ?? 0) > 0 };
   });
+
 
 export const claimFirstAdmin = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
