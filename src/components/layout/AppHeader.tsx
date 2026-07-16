@@ -112,6 +112,13 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
                   <SettingsIcon className="mr-2 h-4 w-4" /> Settings
                 </Link>
               </DropdownMenuItem>
+              {isAdmin ? (
+                <DropdownMenuItem asChild>
+                  <Link to="/admin" className="w-full cursor-pointer">
+                    <Shield className="mr-2 h-4 w-4" /> Admin Console
+                  </Link>
+                </DropdownMenuItem>
+              ) : null}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                 <LogOut className="mr-2 h-4 w-4" /> Sign out
