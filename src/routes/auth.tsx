@@ -4,6 +4,7 @@ import { z } from "zod";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { checkIsAdmin } from "@/lib/admin/credentials.functions";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,15 +38,33 @@ export const Route = createFileRoute("/auth")({
 
 // Split "/checkout?plan=pro_monthly" into { to: "/checkout", search: { plan: "pro_monthly" } }
 // so TanStack navigate handles the query string instead of treating it as part of the path.
-function navTarget(redirect: string | undefined) {
+function navTarget(redirect: string | undefined, defaultTo: string = "/dashboard") {
   if (!redirect || !redirect.startsWith("/") || redirect.startsWith("//")) {
-    return { to: "/dashboard", search: undefined as Record<string, string> | undefined };
+    return { to: defaultTo, search: undefined as Record<string, string> | undefined };
   }
   const [path, query] = redirect.split("?", 2);
   if (!query) return { to: path, search: undefined };
   const search: Record<string, string> = {};
   for (const [k, v] of new URLSearchParams(query)) search[k] = v;
   return { to: path, search };
+}
+
+/**
+ * Ask the server whether the just-signed-in user is an admin.
+ * Server-side check (RLS + role table); never trust the client for authorization.
+ * Falls back to "user" if the check fails — never accidentally grant admin.
+ */
+async function resolveLandingRoute(redirect: string | undefined): Promise<{ to: string; search?: Record<string, string> }> {
+  // Honor an explicit redirect param (e.g. deep link, checkout return) as-is.
+  if (redirect && redirect.startsWith("/") && !redirect.startsWith("//")) {
+    return navTarget(redirect);
+  }
+  try {
+    const { isAdmin } = await checkIsAdmin({});
+    return navTarget(undefined, isAdmin ? "/admin" : "/dashboard");
+  } catch {
+    return navTarget(undefined, "/dashboard");
+  }
 }
 
 function AuthPage() {
@@ -57,14 +76,14 @@ function AuthPage() {
   const [fullName, setFullName] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // If already signed in, bounce.
+  // If already signed in, bounce to the role-appropriate dashboard.
   useEffect(() => {
     let mounted = true;
-    supabase.auth.getUser().then(({ data }) => {
-      if (mounted && data.user) {
-        const t = navTarget(redirect);
-        navigate({ to: t.to, search: t.search, replace: true } as never);
-      }
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!mounted || !data.user) return;
+      const t = await resolveLandingRoute(redirect);
+      if (!mounted) return;
+      navigate({ to: t.to, search: t.search, replace: true } as never);
     });
     return () => {
       mounted = false;
@@ -97,7 +116,7 @@ function AuthPage() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        const t = navTarget(safeRedirect);
+        const t = await resolveLandingRoute(safeRedirect);
         navigate({ to: t.to, search: t.search, replace: true } as never);
       }
     } catch (err) {
@@ -120,8 +139,8 @@ function AuthPage() {
       });
       if (result.error) throw result.error;
       if (result.redirected) return;
-      // Session set by helper — navigate.
-      const t = navTarget(safeRedirect);
+      // Session set by helper — navigate to role-appropriate landing page.
+      const t = await resolveLandingRoute(safeRedirect);
       navigate({ to: t.to, search: t.search, replace: true } as never);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Google sign-in failed.");
