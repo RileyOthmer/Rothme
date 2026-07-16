@@ -149,7 +149,7 @@ function BillingPage() {
 
       {isCancelling && periodEnd && (
         <div className="rounded-lg border border-border/70 bg-card p-4 text-sm">
-          Your subscription will end on <strong>{periodEnd}</strong>. You'll keep Pro access until then.
+          Your subscription will end on <strong>{periodEnd}</strong>. You'll keep full access until then.
         </div>
       )}
 
@@ -186,7 +186,7 @@ function BillingPage() {
             )}
             {!loading && !isActive && (
               <div className="mt-3 text-sm text-muted-foreground">
-                Upgrade to Rothme Pro to unlock the full platform.
+                Complete your subscription to activate your Rothme workspace.
               </div>
             )}
           </div>
@@ -195,11 +195,12 @@ function BillingPage() {
               to="/pricing"
               className="inline-flex items-center gap-2 rounded-lg bg-foreground px-4 py-2 text-sm text-background hover:opacity-90"
             >
-              Upgrade to Pro
+              Subscribe
             </Link>
           )}
         </div>
       </section>
+
 
       {isActive && (
         <>
