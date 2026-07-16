@@ -232,6 +232,75 @@ export type Database = {
           },
         ]
       }
+      dashboard_insights: {
+        Row: {
+          confidence: string
+          created_at: string
+          generated_at: string
+          lead_generation_score: number
+          lead_generation_summary: string
+          marketing_score: number
+          marketing_summary: string
+          overall_health_score: number
+          overall_health_summary: string
+          paid_advertising_score: number
+          paid_advertising_summary: string
+          recommendations: Json
+          seo_score: number
+          seo_summary: string
+          social_presence_score: number
+          social_presence_summary: string
+          updated_at: string
+          user_id: string
+          website_score: number
+          website_summary: string
+        }
+        Insert: {
+          confidence?: string
+          created_at?: string
+          generated_at?: string
+          lead_generation_score?: number
+          lead_generation_summary?: string
+          marketing_score?: number
+          marketing_summary?: string
+          overall_health_score?: number
+          overall_health_summary?: string
+          paid_advertising_score?: number
+          paid_advertising_summary?: string
+          recommendations?: Json
+          seo_score?: number
+          seo_summary?: string
+          social_presence_score?: number
+          social_presence_summary?: string
+          updated_at?: string
+          user_id: string
+          website_score?: number
+          website_summary?: string
+        }
+        Update: {
+          confidence?: string
+          created_at?: string
+          generated_at?: string
+          lead_generation_score?: number
+          lead_generation_summary?: string
+          marketing_score?: number
+          marketing_summary?: string
+          overall_health_score?: number
+          overall_health_summary?: string
+          paid_advertising_score?: number
+          paid_advertising_summary?: string
+          recommendations?: Json
+          seo_score?: number
+          seo_summary?: string
+          social_presence_score?: number
+          social_presence_summary?: string
+          updated_at?: string
+          user_id?: string
+          website_score?: number
+          website_summary?: string
+        }
+        Relationships: []
+      }
       media_assets: {
         Row: {
           alt_text: string | null
