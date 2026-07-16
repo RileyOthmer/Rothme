@@ -46,6 +46,13 @@ export type PlatformConfig = {
   extraAuthorizeParams?: Record<string, string>;
   /** One-line description shown in the UI. */
   blurb: string;
+  /**
+   * MVP availability. "available" platforms are fully wired and shown with
+   * Connect / Refresh / Disconnect controls. "coming_soon" platforms are
+   * listed for transparency but never expose a Connect button — flip to
+   * "available" once the adapter and provider credentials are ready.
+   */
+  availability: "available" | "coming_soon";
 };
 
 export const PLATFORMS: PlatformConfig[] = [
