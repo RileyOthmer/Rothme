@@ -1,84 +1,65 @@
-# Fix billing, entitlement & purchase flow gaps
+# Admin Console
 
-Based on your answers: **Pro Monthly $49 / Pro Annual $490**, **7-day trial**, **per-org entitlement**, **full tax compliance handling (+3.5%)**.
+A dedicated `/admin` area, gated to users with the `admin` role, where you can manage every OAuth credential and see live health/stats for the whole platform.
 
-## What's broken today (short version)
+## What you'll get
 
-1. **Pro is decorative** — no route/feature is actually gated; `has_active_subscription` exists but is called nowhere.
-2. **Two pricing systems** — onboarding shows a fake $0/$39/$129/Enterprise picker that never touches Stripe; the real system (`/pricing`) sells one Pro plan at different prices.
-3. **No Stripe products in code** — `pro_monthly`/`pro_annual` lookup_keys are referenced but never created.
-4. **No trial, no tax config, no managed_payments** on checkout.
-5. **Webhook**: `checkout.session.completed` doesn't activate entitlement (races on `subscription.created`); `invoice.payment_failed` ignores `environment`; no `invoice.payment_succeeded` to clear past-due.
-6. **Client-controlled `environment` param** on server fns (trust boundary).
-7. **Portal fn throws** instead of returning `{error}`.
+**Nav:** an "Admin" chip appears in the app header only when your account has the admin role. Non-admins never see the link and get bounced from `/admin/*` back to the dashboard.
 
-## Plan
+**Six pages under `/admin/`:**
 
-### 1. Product catalog (Stripe)
-- `payments--batch_create_product`: one product `pro`, two prices `pro_monthly` ($4900/mo) & `pro_annual` ($49000/yr, ~2 months free), `tax_code: txcd_10103001` (SaaS), quantity 1/1.
+1. **Dashboard** — snapshot of every stat category, updates when you land on the page.
+2. **Credentials** — one row per social platform (Facebook → Bluesky). Shows configured / missing state, last-updated timestamp, and lets you paste a new Client ID + Client Secret inline. Values are AES-256-GCM encrypted using your existing `INTEGRATION_ENCRYPTION_KEY`. Secrets are never sent back to the browser (masked "••••1234").
+3. **Users & growth** — total users, new signups (7d / 30d), 30d active users, latest sign-ups list.
+4. **Revenue & subscriptions** — active subscribers by plan, trialing / past-due / canceled counts, MRR estimate, latest 20 subscription events, environment (test/live) filter.
+5. **Connections health** — connected accounts per platform, healthy vs degraded vs disconnected, sync success/failure rate over 7d, tokens expiring in 7d.
+6. **System health** — recent errors from `sync_history`, `plugin_events` and `platform_integration_logs`; AI audit counts; last cron run.
 
-### 2. Checkout hardening (`src/lib/payments.functions.ts`)
-- Add `subscription_data.trial_period_days: 7`.
-- Add `managed_payments: { enabled: true }` (cast to `SessionCreateParams` — dahlia field).
-- Stamp `subscription_data.metadata.orgId` (already stamps userId).
-- `createPortalSession`: return `{ error }` on failures instead of throwing.
-- Derive `environment` server-side from `STRIPE_LIVE_API_KEY` presence + a signed hint, rather than trusting client. (Simplest: ignore client `environment`, pick sandbox in preview / live once live key exists.)
+## How credential storage works
 
-### 3. Onboarding ↔ real billing (`src/routes/_authenticated/onboarding.subscription.tsx`)
-- Replace fake 4-tier picker with the same two-price flow used by `/pricing`: Pro Monthly / Pro Annual toggle + "Start 7-day free trial" CTA that opens embedded checkout via `useStripeCheckout`.
-- Skip step entirely if org already has active subscription.
-- Remove `plan_tier` writes from this step.
+Two-tier lookup: the OAuth adapter now checks the encrypted `admin_credentials` row for a platform first, and falls back to the `<PLATFORM>_CLIENT_ID` / `_CLIENT_SECRET` env vars if the row is missing. This means:
 
-### 4. Per-org entitlement (`supabase/migrations/…`)
-- New DB function `private.org_has_active_subscription(org uuid)` — checks `subscriptions.org_id` + active/trialing/past_due/canceled-with-future-period_end.
-- Update `subscriptions` RLS: users can select rows for orgs they're members of (`is_org_member`).
-- Update `useSubscription` to query by active org id (from `profiles.active_org_id`) instead of user_id; keep env filter; keep realtime.
+- Editing a platform in `/admin/credentials` immediately activates real OAuth for that platform — no redeploy, no secret rotation.
+- Infra secrets (Stripe, encryption key, Lovable API key) stay in the Lovable secret store — the Credentials page shows them in a read-only "Infrastructure" panel with configured/missing badges so you can see status at a glance.
 
-### 5. Feature gating
-- Add `<RequirePro>` wrapper component in `src/components/RequirePro.tsx` (checks org subscription via hook; if not active, redirects to `/settings/billing?upgrade=1` and shows soft upgrade CTA).
-- Wrap Pro-only route groups: analytics/*, assistant, dev-center, insights, reports, plugins.
-- Onboarding + settings + dashboard remain free (needed to reach checkout).
+## Security
 
-### 6. Webhook (`src/routes/api/public/payments/webhook.ts`)
-- `checkout.session.completed`: if `mode=subscription` and `subscription` id present, fetch subscription + upsert immediately (idempotent fallback for race with `customer.subscription.created`).
-- `invoice.payment_succeeded`: clear past_due, log activity event `subscription.renewed`.
-- `invoice.payment_failed`: add `.eq('environment', env)` filter.
-- `handleSubscriptionUpsert`: log `subscription.updated` activity when status transitions.
-- Keep custom HMAC verify (works fine; SDK swap is nice-to-have, not blocking).
+- New table `public.admin_credentials` — RLS restricted to `private.has_role(auth.uid(), 'admin')` for every operation. Server_role has ALL for edge functions.
+- All admin server functions use `requireSupabaseAuth` and re-verify `has_role('admin')` server-side before returning any data.
+- Encrypted values are never returned in list responses; only masked previews.
+- A route-level `beforeLoad` check in `_authenticated/admin/route.tsx` redirects non-admins to `/dashboard`.
 
-### 7. Billing UI polish (`src/routes/_authenticated/settings.billing.tsx`)
-- Rename duplicate portal buttons to one **"Manage subscription"** button; separate **"View invoices"** deep-links portal `flow_data`.
-- Show trial-ending badge when `status === 'trialing'` and `current_period_end` < 3 days away.
+## Files
 
-### 8. Return page (`src/routes/checkout.return.tsx`)
-- Already polls subscriptions + resumes onboarding — keep. Add success toast + `activity_events` client insert removed (webhook handles it).
+**Migration** (new)
+- `admin_credentials` table + admin-only RLS + updated_at trigger.
 
-## Files touched
+**Server** (new)
+- `src/lib/admin/credentials.functions.ts` — list / upsert / delete credential (admin-gated).
+- `src/lib/admin/stats.functions.ts` — users, revenue, connections, health aggregates.
+- `src/lib/admin/credential-resolver.server.ts` — DB-first, env-fallback secret loader.
 
-- **new**: `supabase/migrations/<ts>_pro_entitlement.sql`, `src/components/RequirePro.tsx`
-- **edit**: `src/lib/payments.functions.ts`, `src/routes/api/public/payments/webhook.ts`, `src/hooks/useSubscription.ts`, `src/routes/_authenticated/onboarding.subscription.tsx`, `src/routes/_authenticated/settings.billing.tsx`, `src/routes/_authenticated/analytics.*` (wrap with RequirePro via `_authenticated/route.tsx` matcher — single edit, not per-route)
-- **Stripe**: `payments--batch_create_product` (one call)
+**Server** (edit)
+- `src/lib/social-connections/adapter.server.ts` — read client_id/secret through the resolver instead of `process.env` directly.
 
-## Testing in preview (test mode)
+**Routes** (new)
+- `src/routes/_authenticated/admin/route.tsx` — role gate + shared shell/nav.
+- `src/routes/_authenticated/admin/index.tsx` — dashboard.
+- `src/routes/_authenticated/admin/credentials.tsx`
+- `src/routes/_authenticated/admin/users.tsx`
+- `src/routes/_authenticated/admin/revenue.tsx`
+- `src/routes/_authenticated/admin/connections.tsx`
+- `src/routes/_authenticated/admin/health.tsx`
 
-1. **Sign in** to preview → complete onboarding until "Subscription" step.
-2. **Click "Start 7-day trial – Pro Monthly"** → embedded checkout opens inline (orange test-mode banner at top).
-3. **Test card**: `4242 4242 4242 4242`, any future expiry (e.g. `12/34`), any CVC (`123`), any ZIP.
-4. Stripe redirects to `/checkout/return?session_id=…` → success screen → routes into `/dashboard`.
-5. Verify **`/settings/billing`** shows "Trial – ends in 7 days", plan = Pro Monthly.
-6. Verify **`/analytics/overview`** now loads (was blocked before checkout).
-7. **Cancel test**: click "Manage subscription" → opens Stripe portal in new tab → cancel → return to app → banner shows "Access until <date>", app still works until period end.
-8. **Failed payment test**: use `4000 0000 0000 0341` (attaches successfully but fails on renewal) → after next webhook, banner "Payment failed, we're retrying".
-9. **3DS test**: `4000 0025 0000 3155` — checkout will prompt for auth code.
-10. **Annual test**: repeat with the annual toggle.
+**UI** (edit)
+- `src/components/layout/AppHeader.tsx` — conditional "Admin" chip via a `useIsAdmin` hook.
 
-Reset between tests: delete rows from `subscriptions` where `environment='sandbox'` for your user (Cloud → tables).
+**Hook** (new)
+- `src/hooks/use-is-admin.ts` — small React Query wrapper around a `checkIsAdmin` server function.
 
-## Out of scope (deferred)
+## Notes / trade-offs
 
-- SDK-based webhook signature verify (works today).
-- Removing dead `has_active_subscription` (kept, still referenced by new org variant).
-- Email templates for renewals/dunning (needs domain — you flagged separately).
-- Win-back banner for canceled users (V2).
-
-Reply **approve** and I'll execute in one pass.
+- MRR is an estimate derived from the `subscriptions` table price_id + plan mapping already used by `useSubscription`; it isn't a Stripe API roundtrip (fast, no rate limits).
+- The Credentials page never re-displays a secret you typed — once submitted it's encrypted and only the last 4 chars are echoed back. To rotate, paste a new value.
+- The adapter fallback preserves the current behaviour: if you never open the Credentials page, everything keeps working the same way it does today via env vars.
+- You'll need to be granted the `admin` role once. The existing `claim_first_admin` function handles this — I'll surface a one-click button on the admin gate's "access denied" screen so you can self-promote on first visit if no admin exists yet.

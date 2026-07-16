@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target, Users, CheckSquare, BarChart3, LineChart, Send, Boxes } from "lucide-react";
+import { LayoutDashboard, FileText, Settings as SettingsIcon, LogOut, RefreshCw, Target, Users, CheckSquare, BarChart3, LineChart, Send, Boxes, Shield } from "lucide-react";
+import { useIsAdmin } from "@/hooks/use-is-admin";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { OrgSwitcher } from "@/features/collab/OrgSwitcher";
@@ -42,6 +43,7 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { isAdmin } = useIsAdmin();
 
   const handleSignOut = async () => {
     await queryClient.cancelQueries();
@@ -110,6 +112,13 @@ export function AppHeader({ onRefresh }: { onRefresh?: () => void }) {
                   <SettingsIcon className="mr-2 h-4 w-4" /> Settings
                 </Link>
               </DropdownMenuItem>
+              {isAdmin ? (
+                <DropdownMenuItem asChild>
+                  <Link to="/admin" className="w-full cursor-pointer">
+                    <Shield className="mr-2 h-4 w-4" /> Admin Console
+                  </Link>
+                </DropdownMenuItem>
+              ) : null}
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
                 <LogOut className="mr-2 h-4 w-4" /> Sign out

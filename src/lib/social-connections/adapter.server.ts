@@ -14,6 +14,7 @@
  *                       .syncAnalytics({ accessToken })
  */
 import { createHash, randomBytes } from "node:crypto";
+import { resolvePlatformCredentials } from "@/lib/admin/credential-resolver.server";
 import { getPlatform, type PlatformConfig, type PlatformId } from "./platforms";
 
 export type TokenBundle = {
@@ -99,9 +100,16 @@ class GenericAdapter implements PlatformAdapter {
     return Boolean(process.env[this.config.clientIdEnv] && process.env[this.config.clientSecretEnv]);
   }
 
+  private async creds(): Promise<{ clientId: string; clientSecret: string }> {
+    const r = await resolvePlatformCredentials(this.config.id);
+    if (!r.clientId || !r.clientSecret) {
+      throw new Error(`${this.config.name} is not configured (missing client credentials)`);
+    }
+    return { clientId: r.clientId, clientSecret: r.clientSecret };
+  }
+
   async authorize({ redirectUri, state }: AuthorizeArgs): Promise<AuthorizeResult> {
-    const clientId = process.env[this.config.clientIdEnv];
-    if (!clientId) throw new Error(`${this.config.name} is not configured (${this.config.clientIdEnv} missing)`);
+    const { clientId } = await this.creds();
     const params = new URLSearchParams({
       client_id: clientId,
       response_type: "code",
@@ -121,8 +129,7 @@ class GenericAdapter implements PlatformAdapter {
   }
 
   async exchangeToken({ code, redirectUri, codeVerifier }: { code: string; redirectUri: string; codeVerifier?: string }): Promise<TokenBundle> {
-    const clientId = process.env[this.config.clientIdEnv]!;
-    const clientSecret = process.env[this.config.clientSecretEnv]!;
+    const { clientId, clientSecret } = await this.creds();
     const body = new URLSearchParams({
       grant_type: "authorization_code",
       code,
@@ -141,8 +148,7 @@ class GenericAdapter implements PlatformAdapter {
   }
 
   async refreshToken({ refreshToken }: { refreshToken: string }): Promise<TokenBundle> {
-    const clientId = process.env[this.config.clientIdEnv]!;
-    const clientSecret = process.env[this.config.clientSecretEnv]!;
+    const { clientId, clientSecret } = await this.creds();
     const body = new URLSearchParams({
       grant_type: "refresh_token",
       refresh_token: refreshToken,

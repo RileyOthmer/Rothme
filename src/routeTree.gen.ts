@@ -43,11 +43,13 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedBusinessProfileRouteImport } from './routes/_authenticated/business-profile'
 import { Route as AuthenticatedAuditRouteImport } from './routes/_authenticated/audit'
 import { Route as AuthenticatedAnalyticsRouteImport } from './routes/_authenticated/analytics'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AuthenticatedOnboardingIndexRouteImport } from './routes/_authenticated/onboarding.index'
 import { Route as AuthenticatedDevCenterIndexRouteImport } from './routes/_authenticated/dev-center.index'
 import { Route as AuthenticatedAnalyticsIndexRouteImport } from './routes/_authenticated/analytics.index'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedSettingsSocialHealthRouteImport } from './routes/_authenticated/settings.social-health'
 import { Route as AuthenticatedSettingsSocialAccountsRouteImport } from './routes/_authenticated/settings.social-accounts'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
@@ -104,6 +106,11 @@ import { Route as AuthenticatedAnalyticsAlertsRouteImport } from './routes/_auth
 import { Route as AuthenticatedAnalyticsAiInsightsRouteImport } from './routes/_authenticated/analytics.ai-insights'
 import { Route as AuthenticatedAnalyticsAdvertisingRouteImport } from './routes/_authenticated/analytics.advertising'
 import { Route as AuthenticatedAnalyticsMetricRouteImport } from './routes/_authenticated/analytics.$metric'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
+import { Route as AuthenticatedAdminRevenueRouteImport } from './routes/_authenticated/admin.revenue'
+import { Route as AuthenticatedAdminHealthRouteImport } from './routes/_authenticated/admin.health'
+import { Route as AuthenticatedAdminCredentialsRouteImport } from './routes/_authenticated/admin.credentials'
+import { Route as AuthenticatedAdminConnectionsRouteImport } from './routes/_authenticated/admin.connections'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
@@ -284,6 +291,11 @@ const AuthenticatedAnalyticsRoute = AuthenticatedAnalyticsRouteImport.update({
   path: '/analytics',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const Char91DotwellKnownChar93OauthProtectedResourceRoute =
   Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
     id: '/.well-known/oauth-protected-resource',
@@ -314,6 +326,11 @@ const AuthenticatedAnalyticsIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
   } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedSettingsSocialHealthRoute =
   AuthenticatedSettingsSocialHealthRouteImport.update({
     id: '/settings/social-health',
@@ -649,6 +666,35 @@ const AuthenticatedAnalyticsMetricRoute =
     path: '/$metric',
     getParentRoute: () => AuthenticatedAnalyticsRoute,
   } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminRevenueRoute =
+  AuthenticatedAdminRevenueRouteImport.update({
+    id: '/revenue',
+    path: '/revenue',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminHealthRoute =
+  AuthenticatedAdminHealthRouteImport.update({
+    id: '/health',
+    path: '/health',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminCredentialsRoute =
+  AuthenticatedAdminCredentialsRouteImport.update({
+    id: '/credentials',
+    path: '/credentials',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminConnectionsRoute =
+  AuthenticatedAdminConnectionsRouteImport.update({
+    id: '/connections',
+    path: '/connections',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const Char91DotmcpChar93InvokeToolToolRoute =
   Char91DotmcpChar93InvokeToolToolRouteImport.update({
     id: '/.mcp/invoke-tool/$tool',
@@ -713,6 +759,7 @@ export interface FileRoutesByFullPath {
   '/why': typeof WhyRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/audit': typeof AuthenticatedAuditRoute
   '/business-profile': typeof AuthenticatedBusinessProfileRoute
@@ -737,6 +784,11 @@ export interface FileRoutesByFullPath {
   '/get-started/': typeof GetStartedIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/connections': typeof AuthenticatedAdminConnectionsRoute
+  '/admin/credentials': typeof AuthenticatedAdminCredentialsRoute
+  '/admin/health': typeof AuthenticatedAdminHealthRoute
+  '/admin/revenue': typeof AuthenticatedAdminRevenueRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
   '/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
@@ -793,6 +845,7 @@ export interface FileRoutesByFullPath {
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/settings/social-accounts': typeof AuthenticatedSettingsSocialAccountsRoute
   '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/dev-center/': typeof AuthenticatedDevCenterIndexRoute
   '/onboarding/': typeof AuthenticatedOnboardingIndexRoute
@@ -838,6 +891,11 @@ export interface FileRoutesByTo {
   '/get-started': typeof GetStartedIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/admin/connections': typeof AuthenticatedAdminConnectionsRoute
+  '/admin/credentials': typeof AuthenticatedAdminCredentialsRoute
+  '/admin/health': typeof AuthenticatedAdminHealthRoute
+  '/admin/revenue': typeof AuthenticatedAdminRevenueRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
   '/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
@@ -894,6 +952,7 @@ export interface FileRoutesByTo {
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/settings/social-accounts': typeof AuthenticatedSettingsSocialAccountsRoute
   '/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/analytics': typeof AuthenticatedAnalyticsIndexRoute
   '/dev-center': typeof AuthenticatedDevCenterIndexRoute
   '/onboarding': typeof AuthenticatedOnboardingIndexRoute
@@ -921,6 +980,7 @@ export interface FileRoutesById {
   '/why': typeof WhyRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/analytics': typeof AuthenticatedAnalyticsRouteWithChildren
   '/_authenticated/audit': typeof AuthenticatedAuditRoute
   '/_authenticated/business-profile': typeof AuthenticatedBusinessProfileRoute
@@ -945,6 +1005,11 @@ export interface FileRoutesById {
   '/get-started/': typeof GetStartedIndexRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
+  '/_authenticated/admin/connections': typeof AuthenticatedAdminConnectionsRoute
+  '/_authenticated/admin/credentials': typeof AuthenticatedAdminCredentialsRoute
+  '/_authenticated/admin/health': typeof AuthenticatedAdminHealthRoute
+  '/_authenticated/admin/revenue': typeof AuthenticatedAdminRevenueRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/analytics/$metric': typeof AuthenticatedAnalyticsMetricRoute
   '/_authenticated/analytics/advertising': typeof AuthenticatedAnalyticsAdvertisingRoute
   '/_authenticated/analytics/ai-insights': typeof AuthenticatedAnalyticsAiInsightsRoute
@@ -1001,6 +1066,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/_authenticated/settings/social-accounts': typeof AuthenticatedSettingsSocialAccountsRoute
   '/_authenticated/settings/social-health': typeof AuthenticatedSettingsSocialHealthRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/analytics/': typeof AuthenticatedAnalyticsIndexRoute
   '/_authenticated/dev-center/': typeof AuthenticatedDevCenterIndexRoute
   '/_authenticated/onboarding/': typeof AuthenticatedOnboardingIndexRoute
@@ -1028,6 +1094,7 @@ export interface FileRouteTypes {
     | '/why'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/admin'
     | '/analytics'
     | '/audit'
     | '/business-profile'
@@ -1052,6 +1119,11 @@ export interface FileRouteTypes {
     | '/get-started/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/connections'
+    | '/admin/credentials'
+    | '/admin/health'
+    | '/admin/revenue'
+    | '/admin/users'
     | '/analytics/$metric'
     | '/analytics/advertising'
     | '/analytics/ai-insights'
@@ -1108,6 +1180,7 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/settings/social-accounts'
     | '/settings/social-health'
+    | '/admin/'
     | '/analytics/'
     | '/dev-center/'
     | '/onboarding/'
@@ -1153,6 +1226,11 @@ export interface FileRouteTypes {
     | '/get-started'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/admin/connections'
+    | '/admin/credentials'
+    | '/admin/health'
+    | '/admin/revenue'
+    | '/admin/users'
     | '/analytics/$metric'
     | '/analytics/advertising'
     | '/analytics/ai-insights'
@@ -1209,6 +1287,7 @@ export interface FileRouteTypes {
     | '/settings/profile'
     | '/settings/social-accounts'
     | '/settings/social-health'
+    | '/admin'
     | '/analytics'
     | '/dev-center'
     | '/onboarding'
@@ -1235,6 +1314,7 @@ export interface FileRouteTypes {
     | '/why'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
+    | '/_authenticated/admin'
     | '/_authenticated/analytics'
     | '/_authenticated/audit'
     | '/_authenticated/business-profile'
@@ -1259,6 +1339,11 @@ export interface FileRouteTypes {
     | '/get-started/'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
+    | '/_authenticated/admin/connections'
+    | '/_authenticated/admin/credentials'
+    | '/_authenticated/admin/health'
+    | '/_authenticated/admin/revenue'
+    | '/_authenticated/admin/users'
     | '/_authenticated/analytics/$metric'
     | '/_authenticated/analytics/advertising'
     | '/_authenticated/analytics/ai-insights'
@@ -1315,6 +1400,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/profile'
     | '/_authenticated/settings/social-accounts'
     | '/_authenticated/settings/social-health'
+    | '/_authenticated/admin/'
     | '/_authenticated/analytics/'
     | '/_authenticated/dev-center/'
     | '/_authenticated/onboarding/'
@@ -1597,6 +1683,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/.well-known/oauth-protected-resource': {
       id: '/.well-known/oauth-protected-resource'
       path: '/.well-known/oauth-protected-resource'
@@ -1631,6 +1724,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/analytics/'
       preLoaderRoute: typeof AuthenticatedAnalyticsIndexRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/settings/social-health': {
       id: '/_authenticated/settings/social-health'
@@ -2024,6 +2124,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAnalyticsMetricRouteImport
       parentRoute: typeof AuthenticatedAnalyticsRoute
     }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/revenue': {
+      id: '/_authenticated/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AuthenticatedAdminRevenueRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/health': {
+      id: '/_authenticated/admin/health'
+      path: '/health'
+      fullPath: '/admin/health'
+      preLoaderRoute: typeof AuthenticatedAdminHealthRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/credentials': {
+      id: '/_authenticated/admin/credentials'
+      path: '/credentials'
+      fullPath: '/admin/credentials'
+      preLoaderRoute: typeof AuthenticatedAdminCredentialsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/connections': {
+      id: '/_authenticated/admin/connections'
+      path: '/connections'
+      fullPath: '/admin/connections'
+      preLoaderRoute: typeof AuthenticatedAdminConnectionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/.mcp/invoke-tool/$tool': {
       id: '/.mcp/invoke-tool/$tool'
       path: '/.mcp/invoke-tool/$tool'
@@ -2089,6 +2224,27 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminConnectionsRoute: typeof AuthenticatedAdminConnectionsRoute
+  AuthenticatedAdminCredentialsRoute: typeof AuthenticatedAdminCredentialsRoute
+  AuthenticatedAdminHealthRoute: typeof AuthenticatedAdminHealthRoute
+  AuthenticatedAdminRevenueRoute: typeof AuthenticatedAdminRevenueRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminConnectionsRoute: AuthenticatedAdminConnectionsRoute,
+  AuthenticatedAdminCredentialsRoute: AuthenticatedAdminCredentialsRoute,
+  AuthenticatedAdminHealthRoute: AuthenticatedAdminHealthRoute,
+  AuthenticatedAdminRevenueRoute: AuthenticatedAdminRevenueRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
 
 interface AuthenticatedAnalyticsRouteChildren {
   AuthenticatedAnalyticsMetricRoute: typeof AuthenticatedAnalyticsMetricRoute
@@ -2270,6 +2426,7 @@ const AuthenticatedReportsRouteWithChildren =
   AuthenticatedReportsRoute._addFileChildren(AuthenticatedReportsRouteChildren)
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedAnalyticsRoute: typeof AuthenticatedAnalyticsRouteWithChildren
   AuthenticatedAuditRoute: typeof AuthenticatedAuditRoute
   AuthenticatedBusinessProfileRoute: typeof AuthenticatedBusinessProfileRoute
@@ -2292,6 +2449,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedAnalyticsRoute: AuthenticatedAnalyticsRouteWithChildren,
   AuthenticatedAuditRoute: AuthenticatedAuditRoute,
   AuthenticatedBusinessProfileRoute: AuthenticatedBusinessProfileRoute,

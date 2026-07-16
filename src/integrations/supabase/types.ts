@@ -90,6 +90,45 @@ export type Database = {
           },
         ]
       }
+      admin_credentials: {
+        Row: {
+          client_id_ciphertext: string | null
+          client_id_last4: string | null
+          client_secret_ciphertext: string | null
+          client_secret_last4: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          platform_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          client_id_ciphertext?: string | null
+          client_id_last4?: string | null
+          client_secret_ciphertext?: string | null
+          client_secret_last4?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          platform_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          client_id_ciphertext?: string | null
+          client_id_last4?: string | null
+          client_secret_ciphertext?: string | null
+          client_secret_last4?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          platform_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       ai_audits: {
         Row: {
           business_info_score: number
