@@ -35,7 +35,7 @@ const ITEMS: (ChecklistItem & { href?: string })[] = [
     title: "Run your AI Audit",
     why: "A full scan of your marketing — scores and next moves in plain English.",
     action: "Run audit",
-    href: "/dashboard",
+    href: "/audit",
   },
   {
     id: "invite_team",

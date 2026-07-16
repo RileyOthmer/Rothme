@@ -90,6 +90,60 @@ export type Database = {
           },
         ]
       }
+      ai_audits: {
+        Row: {
+          business_info_score: number
+          category_summaries: Json
+          confidence: string
+          created_at: string
+          generated_at: string
+          mobile_score: number
+          overall_score: number
+          recommendations: Json
+          seo_score: number
+          social_score: number
+          speed_score: number
+          summary: string
+          updated_at: string
+          user_id: string
+          website_score: number
+        }
+        Insert: {
+          business_info_score?: number
+          category_summaries?: Json
+          confidence?: string
+          created_at?: string
+          generated_at?: string
+          mobile_score?: number
+          overall_score?: number
+          recommendations?: Json
+          seo_score?: number
+          social_score?: number
+          speed_score?: number
+          summary?: string
+          updated_at?: string
+          user_id: string
+          website_score?: number
+        }
+        Update: {
+          business_info_score?: number
+          category_summaries?: Json
+          confidence?: string
+          created_at?: string
+          generated_at?: string
+          mobile_score?: number
+          overall_score?: number
+          recommendations?: Json
+          seo_score?: number
+          social_score?: number
+          speed_score?: number
+          summary?: string
+          updated_at?: string
+          user_id?: string
+          website_score?: number
+        }
+        Relationships: []
+      }
       approval_requests: {
         Row: {
           created_at: string
