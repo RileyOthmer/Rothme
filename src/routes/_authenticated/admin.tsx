@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, redirect, useLocation } from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import { Shield, KeyRound, Users, DollarSign, Network, Activity, LayoutDashboard } from "lucide-react";
 import { useIsAdmin } from "@/hooks/use-is-admin";
 import { useServerFn } from "@tanstack/react-start";
