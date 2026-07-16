@@ -39,22 +39,23 @@ export function createStripeClient(_env?: StripeEnv): Stripe {
  * Map the app's stable plan slugs to real Stripe price IDs from env.
  * Falls back to the raw input if it already looks like a Stripe price ID.
  */
+export const PRO_MONTHLY_PRICE_ID = "price_1TtBWiRCrO28cDbmovSMFJeC";
+
 export function resolvePriceId(slug: string): string {
   if (slug.startsWith("price_")) return slug;
-  if (slug === "pro_monthly") return getEnv("STRIPE_PRICE_MONTHLY");
-  if (slug === "pro_annual") return getEnv("STRIPE_PRICE_ANNUAL");
+  if (slug === "pro_monthly") return PRO_MONTHLY_PRICE_ID;
+  if (slug === "pro_annual") return PRO_MONTHLY_PRICE_ID;
   throw new Error(`Unknown price slug: ${slug}`);
 }
 
 /**
  * Inverse of resolvePriceId — turn a Stripe price ID (as seen in webhook
  * events) back into the app's stable slug, so DB/UI keep using
- * "pro_monthly"/"pro_annual" for tier gating.
+ * "pro_monthly" for tier gating.
  */
 export function slugFromPriceId(priceId: string | undefined | null): string | null {
   if (!priceId) return null;
-  if (priceId === optEnv("STRIPE_PRICE_MONTHLY")) return "pro_monthly";
-  if (priceId === optEnv("STRIPE_PRICE_ANNUAL")) return "pro_annual";
+  if (priceId === PRO_MONTHLY_PRICE_ID) return "pro_monthly";
   return priceId;
 }
 
