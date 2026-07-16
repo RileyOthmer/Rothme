@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { FileText } from "lucide-react";
 
 import { AppHeader } from "@/components/layout/AppHeader";
+import { EmptyDataState } from "@/components/dashboard/EmptyDataState";
+import { useHasConnections } from "@/hooks/use-has-connections";
 import { listWeeklyReports } from "@/lib/reports.functions";
 import type { WeeklyReportPayload } from "@/lib/reports-mock";
 
@@ -26,11 +28,32 @@ function formatWeek(weekStart: string) {
 }
 
 function ReportsPage() {
+  const { hasConnections, isLoading: connLoading } = useHasConnections();
   const fetchReports = useServerFn(listWeeklyReports);
   const { data, isLoading } = useQuery({
     queryKey: ["weekly_reports"],
     queryFn: () => fetchReports(),
+    enabled: hasConnections,
   });
+
+  if (!connLoading && !hasConnections) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <AppHeader />
+        <main className="mx-auto max-w-4xl space-y-6 px-4 py-10 sm:px-6 sm:py-14">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Weekly reports</h1>
+            <p className="mt-1 text-sm text-muted-foreground">No reports to show yet.</p>
+          </div>
+          <EmptyDataState
+            title="Connect a data source to generate reports"
+            description="Weekly reports summarize the numbers from your connected channels. Connect one and your first report will be ready at the end of the week."
+          />
+        </main>
+      </div>
+    );
+  }
+
 
   return (
     <div className="min-h-screen bg-background text-foreground">
