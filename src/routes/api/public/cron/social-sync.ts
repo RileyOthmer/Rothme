@@ -1,20 +1,26 @@
 /**
  * Background sync sweep — polls all social connections for fresh analytics.
  * Called by pg_cron (or external scheduler) on a ~15min cadence.
- * Auth: Supabase publishable key in `apikey` header (public route bypasses
- * app auth; we still gate the sweep here).
+ * Auth: shared HMAC signature — caller sends `x-cron-signature` header
+ * computed from CRON_SECRET.
  */
 import { createFileRoute } from "@tanstack/react-router";
+import { createHmac, timingSafeEqual } from "crypto";
 
 export const Route = createFileRoute("/api/public/cron/social-sync")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const key = request.headers.get("apikey") ?? "";
-        const expected = process.env.SUPABASE_PUBLISHABLE_KEY ?? "";
-        if (!expected || key !== expected) {
+        const secret = process.env.CRON_SECRET;
+        if (!secret) return new Response("CRON_SECRET not configured", { status: 500 });
+        const provided = request.headers.get("x-cron-signature") ?? "";
+        const expected = createHmac("sha256", secret).update("ROTHME-cron-social-sync").digest("hex");
+        const a = Buffer.from(provided);
+        const b = Buffer.from(expected);
+        if (a.length !== b.length || !timingSafeEqual(a, b)) {
           return new Response("Unauthorized", { status: 401 });
         }
+
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { getIntegrationManager } = await import("@/lib/social/manager.server");
