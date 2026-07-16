@@ -76,6 +76,7 @@ export function ComingSoonHub({
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
               to="/analytics/overview"
+              search={{ range: "30d", from: "", to: "", platforms: [] }}
               className="inline-flex items-center gap-1.5 rounded-md bg-foreground px-3 py-2 text-xs font-medium text-background hover:opacity-90"
             >
               Go to Overview <ArrowRight className="h-3 w-3" />
