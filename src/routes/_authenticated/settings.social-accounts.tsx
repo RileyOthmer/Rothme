@@ -88,10 +88,19 @@ function SocialAccountsPage() {
       const hasReauth = accts.some((a) => a.connection_status === "needs_reauth" || a.connection_status === "error");
       if (filter === "connected") return hasConnected;
       if (filter === "needs_reauth") return hasReauth;
-      if (filter === "not_connected") return accts.length === 0;
+      if (filter === "not_connected") return accts.length === 0 && p.availability === "available";
       return true;
     });
   }, [search, filter, accountsByPlatform]);
+
+  const availablePlatforms = useMemo(
+    () => filtered.filter((p) => p.availability === "available"),
+    [filtered],
+  );
+  const comingSoonPlatforms = useMemo(
+    () => filtered.filter((p) => p.availability === "coming_soon"),
+    [filtered],
+  );
 
   const counts = useMemo(() => {
     let connected = 0, reauth = 0;
@@ -99,8 +108,9 @@ function SocialAccountsPage() {
       if (a.connection_status === "connected" || a.connection_status === "syncing") connected++;
       if (a.connection_status === "needs_reauth" || a.connection_status === "error") reauth++;
     }
-    return { connected, reauth, notConnected: PLATFORMS.length - accountsByPlatform.size };
-  }, [accountsQ.data, accountsByPlatform.size]);
+    const availableCount = PLATFORMS.filter((p) => p.availability === "available").length;
+    return { connected, reauth, notConnected: Math.max(0, availableCount - accountsByPlatform.size) };
+  }, [accountsQ.data, accountsByPlatform]);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -180,23 +190,49 @@ function SocialAccountsPage() {
               <div key={i} className="h-40 animate-pulse rounded-2xl border border-border/60 bg-card/40" />
             ))}
           </div>
-        ) : filtered.length === 0 ? (
+        ) : availablePlatforms.length === 0 && comingSoonPlatforms.length === 0 ? (
           <Card className="p-10 text-center">
             <p className="text-muted-foreground">No platforms match your filters.</p>
           </Card>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2">
-            {filtered.map((p) => (
-              <PlatformCard
-                key={p.id}
-                platform={p}
-                configured={statusMap.get(p.id) ?? false}
-                accounts={accountsByPlatform.get(p.id) ?? []}
-                onChanged={() => {
-                  qc.invalidateQueries({ queryKey: ["social-accounts"] });
-                }}
-              />
-            ))}
+          <div className="space-y-10">
+            {availablePlatforms.length > 0 && (
+              <section aria-labelledby="available-heading">
+                <div className="mb-3 flex items-baseline justify-between gap-3">
+                  <h2 id="available-heading" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Available now
+                  </h2>
+                  <span className="text-xs text-muted-foreground">{availablePlatforms.length} platform{availablePlatforms.length === 1 ? "" : "s"}</span>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {availablePlatforms.map((p) => (
+                    <PlatformCard
+                      key={p.id}
+                      platform={p}
+                      configured={statusMap.get(p.id) ?? false}
+                      accounts={accountsByPlatform.get(p.id) ?? []}
+                      onChanged={() => qc.invalidateQueries({ queryKey: ["social-accounts"] })}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {comingSoonPlatforms.length > 0 && (
+              <section aria-labelledby="coming-soon-heading">
+                <div className="mb-3 flex items-baseline justify-between gap-3">
+                  <h2 id="coming-soon-heading" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                    Coming soon
+                  </h2>
+                  <span className="text-xs text-muted-foreground">Planned integrations — not yet available</span>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  {comingSoonPlatforms.map((p) => (
+                    <ComingSoonCard key={p.id} platform={p} />
+                  ))}
+                </div>
+              </section>
+            )}
           </div>
         )}
       </main>
@@ -420,4 +456,66 @@ function StatusPill({ status, configured }: { status?: string; configured: boole
   };
   const meta = map[status] ?? { label: status, className: "" };
   return <Badge variant="outline" className={`rounded-full text-[10px] ${meta.className}`}>{meta.label}</Badge>;
+}
+
+function ComingSoonCard({ platform }: { platform: PlatformConfig }) {
+  const storageKey = `waitlist:${platform.id}`;
+  const [subscribed, setSubscribed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem(storageKey) === "1";
+  });
+
+  function onNotify() {
+    window.localStorage.setItem(storageKey, "1");
+    setSubscribed(true);
+    toast.success(`We'll email you when ${platform.name} is ready.`);
+  }
+
+  return (
+    <Card
+      className="flex flex-col gap-4 p-5 opacity-90"
+      aria-label={`${platform.name} — coming soon`}
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-sm font-semibold text-white grayscale"
+          style={{ background: platform.brandColor }}
+          aria-hidden
+        >
+          {platform.mark}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <p className="truncate text-sm font-semibold">{platform.name}</p>
+            <Badge
+              variant="outline"
+              className="rounded-full border-amber-500/30 bg-amber-500/10 text-[10px] font-medium text-amber-700 dark:text-amber-300"
+            >
+              Coming soon
+            </Badge>
+          </div>
+          <p className="truncate text-xs text-muted-foreground">{platform.blurb}</p>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-dashed border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground">
+        This integration is planned for a future release. It won't contribute
+        analytics or accept posts until it's fully supported — no fake data,
+        ever.
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onNotify}
+          disabled={subscribed}
+          aria-pressed={subscribed}
+        >
+          <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+          {subscribed ? "You'll be notified" : "Notify me when ready"}
+        </Button>
+      </div>
+    </Card>
+  );
 }
