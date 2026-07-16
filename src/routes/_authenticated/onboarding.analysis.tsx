@@ -11,6 +11,7 @@ import {
   saveOnboardingStep,
   type OnboardingAnalysis,
 } from "@/lib/onboarding/session.functions";
+import { generateBusinessProfile } from "@/lib/onboarding/business-profile.functions";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/onboarding/analysis")({
@@ -23,6 +24,7 @@ function AnalysisStep() {
   const getSession = useServerFn(getOnboardingSession);
   const analyze = useServerFn(analyzeBusiness);
   const save = useServerFn(saveOnboardingStep);
+  const genProfile = useServerFn(generateBusinessProfile);
 
   const { data: session, refetch } = useQuery({
     queryKey: ["onboarding-session"],
@@ -30,7 +32,12 @@ function AnalysisStep() {
   });
 
   const analyzeMut = useMutation({
-    mutationFn: () => analyze(),
+    mutationFn: async () => {
+      const result = await analyze();
+      // Kick off full business profile generation in the background.
+      genProfile().catch(() => {});
+      return result;
+    },
     onSuccess: () => refetch(),
   });
 
