@@ -515,6 +515,36 @@ export type Database = {
           },
         ]
       }
+      oauth_states: {
+        Row: {
+          code_verifier: string | null
+          created_at: string
+          expires_at: string
+          platform: string
+          redirect_after: string | null
+          state: string
+          user_id: string
+        }
+        Insert: {
+          code_verifier?: string | null
+          created_at?: string
+          expires_at?: string
+          platform: string
+          redirect_after?: string | null
+          state: string
+          user_id: string
+        }
+        Update: {
+          code_verifier?: string | null
+          created_at?: string
+          expires_at?: string
+          platform?: string
+          redirect_after?: string | null
+          state?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       onboarding_events: {
         Row: {
           anon_id: string
@@ -1546,6 +1576,66 @@ export type Database = {
           },
         ]
       }
+      social_accounts: {
+        Row: {
+          avatar_url: string | null
+          connected_at: string
+          connection_status: string
+          created_at: string
+          display_name: string | null
+          encrypted_access_token: string | null
+          encrypted_refresh_token: string | null
+          id: string
+          last_error: string | null
+          last_sync: string | null
+          platform: string
+          platform_account_id: string | null
+          scopes: string[]
+          token_expiration: string | null
+          updated_at: string
+          user_id: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          connected_at?: string
+          connection_status?: string
+          created_at?: string
+          display_name?: string | null
+          encrypted_access_token?: string | null
+          encrypted_refresh_token?: string | null
+          id?: string
+          last_error?: string | null
+          last_sync?: string | null
+          platform: string
+          platform_account_id?: string | null
+          scopes?: string[]
+          token_expiration?: string | null
+          updated_at?: string
+          user_id: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          connected_at?: string
+          connection_status?: string
+          created_at?: string
+          display_name?: string | null
+          encrypted_access_token?: string | null
+          encrypted_refresh_token?: string | null
+          id?: string
+          last_error?: string | null
+          last_sync?: string | null
+          platform?: string
+          platform_account_id?: string | null
+          scopes?: string[]
+          token_expiration?: string | null
+          updated_at?: string
+          user_id?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
       social_connections: {
         Row: {
           created_at: string
@@ -1753,6 +1843,53 @@ export type Database = {
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sync_history: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          kind: string
+          records_synced: number
+          social_account_id: string
+          started_at: string
+          success: boolean | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          kind?: string
+          records_synced?: number
+          social_account_id: string
+          started_at?: string
+          success?: boolean | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          kind?: string
+          records_synced?: number
+          social_account_id?: string
+          started_at?: string
+          success?: boolean | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sync_history_social_account_id_fkey"
+            columns: ["social_account_id"]
+            isOneToOne: false
+            referencedRelation: "social_accounts"
             referencedColumns: ["id"]
           },
         ]
