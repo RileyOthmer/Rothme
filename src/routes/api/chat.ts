@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { createClient } from "@supabase/supabase-js";
 import {
   convertToModelMessages,
   streamText,
@@ -22,10 +23,31 @@ export const Route = createFileRoute("/api/chat")({
           );
         }
 
+        // Require a signed-in user — the AI gateway is a paid resource and
+        // must not be reachable by anonymous scripts.
+        const authHeader = request.headers.get("authorization") ?? "";
+        const bearer = authHeader.toLowerCase().startsWith("bearer ")
+          ? authHeader.slice(7).trim()
+          : "";
+        const supabaseUrl = process.env.SUPABASE_URL;
+        const publishable = process.env.SUPABASE_PUBLISHABLE_KEY;
+        if (!bearer || !supabaseUrl || !publishable) {
+          return new Response("Sign in to use the strategist.", { status: 401 });
+        }
+        const supabase = createClient(supabaseUrl, publishable, {
+          auth: { persistSession: false, autoRefreshToken: false },
+          global: { headers: { Authorization: `Bearer ${bearer}` } },
+        });
+        const { data: userData, error: userErr } = await supabase.auth.getUser(bearer);
+        if (userErr || !userData.user) {
+          return new Response("Sign in to use the strategist.", { status: 401 });
+        }
+
         const { messages } = (await request.json()) as ChatRequestBody;
         if (!Array.isArray(messages)) {
           return new Response("Missing messages.", { status: 400 });
         }
+
 
         try {
           const gateway = createLovableAiGatewayProvider(key);
