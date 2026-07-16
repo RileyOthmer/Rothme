@@ -174,7 +174,7 @@ export const createPortalSession = createServerFn({ method: "POST" })
       }
       const stripe = createStripeClient(data.environment);
 
-      let flowData: Stripe.BillingPortal.SessionCreateParams.FlowData | undefined;
+      let flowData: Stripe.BillingPortal.SessionCreateParams["flow_data"] | undefined;
       if (data.flow === "cancel" && found.subscriptionId) {
         flowData = {
           type: "subscription_cancel",
