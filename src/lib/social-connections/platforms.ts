@@ -58,6 +58,7 @@ export type PlatformConfig = {
 export const PLATFORMS: PlatformConfig[] = [
   {
     id: "facebook",
+    availability: "coming_soon",
     name: "Facebook",
     category: "social",
     brandColor: "#1877F2",
@@ -73,6 +74,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "instagram",
+    availability: "coming_soon",
     name: "Instagram",
     category: "social",
     brandColor: "#E4405F",
@@ -88,6 +90,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "threads",
+    availability: "coming_soon",
     name: "Threads",
     category: "social",
     brandColor: "#000000",
@@ -103,6 +106,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "linkedin",
+    availability: "coming_soon",
     name: "LinkedIn",
     category: "professional",
     brandColor: "#0A66C2",
@@ -118,6 +122,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "x",
+    availability: "coming_soon",
     name: "X",
     category: "social",
     brandColor: "#000000",
@@ -134,6 +139,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "tiktok",
+    availability: "coming_soon",
     name: "TikTok",
     category: "video",
     brandColor: "#010101",
@@ -150,6 +156,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "youtube",
+    availability: "coming_soon",
     name: "YouTube",
     category: "video",
     brandColor: "#FF0000",
@@ -171,6 +178,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "pinterest",
+    availability: "coming_soon",
     name: "Pinterest",
     category: "social",
     brandColor: "#E60023",
@@ -186,6 +194,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "gbp",
+    availability: "coming_soon",
     name: "Google Business Profile",
     category: "presence",
     brandColor: "#4285F4",
@@ -203,6 +212,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "reddit",
+    availability: "coming_soon",
     name: "Reddit",
     category: "social",
     brandColor: "#FF4500",
@@ -220,6 +230,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "bluesky",
+    availability: "coming_soon",
     name: "Bluesky",
     category: "social",
     brandColor: "#0085FF",
