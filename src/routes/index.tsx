@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
           "ROTHME brings AI, marketing, social, analytics, automation, and reporting into one workspace — so you can focus on growing your business.",
       },
       { property: "og:title", content: "ROTHME — Marketing made simpler" },
-      { property: "og:description", content: "One workspace. One AI strategist. Everything you need to grow." },
+      { property: "og:description", content: "ROTHME brings AI, marketing, social, analytics, automation, and reporting into one workspace — so you can focus on growing your business." },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://rothme.app/" },
       { name: "twitter:card", content: "summary_large_image" },

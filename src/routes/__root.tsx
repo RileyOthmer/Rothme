@@ -79,19 +79,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ROTHME — Marketing on autopilot" },
+      { title: "ROTHME — Marketing made simpler" },
       {
         name: "description",
         content:
-          "ROTHME reads your marketing for you and tells you — in plain English — what happened, why, and what to do next.",
+          "ROTHME brings AI, marketing, social, analytics, automation, and reporting into one workspace — so you can focus on growing your business.",
       },
-      { property: "og:title", content: "ROTHME — Marketing on autopilot" },
+      { property: "og:title", content: "ROTHME — Marketing made simpler" },
       {
         property: "og:description",
-        content: "Plain-English marketing insights for business owners. No charts. No jargon.",
+        content: "ROTHME brings AI, marketing, social, analytics, automation, and reporting into one workspace — so you can focus on growing your business.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "ROTHME — Marketing made simpler" },
+      { name: "twitter:description", content: "ROTHME brings AI, marketing, social, analytics, automation, and reporting into one workspace — so you can focus on growing your business." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/771p5ZOAw0XKWHIBRe9hDmzbi9l1/social-images/social-1784181033165-8C837002-8794-4548-94A5-B13AC99D61BA.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/771p5ZOAw0XKWHIBRe9hDmzbi9l1/social-images/social-1784181033165-8C837002-8794-4548-94A5-B13AC99D61BA.webp" },
     ],
     links: [
       {
@@ -104,7 +108,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
   }),
   shellComponent: RootShell,
