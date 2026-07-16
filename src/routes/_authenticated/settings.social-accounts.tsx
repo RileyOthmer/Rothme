@@ -457,3 +457,65 @@ function StatusPill({ status, configured }: { status?: string; configured: boole
   const meta = map[status] ?? { label: status, className: "" };
   return <Badge variant="outline" className={`rounded-full text-[10px] ${meta.className}`}>{meta.label}</Badge>;
 }
+
+function ComingSoonCard({ platform }: { platform: PlatformConfig }) {
+  const storageKey = `waitlist:${platform.id}`;
+  const [subscribed, setSubscribed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem(storageKey) === "1";
+  });
+
+  function onNotify() {
+    window.localStorage.setItem(storageKey, "1");
+    setSubscribed(true);
+    toast.success(`We'll email you when ${platform.name} is ready.`);
+  }
+
+  return (
+    <Card
+      className="flex flex-col gap-4 p-5 opacity-90"
+      aria-label={`${platform.name} — coming soon`}
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-xl text-sm font-semibold text-white grayscale"
+          style={{ background: platform.brandColor }}
+          aria-hidden
+        >
+          {platform.mark}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <p className="truncate text-sm font-semibold">{platform.name}</p>
+            <Badge
+              variant="outline"
+              className="rounded-full border-amber-500/30 bg-amber-500/10 text-[10px] font-medium text-amber-700 dark:text-amber-300"
+            >
+              Coming soon
+            </Badge>
+          </div>
+          <p className="truncate text-xs text-muted-foreground">{platform.blurb}</p>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-dashed border-border/60 bg-muted/20 p-3 text-xs text-muted-foreground">
+        This integration is planned for a future release. It won't contribute
+        analytics or accept posts until it's fully supported — no fake data,
+        ever.
+      </div>
+
+      <div className="flex flex-wrap gap-2">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={onNotify}
+          disabled={subscribed}
+          aria-pressed={subscribed}
+        >
+          <Sparkles className="mr-1.5 h-3.5 w-3.5" />
+          {subscribed ? "You'll be notified" : "Notify me when ready"}
+        </Button>
+      </div>
+    </Card>
+  );
+}
