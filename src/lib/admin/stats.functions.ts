@@ -175,9 +175,9 @@ export const getHealthStats = createServerFn({ method: "GET" })
     ]);
 
     return {
-      syncErrors: (syncErrors ?? []) as Array<Record<string, unknown>>,
-      pluginEvents: (pluginEvents ?? []) as Array<Record<string, unknown>>,
-      integrationLogs: (integrationLogs ?? []) as Array<Record<string, unknown>>,
+      syncErrors: (syncErrors ?? []) as unknown as Array<{ id: string; kind: string; success: boolean | null; error_message: string | null; created_at: string }>,
+      pluginEvents: (pluginEvents ?? []) as unknown as Array<{ id: string; plugin_slug: string; event_type: string; success: boolean | null; message: string | null; created_at: string }>,
+      integrationLogs: (integrationLogs ?? []) as unknown as Array<{ id: string; platform: string; event_type: string; success: boolean | null; message: string | null; created_at: string }>,
       aiAudits7d: aiAudits ?? 0,
     };
   });
