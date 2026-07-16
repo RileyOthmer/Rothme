@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
+import { createHmac, timingSafeEqual } from "crypto";
 
 import type { Database } from "@/integrations/supabase/types";
 import { generateWeeklyReport, weekStartFor } from "@/lib/reports-mock";
@@ -11,24 +12,31 @@ import { generateWeeklyReport, weekStartFor } from "@/lib/reports-mock";
  * user has this week's weekly report row in `weekly_reports`. Idempotent —
  * safe to re-run any time on any day.
  *
- * When real Data Engine adapters ship, swap `generateWeeklyReport(week)` for
- * a call that reads from `getMetrics()` and asks the AI strategist for the
- * consultant narrative. The row shape (WeeklyReportPayload) stays the same.
+ * Auth: shared HMAC signature — caller sends `x-cron-signature` header
+ * computed from CRON_SECRET.
  */
 export const Route = createFileRoute("/api/public/hooks/generate-weekly-reports")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        // Simple auth: caller must present the Supabase anon key as `apikey`.
-        // pg_cron already sends this. Anyone else gets 401.
-        const anon = request.headers.get("apikey");
-        const expected = process.env.SUPABASE_PUBLISHABLE_KEY;
-        if (!anon || !expected || anon !== expected) {
+        const secret = process.env.CRON_SECRET;
+        if (!secret) {
+          return new Response(
+            JSON.stringify({ error: "CRON_SECRET not configured" }),
+            { status: 500, headers: { "Content-Type": "application/json" } },
+          );
+        }
+        const provided = request.headers.get("x-cron-signature") ?? "";
+        const expected = createHmac("sha256", secret).update("ROTHME-cron-weekly-reports").digest("hex");
+        const a = Buffer.from(provided);
+        const b = Buffer.from(expected);
+        if (a.length !== b.length || !timingSafeEqual(a, b)) {
           return new Response(
             JSON.stringify({ error: "Unauthorized" }),
             { status: 401, headers: { "Content-Type": "application/json" } },
           );
         }
+
 
         const url = process.env.SUPABASE_URL;
         const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
