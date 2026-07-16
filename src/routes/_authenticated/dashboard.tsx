@@ -64,6 +64,7 @@ function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <ProWelcome />
       <AppHeader />
 
       <main className="mx-auto max-w-5xl space-y-10 px-4 py-10 sm:px-6 sm:py-14">
@@ -82,6 +83,8 @@ function DashboardPage() {
               : "Start by connecting an account or asking ROTHME anything."}
           </p>
         </section>
+
+        <ProChecklist />
 
         <HealthScoreCard score={health} />
 
