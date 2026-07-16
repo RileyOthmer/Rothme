@@ -2,6 +2,6 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/analytics/")({
   beforeLoad: () => {
-    throw redirect({ to: "/analytics/overview" });
+    throw redirect({ to: "/analytics/overview", search: { range: "30d", from: "", to: "", platforms: [] } });
   },
 });
