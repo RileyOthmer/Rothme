@@ -49,6 +49,7 @@ function OverviewPage() {
   const navigate = useNavigate({ from: Route.fullPath });
   const [mode, setMode] = useState<AnalyticsMode>("unified");
   const { hasConnections, isLoading: connLoading } = useHasConnections();
+  const { hasMetrics, isLoading: metricsLoading } = useHasMetrics();
 
   const dates = useMemo(
     () => rangeToDates(range as RangePreset, { from: from || undefined, to: to || undefined }),
@@ -119,12 +120,16 @@ function OverviewPage() {
 
         <AnalyticsHubNav />
 
-        {!connLoading && !hasConnections ? (
+        {!connLoading && !metricsLoading && (!hasConnections || !hasMetrics) ? (
           <>
             <ZeroStatGrid labels={kpis.map((k) => k.label)} />
             <EmptyDataState
-              title="No analytics yet"
-              description="Connect a social account, ad platform, or website provider and this dashboard will populate with your real numbers. Until then, everything reads as zero."
+              title={hasConnections ? "No analytics yet" : "No platforms connected"}
+              description={
+                hasConnections
+                  ? "Your platforms are connected but no metrics have been synced yet. Numbers will appear here as soon as the first sync completes."
+                  : "Connect a social account, ad platform, or website provider and this dashboard will populate with your real numbers. Until then, everything reads as zero."
+              }
             />
           </>
         ) : (
