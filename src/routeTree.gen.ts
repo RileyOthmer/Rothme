@@ -56,6 +56,7 @@ import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_auth
 import { Route as AuthenticatedSettingsPluginsRouteImport } from './routes/_authenticated/settings.plugins'
 import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_authenticated/settings.developer'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
+import { Route as AuthenticatedSettingsBrandRouteImport } from './routes/_authenticated/settings.brand'
 import { Route as AuthenticatedSettingsBillingRouteImport } from './routes/_authenticated/settings.billing'
 import { Route as AuthenticatedReportsIdRouteImport } from './routes/_authenticated/reports.$id'
 import { Route as AuthenticatedPublishingQueueRouteImport } from './routes/_authenticated/publishing.queue'
@@ -366,6 +367,12 @@ const AuthenticatedSettingsConnectionsRoute =
   AuthenticatedSettingsConnectionsRouteImport.update({
     id: '/settings/connections',
     path: '/settings/connections',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsBrandRoute =
+  AuthenticatedSettingsBrandRouteImport.update({
+    id: '/settings/brand',
+    path: '/settings/brand',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSettingsBillingRoute =
@@ -846,6 +853,7 @@ export interface FileRoutesByFullPath {
   '/publishing/queue': typeof AuthenticatedPublishingQueueRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/billing': typeof AuthenticatedSettingsBillingRoute
+  '/settings/brand': typeof AuthenticatedSettingsBrandRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
@@ -954,6 +962,7 @@ export interface FileRoutesByTo {
   '/publishing/queue': typeof AuthenticatedPublishingQueueRoute
   '/reports/$id': typeof AuthenticatedReportsIdRoute
   '/settings/billing': typeof AuthenticatedSettingsBillingRoute
+  '/settings/brand': typeof AuthenticatedSettingsBrandRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
@@ -1069,6 +1078,7 @@ export interface FileRoutesById {
   '/_authenticated/publishing/queue': typeof AuthenticatedPublishingQueueRoute
   '/_authenticated/reports/$id': typeof AuthenticatedReportsIdRoute
   '/_authenticated/settings/billing': typeof AuthenticatedSettingsBillingRoute
+  '/_authenticated/settings/brand': typeof AuthenticatedSettingsBrandRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
   '/_authenticated/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
@@ -1184,6 +1194,7 @@ export interface FileRouteTypes {
     | '/publishing/queue'
     | '/reports/$id'
     | '/settings/billing'
+    | '/settings/brand'
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/plugins'
@@ -1292,6 +1303,7 @@ export interface FileRouteTypes {
     | '/publishing/queue'
     | '/reports/$id'
     | '/settings/billing'
+    | '/settings/brand'
     | '/settings/connections'
     | '/settings/developer'
     | '/settings/plugins'
@@ -1406,6 +1418,7 @@ export interface FileRouteTypes {
     | '/_authenticated/publishing/queue'
     | '/_authenticated/reports/$id'
     | '/_authenticated/settings/billing'
+    | '/_authenticated/settings/brand'
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/developer'
     | '/_authenticated/settings/plugins'
@@ -1784,6 +1797,13 @@ declare module '@tanstack/react-router' {
       path: '/settings/connections'
       fullPath: '/settings/connections'
       preLoaderRoute: typeof AuthenticatedSettingsConnectionsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/brand': {
+      id: '/_authenticated/settings/brand'
+      path: '/settings/brand'
+      fullPath: '/settings/brand'
+      preLoaderRoute: typeof AuthenticatedSettingsBrandRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/billing': {
@@ -2461,6 +2481,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTasksRoute: typeof AuthenticatedTasksRoute
   AuthenticatedTeamRoute: typeof AuthenticatedTeamRoute
   AuthenticatedSettingsBillingRoute: typeof AuthenticatedSettingsBillingRoute
+  AuthenticatedSettingsBrandRoute: typeof AuthenticatedSettingsBrandRoute
   AuthenticatedSettingsConnectionsRoute: typeof AuthenticatedSettingsConnectionsRoute
   AuthenticatedSettingsDeveloperRoute: typeof AuthenticatedSettingsDeveloperRoute
   AuthenticatedSettingsPluginsRoute: typeof AuthenticatedSettingsPluginsRoute
@@ -2484,6 +2505,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTasksRoute: AuthenticatedTasksRoute,
   AuthenticatedTeamRoute: AuthenticatedTeamRoute,
   AuthenticatedSettingsBillingRoute: AuthenticatedSettingsBillingRoute,
+  AuthenticatedSettingsBrandRoute: AuthenticatedSettingsBrandRoute,
   AuthenticatedSettingsConnectionsRoute: AuthenticatedSettingsConnectionsRoute,
   AuthenticatedSettingsDeveloperRoute: AuthenticatedSettingsDeveloperRoute,
   AuthenticatedSettingsPluginsRoute: AuthenticatedSettingsPluginsRoute,

@@ -236,6 +236,50 @@ export type Database = {
           },
         ]
       }
+      brand_assets: {
+        Row: {
+          colors: Json
+          created_at: string
+          fonts: Json
+          guidelines_path: string | null
+          image_paths: string[]
+          logo_path: string | null
+          notes: string | null
+          org_id: string
+          updated_at: string
+        }
+        Insert: {
+          colors?: Json
+          created_at?: string
+          fonts?: Json
+          guidelines_path?: string | null
+          image_paths?: string[]
+          logo_path?: string | null
+          notes?: string | null
+          org_id: string
+          updated_at?: string
+        }
+        Update: {
+          colors?: Json
+          created_at?: string
+          fonts?: Json
+          guidelines_path?: string | null
+          image_paths?: string[]
+          logo_path?: string | null
+          notes?: string | null
+          org_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "brand_assets_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: true
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_profiles: {
         Row: {
           business_summary: string
