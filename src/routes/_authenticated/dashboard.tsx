@@ -9,6 +9,7 @@ import { AppHeader } from "@/components/layout/AppHeader";
 import { DecisionCenter } from "@/features/decisions/DecisionCenter";
 import { DashboardWidget, WIDGETS } from "@/features/dashboard/DashboardWidget";
 import { ProWelcome, ProChecklist } from "@/features/dashboard/ProWelcome";
+import { QuickActions } from "@/components/assistant/QuickActions";
 import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
 import { useHasConnections } from "@/hooks/use-has-connections";
 import {
@@ -84,6 +85,9 @@ function DashboardPage() {
         </section>
 
         <ProChecklist />
+
+        <QuickActions />
+
 
         {/*
          * Zero-until-tracked policy: connecting an account creates a row, but

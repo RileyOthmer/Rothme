@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { AssistantMessage, messageText } from "./AssistantMessage";
+import { ASK_AI_EVENT, type AskAIPayload } from "./quick-actions";
 import { savePost } from "@/lib/publishing/publishing.functions";
 
 const EXAMPLES = [
@@ -101,6 +102,25 @@ export function CommandBar() {
     setExpanded(true);
     void sendMessage({ text: trimmed });
   };
+
+  // Quick Actions (or any other surface) can dispatch `askAI` to preconfigure
+  // this bar with a task-specific prompt. Same generation engine, no dupes.
+  useEffect(() => {
+    const onAsk = (e: Event) => {
+      const detail = (e as CustomEvent<AskAIPayload>).detail;
+      if (!detail?.prompt) return;
+      setExpanded(true);
+      textareaRef.current?.focus();
+      // If a stream is running, don't stomp on it — surface a light toast.
+      if (isLoading) {
+        toast.info("Rothme AI is still working — try again in a moment.");
+        return;
+      }
+      void sendMessage({ text: detail.prompt });
+    };
+    window.addEventListener(ASK_AI_EVENT, onAsk);
+    return () => window.removeEventListener(ASK_AI_EVENT, onAsk);
+  }, [isLoading, sendMessage]);
 
   const clear = () => {
     if (isLoading) stop();
