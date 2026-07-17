@@ -98,16 +98,25 @@ function DashboardPage() {
          * this gate to check for the presence of MetricSnapshots (or similar)
          * and only then render HealthScoreCard / DashboardInsightsSection.
          */}
-        <ZeroStatGrid labels={["Followers", "Reach", "Engagement", "Revenue"]} />
-        <ZeroStatGrid labels={["Impressions", "Clicks", "Conversions", "Spend"]} />
-        <EmptyDataState
-          title={hasConnections ? "Connected — waiting on tracked data" : "Nothing to show yet"}
-          description={
-            hasConnections
-              ? "Your accounts are connected. Metrics will populate here as soon as we finish tracking your first sync — until then, every number stays at 0 so nothing looks fabricated."
-              : "Connect your social accounts, ad platforms, or SMS provider and your metrics will start populating here. Until then, everything reads as zero — no made-up numbers."
-          }
+        <ZeroStatGrid
+          stats={[
+            { label: "Followers" },
+            { label: "Reach" },
+            { label: "Engagement" },
+            { label: "Posts" },
+            { label: "Connected Platforms" },
+            { label: "Campaigns" },
+            { label: "Revenue", value: "$0" },
+          ]}
         />
+        {!hasConnections && (
+          <EmptyDataState
+            title="No marketing platforms connected."
+            description="Connect a platform and your real followers, reach, engagement, and revenue will populate here. Until then, everything stays at zero — Rothme never shows sample data."
+            ctaLabel="Connect Your First Platform"
+            to="/settings/platforms"
+          />
+        )}
 
         <section aria-labelledby="widgets-heading" className="space-y-4">
           <h2 id="widgets-heading" className="sr-only">Shortcuts</h2>
