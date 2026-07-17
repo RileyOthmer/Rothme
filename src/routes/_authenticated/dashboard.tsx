@@ -86,6 +86,9 @@ function DashboardPage() {
 
         <ProChecklist />
 
+        <QuickActions />
+
+
         {/*
          * Zero-until-tracked policy: connecting an account creates a row, but
          * that alone doesn't mean we have real, ingested analytics yet. Until
