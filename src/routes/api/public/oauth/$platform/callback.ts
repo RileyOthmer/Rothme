@@ -120,9 +120,35 @@ export const Route = createFileRoute("/api/public/oauth/$platform/callback")({
             }
           } catch { /* non-fatal */ }
 
+          try {
+            const { notifyUser } = await import("@/lib/notifications/notify.server");
+            const accountLabel = profile.displayName || profile.username || "account";
+            await notifyUser(supabaseAdmin, {
+              userId: stateRow.user_id,
+              kind: "connection.success",
+              title: `${platform.name} connected`,
+              body: `Successfully connected ${accountLabel}.`,
+              severity: "opportunity",
+              dedupeKey: `connection.success:${platformId}:${profile.platformAccountId ?? profile.username ?? ""}`,
+              metadata: { platform: platformId },
+            });
+          } catch { /* non-fatal */ }
+
           return redirectHome(url, { status: "success", platform: platformId });
         } catch (e) {
           const message = e instanceof Error ? e.message : "OAuth failed";
+          try {
+            const { notifyUser } = await import("@/lib/notifications/notify.server");
+            await notifyUser(supabaseAdmin, {
+              userId: stateRow.user_id,
+              kind: "connection.failed",
+              title: `${platform.name} failed to connect`,
+              body: message.slice(0, 200),
+              severity: "critical",
+              dedupeKey: `connection.failed:${platformId}:${Date.now()}`,
+              metadata: { platform: platformId },
+            });
+          } catch { /* non-fatal */ }
           return redirectHome(url, {
             status: "error",
             reason: "exchange_failed",
