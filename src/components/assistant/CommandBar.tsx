@@ -166,8 +166,8 @@ export function CommandBar() {
   if (hidden) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-3 sm:px-6 sm:pb-4">
-      <div className="pointer-events-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-background/95 shadow-2xl shadow-black/30 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <div className="pointer-events-none fixed right-3 bottom-3 z-40 flex justify-end sm:right-6 sm:bottom-4">
+      <div className="pointer-events-auto w-80 max-w-[calc(100vw-1.5rem)] overflow-hidden rounded-2xl border border-border bg-background/95 shadow-2xl shadow-black/30 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:w-96">
         {/* Transcript panel */}
         {expanded && messages.length > 0 && (
           <div className="border-b border-border">
@@ -253,7 +253,7 @@ export function CommandBar() {
                 rows={1}
                 placeholder={PLACEHOLDER}
                 aria-label="Ask your AI Marketing Assistant"
-                className="max-h-[200px] min-h-[40px] w-full resize-none rounded-xl border border-border bg-surface px-3 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-border-strong"
+                className="max-h-[160px] min-h-[36px] w-full resize-none rounded-xl border border-border bg-surface px-3 py-2 text-xs text-foreground outline-none placeholder:text-muted-foreground focus:border-border-strong"
               />
             </div>
             {isLoading ? (
@@ -261,18 +261,18 @@ export function CommandBar() {
                 type="button"
                 onClick={() => stop()}
                 aria-label="Stop generating"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-border bg-surface text-foreground hover:bg-surface-2"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-border bg-surface text-foreground hover:bg-surface-2"
               >
-                <Square className="h-3.5 w-3.5" />
+                <Square className="h-3 w-3" />
               </button>
             ) : (
               <button
                 type="submit"
                 aria-label="Send"
                 disabled={!input.trim()}
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground disabled:opacity-40"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground disabled:opacity-40"
               >
-                <ArrowUp className="h-4 w-4" />
+                <ArrowUp className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
