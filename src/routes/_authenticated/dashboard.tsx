@@ -1,8 +1,16 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Toaster } from "sonner";
+import {
+  ArrowRight,
+  PlayCircle,
+  Sparkles,
+  TrendingUp,
+  FileText,
+  MessageSquare,
+} from "lucide-react";
 
 import { getProfile } from "@/lib/profile.functions";
 import { AppHeader } from "@/components/layout/AppHeader";
@@ -13,6 +21,8 @@ import { QuickActions } from "@/components/assistant/QuickActions";
 import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
 import { RecentActivity } from "@/features/activity/RecentActivity";
 import { useHasConnections } from "@/hooks/use-has-connections";
+import { useHasMetrics } from "@/hooks/use-has-metrics";
+import { askAI } from "@/components/assistant/quick-actions";
 import {
   loadDashboardPrefs,
   type DashboardPrefs,
