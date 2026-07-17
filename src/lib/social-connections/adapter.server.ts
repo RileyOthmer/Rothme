@@ -236,6 +236,24 @@ const PROFILE_FETCHERS: Partial<Record<PlatformId, ProfileFetcher>> = {
       raw: j as Record<string, unknown>,
     };
   },
+  tiktok: async (token) => {
+    const res = await fetch(
+      "https://open.tiktokapis.com/v2/user/info/?fields=open_id,union_id,display_name,avatar_url,username",
+      { headers: { Authorization: `Bearer ${token}` } },
+    );
+    if (!res.ok) throw new Error(`TikTok profile fetch failed: ${await readErr(res)}`);
+    const j = (await res.json()) as {
+      data?: { user?: { open_id?: string; union_id?: string; display_name?: string; avatar_url?: string; username?: string } };
+    };
+    const u = j.data?.user ?? {};
+    return {
+      platformAccountId: u.open_id ?? u.union_id ?? "",
+      username: u.username ?? null,
+      displayName: u.display_name ?? null,
+      avatarUrl: u.avatar_url ?? null,
+      raw: j as Record<string, unknown>,
+    };
+  },
 };
 
 // ---------- Registry ----------
