@@ -196,7 +196,7 @@ class GenericAdapter implements PlatformAdapter {
 
 const PROFILE_FETCHERS: Partial<Record<PlatformId, ProfileFetcher>> = {
   facebook: async (token) => {
-    const res = await fetch(`https://graph.facebook.com/v21.0/me?fields=id,name,picture&access_token=${encodeURIComponent(token)}`);
+    const res = await fetch(`https://graph.facebook.com/v24.0/me?fields=id,name,picture&access_token=${encodeURIComponent(token)}`);
     if (!res.ok) throw new Error(`Facebook profile fetch failed: ${await readErr(res)}`);
     const j = (await res.json()) as { id: string; name?: string; picture?: { data?: { url?: string } } };
     return {

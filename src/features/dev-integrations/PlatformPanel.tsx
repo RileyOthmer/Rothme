@@ -252,10 +252,10 @@ export function PlatformPanel({ row }: { row: IntegrationRow }) {
         <TabsContent value="endpoints" className="pt-4">
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Base API URL">
-              <Input value={config.base_api_url ?? ""} onChange={(e) => setCfg("base_api_url", e.target.value)} placeholder="https://graph.facebook.com/v18.0" />
+              <Input value={config.base_api_url ?? ""} onChange={(e) => setCfg("base_api_url", e.target.value)} placeholder="https://graph.facebook.com/v24.0" />
             </Field>
             <Field label="Version">
-              <Input value={config.version ?? ""} onChange={(e) => setCfg("version", e.target.value)} placeholder="v18.0" />
+              <Input value={config.version ?? ""} onChange={(e) => setCfg("version", e.target.value)} placeholder="v24.0" />
             </Field>
             <Field label="REST or GraphQL">
               <Select value={config.rest_or_graphql ?? "rest"} onValueChange={(v) => setCfg("rest_or_graphql", v as any)}>

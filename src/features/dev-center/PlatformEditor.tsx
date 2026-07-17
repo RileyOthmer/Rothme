@@ -145,7 +145,7 @@ export function PlatformEditor({ platform }: Props) {
             <Field label="Category"><Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Social · Ads · Analytics" /></Field>
             <Field label="Logo URL"><Input value={form.logo_url} onChange={(e) => setForm({ ...form, logo_url: e.target.value })} /></Field>
             <Field label="Base URL"><Input value={form.base_url} onChange={(e) => setForm({ ...form, base_url: e.target.value })} placeholder="https://graph.facebook.com" /></Field>
-            <Field label="API Version"><Input value={form.api_version} onChange={(e) => setForm({ ...form, api_version: e.target.value })} placeholder="v18.0" /></Field>
+            <Field label="API Version"><Input value={form.api_version} onChange={(e) => setForm({ ...form, api_version: e.target.value })} placeholder="v24.0" /></Field>
             <Field label="Auth type">
               <Select value={form.auth_type} onValueChange={(v) => setForm({ ...form, auth_type: v as Platform["auth_type"] })}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
