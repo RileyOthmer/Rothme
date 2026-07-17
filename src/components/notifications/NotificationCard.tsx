@@ -84,16 +84,18 @@ export function NotificationCard({
             {notification.title}
           </h3>
 
-          {!compact && (
+          {!compact && (notification.why || notification.action || notification.impact) ? (
             <dl className="mt-3 grid grid-cols-1 gap-2.5 text-sm sm:grid-cols-2">
               <Field label="What happened" value={notification.what} />
               <Field label="Why it matters" value={notification.why} />
               <Field label="What to do" value={notification.action} />
               <Field label="Business impact" value={notification.impact} />
             </dl>
-          )}
+          ) : !compact && notification.what ? (
+            <p className="mt-2 text-sm text-muted-foreground">{notification.what}</p>
+          ) : null}
 
-          {compact && (
+          {compact && notification.what && (
             <p className="mt-1 text-sm text-muted-foreground line-clamp-2">
               {notification.what}
             </p>
@@ -135,6 +137,7 @@ export function NotificationCard({
 }
 
 function Field({ label, value }: { label: string; value: string }) {
+  if (!value) return null;
   return (
     <div>
       <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">
