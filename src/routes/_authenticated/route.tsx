@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { CommandBar } from "@/components/assistant/CommandBar";
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/layout/AppSidebar";
+import { GlobalSearchLauncher } from "@/components/search/GlobalSearchLauncher";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -27,6 +28,7 @@ function AuthenticatedLayout() {
         <SidebarInset className="min-w-0 flex-1">
           <Outlet />
           <CommandBar />
+          <GlobalSearchLauncher />
         </SidebarInset>
       </div>
     </SidebarProvider>
