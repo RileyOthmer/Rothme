@@ -128,6 +128,8 @@ function DashboardPage() {
           </div>
         </section>
 
+        <RecentActivity />
+
         <DecisionCenter firstName={firstName} hasConnections={false} />
       </main>
 
