@@ -87,7 +87,13 @@ export function AssistantChat({
       >
         <div className={compact ? "mx-auto max-w-2xl px-4 py-6" : "mx-auto max-w-2xl px-4 py-10 sm:px-6"}>
           {empty ? (
-            <EmptyState onPick={send} compact={compact} />
+            <EmptyState
+              onPick={(text) => {
+                setInput(text);
+                textareaRef.current?.focus();
+              }}
+              compact={compact}
+            />
           ) : (
             <div className="space-y-8">
               {messages.map((m) => (
