@@ -16,10 +16,13 @@ export type AssistantChatProps = {
 };
 
 const suggestions = [
-  "How did I do this week?",
-  "What should I focus on today?",
-  "My ads feel expensive — are they?",
-  "Write me a plan for next month.",
+  "Promote my business.",
+  "Create next week's content.",
+  "Write a Facebook ad.",
+  "Generate Instagram captions.",
+  "Create a Google Business post.",
+  "Write YouTube video descriptions.",
+  "Generate TikTok captions.",
 ];
 
 export function AssistantChat({
