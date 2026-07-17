@@ -272,6 +272,7 @@ function PlatformsPage() {
         status: at ? "connected" : "not_connected",
         lastSync: at ?? null,
         providerId: id,
+        capabilities: deriveProviderCapabilities(Boolean(at), meta.name),
       });
     }
 
