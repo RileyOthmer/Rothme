@@ -16,6 +16,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { AssistantMessage, messageText } from "./AssistantMessage";
+import { ASK_AI_EVENT, type AskAIPayload } from "./quick-actions";
 import { savePost } from "@/lib/publishing/publishing.functions";
 
 const EXAMPLES = [
