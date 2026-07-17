@@ -161,6 +161,20 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
       "Pro subscription canceled — access continues until period end",
       { subscription_id: subscription.id, access_until: ts(periodEnd) });
   }
+  if (userId) {
+    try {
+      const { notifyUser } = await import("@/lib/notifications/notify.server");
+      await notifyUser(getSupabase(), {
+        userId,
+        kind: "subscription.updated",
+        title: "Subscription canceled",
+        body: "Access continues until the end of your current billing period.",
+        severity: "info",
+        dedupeKey: `subscription.updated:${subscription.id}:canceled`,
+        metadata: { subscriptionId: subscription.id, status: "canceled" },
+      });
+    } catch { /* non-fatal */ }
+  }
 }
 
 async function handleCheckoutCompleted(session: any, env: StripeEnv) {
