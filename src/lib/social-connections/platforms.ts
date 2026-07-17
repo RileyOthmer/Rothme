@@ -247,6 +247,7 @@ export const PLATFORMS: PlatformConfig[] = [
     usesPKCE: true,
     docsUrl: "https://docs.bsky.app/docs/advanced-guides/oauth-client",
     blurb: "Posts and follower activity on the AT Protocol.",
+  },
   {
     id: "google_ads",
     availability: "available",
