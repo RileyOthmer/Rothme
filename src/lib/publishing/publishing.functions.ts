@@ -240,11 +240,35 @@ export const setPostStatus = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ context, data }) => {
+    const orgId = await activeOrgId(context as Ctx);
+    const { data: existing } = await context.supabase
+      .from("posts").select("title").eq("id", data.id).maybeSingle();
     const { error } = await context.supabase
       .from("posts")
       .update({ status: data.status })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
+    const label = existing?.title?.trim() || "Untitled post";
+    const verbMap: Record<string, string> = {
+      published: "content.published",
+      archived: "post.archived",
+      draft: "post.restored",
+    };
+    const summaryMap: Record<string, string> = {
+      published: `Content published — ${label}`,
+      archived: `Post archived — ${label}`,
+      draft: `Post restored — ${label}`,
+    };
+    if (verbMap[data.status]) {
+      await logActivity(context.supabase, {
+        orgId,
+        actorId: context.userId,
+        verb: verbMap[data.status],
+        subjectType: "post",
+        subjectId: data.id,
+        summary: summaryMap[data.status],
+      });
+    }
     return { ok: true };
   });
 
