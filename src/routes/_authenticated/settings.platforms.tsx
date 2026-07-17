@@ -233,6 +233,7 @@ function PlatformsPage() {
       } else {
         for (const a of platformAccounts) {
           const s = (a.connection_status ?? "not_connected") as UnifiedStatus;
+          const uStatus = ["connected", "syncing", "needs_reauth", "error"].includes(s) ? s : "connected";
           list.push({
             key: `social:${p.id}:${a.id}`,
             platformId: p.id,
@@ -243,9 +244,13 @@ function PlatformsPage() {
             kind: "social",
             connectedAccount:
               a.display_name || a.username || a.platform_account_id || "Connected account",
-            status: ["connected", "syncing", "needs_reauth", "error"].includes(s) ? s : "connected",
+            status: uStatus,
             lastSync: a.last_sync ?? a.connected_at ?? null,
             accountId: a.id,
+            capabilities: deriveSocialCapabilities(
+              p.name, p.scopes, (a as any).scopes, uStatus,
+              (a as any).last_error, (a as any).token_expiration,
+            ),
           });
         }
       }
