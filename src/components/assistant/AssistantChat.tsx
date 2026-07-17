@@ -16,10 +16,13 @@ export type AssistantChatProps = {
 };
 
 const suggestions = [
-  "How did I do this week?",
-  "What should I focus on today?",
-  "My ads feel expensive — are they?",
-  "Write me a plan for next month.",
+  "Promote my business.",
+  "Create next week's content.",
+  "Write a Facebook ad.",
+  "Generate Instagram captions.",
+  "Create a Google Business post.",
+  "Write YouTube video descriptions.",
+  "Generate TikTok captions.",
 ];
 
 export function AssistantChat({
@@ -84,7 +87,13 @@ export function AssistantChat({
       >
         <div className={compact ? "mx-auto max-w-2xl px-4 py-6" : "mx-auto max-w-2xl px-4 py-10 sm:px-6"}>
           {empty ? (
-            <EmptyState onPick={send} compact={compact} />
+            <EmptyState
+              onPick={(text) => {
+                setInput(text);
+                textareaRef.current?.focus();
+              }}
+              compact={compact}
+            />
           ) : (
             <div className="space-y-8">
               {messages.map((m) => (
