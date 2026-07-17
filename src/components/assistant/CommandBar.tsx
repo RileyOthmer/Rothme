@@ -253,7 +253,7 @@ export function CommandBar() {
                 rows={1}
                 placeholder={PLACEHOLDER}
                 aria-label="Ask your AI Marketing Assistant"
-                className="max-h-[200px] min-h-[40px] w-full resize-none rounded-xl border border-border bg-surface px-3 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-border-strong"
+                className="max-h-[160px] min-h-[36px] w-full resize-none rounded-xl border border-border bg-surface px-3 py-2 text-xs text-foreground outline-none placeholder:text-muted-foreground focus:border-border-strong"
               />
             </div>
             {isLoading ? (
