@@ -517,3 +517,216 @@ function formatWhen(iso: string | null): string {
   if (day < 30) return `${day}d ago`;
   return d.toLocaleDateString();
 }
+
+function CapChip({
+  ok, label, muted,
+}: { ok: boolean | null; label: string; muted?: boolean }) {
+  const cls = muted
+    ? "border-border bg-muted text-muted-foreground"
+    : ok
+      ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+      : "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300";
+  const Icon = muted ? Clock : ok ? CheckCircle2 : AlertTriangle;
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${cls}`}>
+      <Icon className="h-3 w-3" />
+      {label}
+    </span>
+  );
+}
+
+function PlatformRow({
+  row, busy, onReconnect, onDisconnect, onRefresh,
+}: {
+  row: Row;
+  busy: boolean;
+  onReconnect: () => void;
+  onDisconnect: () => void;
+  onRefresh: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [grantOpen, setGrantOpen] = useState<null | MissingGroup>(null);
+  const c = row.capabilities;
+  const isConnected = row.status === "connected" || row.status === "syncing" || row.status === "needs_reauth" || row.status === "error";
+
+  return (
+    <li className="px-5 py-4">
+      <div className="grid grid-cols-1 items-center gap-3 md:grid-cols-[1.4fr_1.2fr_0.9fr_1fr_1.3fr] md:gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="grid h-9 w-9 place-items-center rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: row.brandColor }}>
+            {row.mark}
+          </div>
+          <div className="min-w-0">
+            <div className="truncate text-sm font-medium">{row.platformName}</div>
+            <div className="truncate text-xs capitalize text-muted-foreground">{row.category}</div>
+          </div>
+        </div>
+        <div className="min-w-0 truncate text-sm text-muted-foreground">
+          {row.connectedAccount ?? <span className="italic">—</span>}
+        </div>
+        <div><StatusBadge status={row.status} /></div>
+        <div className="text-sm text-muted-foreground">{formatWhen(row.lastSync)}</div>
+        <div className="flex flex-wrap items-center justify-start gap-2 md:justify-end">
+          {row.status === "coming_soon" ? (
+            <span className="text-xs text-muted-foreground">Not yet available</span>
+          ) : row.status === "not_connected" ? (
+            <Button size="sm" variant="outline" disabled={busy} onClick={onReconnect}>
+              {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Link2 className="h-3.5 w-3.5" />}
+              <span className="ml-1.5">Connect</span>
+            </Button>
+          ) : (
+            <>
+              <Button size="sm" variant="outline" disabled={busy} onClick={onRefresh} title="Refresh">
+                {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+                <span className="ml-1.5 hidden sm:inline">Refresh</span>
+              </Button>
+              <Button size="sm" variant="outline" disabled={busy} onClick={onReconnect} title="Reconnect">
+                <Link2 className="h-3.5 w-3.5" />
+                <span className="ml-1.5 hidden sm:inline">Reconnect</span>
+              </Button>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button size="sm" variant="outline" disabled={busy} title="Disconnect">
+                    <Link2Off className="h-3.5 w-3.5" />
+                    <span className="ml-1.5 hidden sm:inline">Disconnect</span>
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Disconnect {row.platformName}?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Rothme will stop pulling data from this account. You can reconnect any time.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={onDisconnect}>Disconnect</AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
+          )}
+        </div>
+      </div>
+
+      {isConnected && c && (
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <CapChip ok={c.granted.length > 0} label={`Permissions granted · ${c.granted.length}`} />
+          <CapChip
+            ok={c.missing.length === 0}
+            label={c.missing.length === 0
+              ? `All permissions granted`
+              : `Additional permissions · ${c.missing.reduce((n, g) => n + g.scopes.length, 0)}`}
+          />
+          <CapChip ok={c.publishingReady} label={c.publishingReady ? "Publishing ready" : "Publishing limited"} />
+          <CapChip ok={c.analyticsReady} label={c.analyticsReady ? "Analytics ready" : "Analytics limited"} />
+          <CapChip ok={c.healthy} label={c.healthy ? "Connection healthy" : "Attention needed"} />
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="ml-auto inline-flex items-center gap-1 rounded-full border border-border bg-background px-2 py-0.5 text-[11px] font-medium text-muted-foreground hover:text-foreground"
+          >
+            {open ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+            Details
+          </button>
+        </div>
+      )}
+
+      {isConnected && c && open && (
+        <div className="mt-3 rounded-xl border border-border bg-muted/20 p-4 text-sm">
+          {!c.healthy && c.healthReason && (
+            <div className="mb-3 flex items-start gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-3 text-amber-800 dark:text-amber-200">
+              <AlertTriangle className="mt-0.5 h-4 w-4" />
+              <div>{c.healthReason}</div>
+            </div>
+          )}
+
+          <div className="grid gap-4 md:grid-cols-2">
+            <div>
+              <div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Permissions granted</div>
+              {c.granted.length === 0 ? (
+                <div className="text-muted-foreground italic">None yet.</div>
+              ) : (
+                <ul className="space-y-1">
+                  {c.granted.map((s) => (
+                    <li key={s} className="flex items-start gap-2 text-xs">
+                      <ShieldCheck className="mt-0.5 h-3.5 w-3.5 text-emerald-500" />
+                      <code className="break-all text-muted-foreground">{s}</code>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div>
+              <div className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">Permissions required</div>
+              {c.required.length === 0 ? (
+                <div className="text-muted-foreground italic">No additional permissions needed.</div>
+              ) : (
+                <ul className="space-y-1">
+                  {c.required.map((s) => (
+                    <li key={s} className="flex items-start gap-2 text-xs">
+                      {c.granted.includes(s)
+                        ? <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 text-emerald-500" />
+                        : <XCircle className="mt-0.5 h-3.5 w-3.5 text-amber-500" />}
+                      <code className="break-all text-muted-foreground">{s}</code>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+
+          {c.missing.length > 0 && (
+            <div className="mt-4 space-y-3">
+              <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                Additional permissions for future features
+              </div>
+              {c.missing.map((g) => (
+                <div key={g.feature} className="flex flex-col gap-2 rounded-lg border border-border bg-background p-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="flex-1">
+                    <div className="text-sm font-medium">{g.feature}</div>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{g.reason}</p>
+                    <div className="mt-1 text-[11px] text-muted-foreground">
+                      Requests: <code className="break-all">{g.scopes.join(", ")}</code>
+                    </div>
+                  </div>
+                  <Button size="sm" variant="outline" onClick={() => setGrantOpen(g)}>
+                    Grant additional access
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <AlertDialog open={grantOpen !== null} onOpenChange={(v) => !v && setGrantOpen(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Enable {grantOpen?.feature} on {row.platformName}?</AlertDialogTitle>
+            <AlertDialogDescription asChild>
+              <div className="space-y-2 text-sm">
+                <p>{grantOpen?.reason}</p>
+                <p className="text-xs text-muted-foreground">
+                  We'll reopen {row.platformName}'s permission screen. You can review every scope before approving,
+                  and revoke access from {row.platformName} at any time.
+                </p>
+                {grantOpen && (
+                  <div className="rounded-md border border-border bg-muted/40 p-2 text-[11px] text-muted-foreground">
+                    <div className="font-medium text-foreground">Permissions we'll request:</div>
+                    <code className="break-all">{grantOpen.scopes.join(", ")}</code>
+                  </div>
+                )}
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Not now</AlertDialogCancel>
+            <AlertDialogAction onClick={() => { setGrantOpen(null); onReconnect(); }}>
+              Continue to {row.platformName}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </li>
+  );
+}
