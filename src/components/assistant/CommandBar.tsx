@@ -166,8 +166,8 @@ export function CommandBar() {
   if (hidden) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-3 sm:px-6 sm:pb-4">
-      <div className="pointer-events-auto w-full max-w-3xl overflow-hidden rounded-2xl border border-border bg-background/95 shadow-2xl shadow-black/30 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+    <div className="pointer-events-none fixed right-3 bottom-3 z-40 flex justify-end sm:right-6 sm:bottom-4">
+      <div className="pointer-events-auto w-80 max-w-[calc(100vw-1.5rem)] overflow-hidden rounded-2xl border border-border bg-background/95 shadow-2xl shadow-black/30 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:w-96">
         {/* Transcript panel */}
         {expanded && messages.length > 0 && (
           <div className="border-b border-border">
