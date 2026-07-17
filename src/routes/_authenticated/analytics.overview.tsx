@@ -22,6 +22,7 @@ import {
 import { cn } from "@/lib/utils";
 import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
 import { useHasConnections } from "@/hooks/use-has-connections";
+import { useHasMetrics } from "@/hooks/use-has-metrics";
 
 const platformIds = PLATFORMS.map((p) => p.id) as [PlatformId, ...PlatformId[]];
 
