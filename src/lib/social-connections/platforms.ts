@@ -58,7 +58,7 @@ export type PlatformConfig = {
 export const PLATFORMS: PlatformConfig[] = [
   {
     id: "facebook",
-    availability: "coming_soon",
+    availability: "available",
     name: "Facebook",
     category: "social",
     brandColor: "#1877F2",
@@ -74,7 +74,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "instagram",
-    availability: "coming_soon",
+    availability: "available",
     name: "Instagram",
     category: "social",
     brandColor: "#E4405F",
@@ -106,7 +106,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "linkedin",
-    availability: "coming_soon",
+    availability: "available",
     name: "LinkedIn",
     category: "professional",
     brandColor: "#0A66C2",
@@ -139,7 +139,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "tiktok",
-    availability: "coming_soon",
+    availability: "available",
     name: "TikTok",
     category: "video",
     brandColor: "#010101",
@@ -156,7 +156,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "youtube",
-    availability: "coming_soon",
+    availability: "available",
     name: "YouTube",
     category: "video",
     brandColor: "#FF0000",
@@ -194,7 +194,7 @@ export const PLATFORMS: PlatformConfig[] = [
   },
   {
     id: "gbp",
-    availability: "coming_soon",
+    availability: "available",
     name: "Google Business Profile",
     category: "presence",
     brandColor: "#4285F4",
