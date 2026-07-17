@@ -282,6 +282,8 @@ function UnifiedPage() {
           </Link>{" "}
           to enrich this view.
         </footer>
+          </>
+        )}
       </main>
     </div>
   );
