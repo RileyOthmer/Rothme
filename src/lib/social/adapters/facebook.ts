@@ -1,7 +1,7 @@
 /**
  * Facebook (Meta Graph API) adapter.
  *
- * Uses Facebook Login for Business + Graph API v21.0. Publishes to Pages the
+ * Uses Facebook Login for Business + Graph API v24.0. Publishes to Pages the
  * connected user administers; analytics come from Page Insights.
  *
  * Required env (server-only):
@@ -31,8 +31,8 @@ import type {
 } from "../types";
 import { AuthExpiredError, MissingScopeError, RateLimitError, UpstreamError } from "../types";
 
-const GRAPH = "https://graph.facebook.com/v21.0";
-const OAUTH = "https://www.facebook.com/v21.0/dialog/oauth";
+const GRAPH = "https://graph.facebook.com/v24.0";
+const OAUTH = "https://www.facebook.com/v24.0/dialog/oauth";
 const DEFAULT_SCOPES = [
   "public_profile",
   "email",
