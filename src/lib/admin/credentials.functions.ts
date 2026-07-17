@@ -122,6 +122,7 @@ export const deleteAdminCredential = createServerFn({ method: "POST" })
 
 const INFRA_SECRETS = [
   "INTEGRATION_ENCRYPTION_KEY",
+  "GOOGLE_ADS_DEVELOPER_TOKEN",
   "STRIPE_SECRET_KEY",
   "STRIPE_WEBHOOK_SECRET",
   "STRIPE_PRICE_MONTHLY",

@@ -254,6 +254,35 @@ const PROFILE_FETCHERS: Partial<Record<PlatformId, ProfileFetcher>> = {
       raw: j as Record<string, unknown>,
     };
   },
+  google_ads: async (token) => {
+    // Google Ads doesn't return a "user profile" the same way — we use the
+    // list of accessible customer IDs as the identity anchor. The first
+    // accessible customer becomes platformAccountId; the user can switch
+    // later via a customer selector once we build the UI.
+    const devToken = process.env.GOOGLE_ADS_DEVELOPER_TOKEN;
+    if (!devToken) throw new Error("GOOGLE_ADS_DEVELOPER_TOKEN is not configured");
+    const res = await fetch(
+      "https://googleads.googleapis.com/v18/customers:listAccessibleCustomers",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "developer-token": devToken,
+        },
+      },
+    );
+    if (!res.ok) throw new Error(`Google Ads listAccessibleCustomers failed: ${await readErr(res)}`);
+    const j = (await res.json()) as { resourceNames?: string[] };
+    const first = (j.resourceNames ?? [])[0] ?? "";
+    // resourceName shape: "customers/1234567890"
+    const customerId = first.split("/")[1] ?? "";
+    return {
+      platformAccountId: customerId,
+      username: customerId ? `customers/${customerId}` : null,
+      displayName: customerId ? `Google Ads Customer ${customerId}` : "Google Ads",
+      avatarUrl: null,
+      raw: j as Record<string, unknown>,
+    };
+  },
 };
 
 // ---------- Registry ----------
