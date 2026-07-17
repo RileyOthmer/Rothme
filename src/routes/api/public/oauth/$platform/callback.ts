@@ -101,6 +101,25 @@ export const Route = createFileRoute("/api/public/oauth/$platform/callback")({
               { onConflict: "user_id,platform,platform_account_id" },
             );
           if (upErr) throw new Error(upErr.message);
+
+          // Log activity to the user's active org (best-effort).
+          try {
+            const { data: prof } = await supabaseAdmin
+              .from("profiles").select("active_org_id").eq("id", stateRow.user_id).maybeSingle();
+            if (prof?.active_org_id) {
+              const platformLabel = platform.name;
+              const accountLabel = profile.displayName || profile.username || "account";
+              await supabaseAdmin.from("activity_events").insert({
+                org_id: prof.active_org_id,
+                actor_id: stateRow.user_id,
+                verb: "connection.created",
+                subject_type: "social_account",
+                subject_id: platformId,
+                summary: `${platformLabel} connected — ${accountLabel}`,
+              });
+            }
+          } catch { /* non-fatal */ }
+
           return redirectHome(url, { status: "success", platform: platformId });
         } catch (e) {
           const message = e instanceof Error ? e.message : "OAuth failed";
