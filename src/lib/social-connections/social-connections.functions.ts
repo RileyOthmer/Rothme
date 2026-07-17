@@ -274,6 +274,20 @@ export const triggerSync = createServerFn({ method: "POST" })
       .eq("id", row.id)
       .eq("user_id", context.userId);
 
+    if (success && (kind === "analytics" || kind === "full")) {
+      const { notifyUser } = await import("@/lib/notifications/notify.server");
+      const today = new Date().toISOString().slice(0, 10);
+      await notifyUser(context.supabase, {
+        userId: context.userId,
+        kind: "analytics.synced",
+        title: "Analytics synchronized",
+        body: `Fresh numbers pulled from ${row.platform}. ${records} record${records === 1 ? "" : "s"} updated.`,
+        severity: "info",
+        dedupeKey: `analytics.synced:${row.id}:${today}`,
+        metadata: { platform: row.platform, accountId: row.id },
+      });
+    }
+
     return { ok: success, records, error: errorMessage };
   });
 
