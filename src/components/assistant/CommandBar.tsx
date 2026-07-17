@@ -29,7 +29,7 @@ const EXAMPLES = [
   "Plan next week's content",
 ];
 
-const PLACEHOLDER = "What would you like Rothme AI to do today?";
+const PLACEHOLDER = "Ask your AI Marketing Assistant anything…";
 
 /**
  * Global AI Command Bar
