@@ -15,6 +15,9 @@ import {
   rangeToDates, unifiedAnalytics,
   type PlatformId, type RangePreset,
 } from "@/features/unified/platforms";
+import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
+import { useHasConnections } from "@/hooks/use-has-connections";
+import { useHasMetrics } from "@/hooks/use-has-metrics";
 
 const platformIds = PLATFORMS.map((p) => p.id) as [PlatformId, ...PlatformId[]];
 
@@ -43,6 +46,9 @@ export const Route = createFileRoute("/_authenticated/analytics/unified")({
 function UnifiedPage() {
   const { range, from, to, platforms } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
+  const { hasConnections, isLoading: connLoading } = useHasConnections();
+  const { hasMetrics, isLoading: metricsLoading } = useHasMetrics();
+  const showEmpty = !connLoading && !metricsLoading && (!hasConnections || !hasMetrics);
 
   const dates = useMemo(
     () => rangeToDates(range as RangePreset, { from: from || undefined, to: to || undefined }),
