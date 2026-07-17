@@ -8,7 +8,7 @@ export type NotificationRow = {
   title: string;
   body: string | null;
   severity: "info" | "opportunity" | "critical";
-  metadata: Record<string, unknown>;
+  metadata: Record<string, string | number | boolean | null>;
   status: "unread" | "read" | "dismissed";
   created_at: string;
 };
