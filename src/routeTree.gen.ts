@@ -54,6 +54,7 @@ import { Route as AuthenticatedSettingsSocialHealthRouteImport } from './routes/
 import { Route as AuthenticatedSettingsSocialAccountsRouteImport } from './routes/_authenticated/settings.social-accounts'
 import { Route as AuthenticatedSettingsProfileRouteImport } from './routes/_authenticated/settings.profile'
 import { Route as AuthenticatedSettingsPluginsRouteImport } from './routes/_authenticated/settings.plugins'
+import { Route as AuthenticatedSettingsPlatformsRouteImport } from './routes/_authenticated/settings.platforms'
 import { Route as AuthenticatedSettingsDeveloperRouteImport } from './routes/_authenticated/settings.developer'
 import { Route as AuthenticatedSettingsConnectionsRouteImport } from './routes/_authenticated/settings.connections'
 import { Route as AuthenticatedSettingsBrandRouteImport } from './routes/_authenticated/settings.brand'
@@ -355,6 +356,12 @@ const AuthenticatedSettingsPluginsRoute =
   AuthenticatedSettingsPluginsRouteImport.update({
     id: '/settings/plugins',
     path: '/settings/plugins',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsPlatformsRoute =
+  AuthenticatedSettingsPlatformsRouteImport.update({
+    id: '/settings/platforms',
+    path: '/settings/platforms',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedSettingsDeveloperRoute =
@@ -856,6 +863,7 @@ export interface FileRoutesByFullPath {
   '/settings/brand': typeof AuthenticatedSettingsBrandRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
+  '/settings/platforms': typeof AuthenticatedSettingsPlatformsRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/settings/social-accounts': typeof AuthenticatedSettingsSocialAccountsRoute
@@ -965,6 +973,7 @@ export interface FileRoutesByTo {
   '/settings/brand': typeof AuthenticatedSettingsBrandRoute
   '/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
+  '/settings/platforms': typeof AuthenticatedSettingsPlatformsRoute
   '/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/settings/social-accounts': typeof AuthenticatedSettingsSocialAccountsRoute
@@ -1081,6 +1090,7 @@ export interface FileRoutesById {
   '/_authenticated/settings/brand': typeof AuthenticatedSettingsBrandRoute
   '/_authenticated/settings/connections': typeof AuthenticatedSettingsConnectionsRoute
   '/_authenticated/settings/developer': typeof AuthenticatedSettingsDeveloperRoute
+  '/_authenticated/settings/platforms': typeof AuthenticatedSettingsPlatformsRoute
   '/_authenticated/settings/plugins': typeof AuthenticatedSettingsPluginsRoute
   '/_authenticated/settings/profile': typeof AuthenticatedSettingsProfileRoute
   '/_authenticated/settings/social-accounts': typeof AuthenticatedSettingsSocialAccountsRoute
@@ -1197,6 +1207,7 @@ export interface FileRouteTypes {
     | '/settings/brand'
     | '/settings/connections'
     | '/settings/developer'
+    | '/settings/platforms'
     | '/settings/plugins'
     | '/settings/profile'
     | '/settings/social-accounts'
@@ -1306,6 +1317,7 @@ export interface FileRouteTypes {
     | '/settings/brand'
     | '/settings/connections'
     | '/settings/developer'
+    | '/settings/platforms'
     | '/settings/plugins'
     | '/settings/profile'
     | '/settings/social-accounts'
@@ -1421,6 +1433,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settings/brand'
     | '/_authenticated/settings/connections'
     | '/_authenticated/settings/developer'
+    | '/_authenticated/settings/platforms'
     | '/_authenticated/settings/plugins'
     | '/_authenticated/settings/profile'
     | '/_authenticated/settings/social-accounts'
@@ -1783,6 +1796,13 @@ declare module '@tanstack/react-router' {
       path: '/settings/plugins'
       fullPath: '/settings/plugins'
       preLoaderRoute: typeof AuthenticatedSettingsPluginsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings/platforms': {
+      id: '/_authenticated/settings/platforms'
+      path: '/settings/platforms'
+      fullPath: '/settings/platforms'
+      preLoaderRoute: typeof AuthenticatedSettingsPlatformsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/settings/developer': {
@@ -2484,6 +2504,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedSettingsBrandRoute: typeof AuthenticatedSettingsBrandRoute
   AuthenticatedSettingsConnectionsRoute: typeof AuthenticatedSettingsConnectionsRoute
   AuthenticatedSettingsDeveloperRoute: typeof AuthenticatedSettingsDeveloperRoute
+  AuthenticatedSettingsPlatformsRoute: typeof AuthenticatedSettingsPlatformsRoute
   AuthenticatedSettingsPluginsRoute: typeof AuthenticatedSettingsPluginsRoute
   AuthenticatedSettingsProfileRoute: typeof AuthenticatedSettingsProfileRoute
   AuthenticatedSettingsSocialAccountsRoute: typeof AuthenticatedSettingsSocialAccountsRoute
@@ -2508,6 +2529,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedSettingsBrandRoute: AuthenticatedSettingsBrandRoute,
   AuthenticatedSettingsConnectionsRoute: AuthenticatedSettingsConnectionsRoute,
   AuthenticatedSettingsDeveloperRoute: AuthenticatedSettingsDeveloperRoute,
+  AuthenticatedSettingsPlatformsRoute: AuthenticatedSettingsPlatformsRoute,
   AuthenticatedSettingsPluginsRoute: AuthenticatedSettingsPluginsRoute,
   AuthenticatedSettingsProfileRoute: AuthenticatedSettingsProfileRoute,
   AuthenticatedSettingsSocialAccountsRoute:
