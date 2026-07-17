@@ -142,6 +142,7 @@ export const savePost = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const orgId = await activeOrgId(context as Ctx);
     let postId = data.id;
+    const isNew = !postId;
 
     if (!postId) {
       const { data: created, error } = await context.supabase
@@ -170,6 +171,16 @@ export const savePost = createServerFn({ method: "POST" })
         .eq("id", postId);
       if (error) throw new Error(error.message);
     }
+
+    const label = data.title?.trim() || "Untitled draft";
+    await logActivity(context.supabase, {
+      orgId,
+      actorId: context.userId,
+      verb: isNew ? "draft.created" : "draft.updated",
+      subjectType: "post",
+      subjectId: postId,
+      summary: isNew ? `Draft created — ${label}` : `Draft updated — ${label}`,
+    });
 
     // Replace variants
     await context.supabase.from("post_variants").delete().eq("post_id", postId);
