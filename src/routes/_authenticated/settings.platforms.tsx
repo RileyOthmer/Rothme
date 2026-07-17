@@ -461,63 +461,14 @@ function PlatformsPage() {
             </div>
             <ul className="divide-y divide-border">
               {filtered.map((r) => (
-                <li key={r.key} className="grid grid-cols-1 items-center gap-3 px-5 py-4 md:grid-cols-[1.4fr_1.2fr_0.9fr_1fr_1.3fr] md:gap-4">
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="grid h-9 w-9 place-items-center rounded-lg text-xs font-semibold text-white" style={{ backgroundColor: r.brandColor }}>
-                      {r.mark}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-medium">{r.platformName}</div>
-                      <div className="truncate text-xs capitalize text-muted-foreground">{r.category}</div>
-                    </div>
-                  </div>
-                  <div className="min-w-0 truncate text-sm text-muted-foreground">
-                    {r.connectedAccount ?? <span className="italic">—</span>}
-                  </div>
-                  <div><StatusBadge status={r.status} /></div>
-                  <div className="text-sm text-muted-foreground">{formatWhen(r.lastSync)}</div>
-                  <div className="flex flex-wrap items-center justify-start gap-2 md:justify-end">
-                    {r.status === "coming_soon" ? (
-                      <span className="text-xs text-muted-foreground">Not yet available</span>
-                    ) : r.status === "not_connected" ? (
-                      <Button size="sm" variant="outline" disabled={busy === r.key} onClick={() => handleReconnect(r)}>
-                        {busy === r.key ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Link2 className="h-3.5 w-3.5" />}
-                        <span className="ml-1.5">Connect</span>
-                      </Button>
-                    ) : (
-                      <>
-                        <Button size="sm" variant="outline" disabled={busy === r.key} onClick={() => handleRefresh(r)} title="Refresh">
-                          {busy === r.key ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
-                          <span className="ml-1.5 hidden sm:inline">Refresh</span>
-                        </Button>
-                        <Button size="sm" variant="outline" disabled={busy === r.key} onClick={() => handleReconnect(r)} title="Reconnect">
-                          <Link2 className="h-3.5 w-3.5" />
-                          <span className="ml-1.5 hidden sm:inline">Reconnect</span>
-                        </Button>
-                        <AlertDialog>
-                          <AlertDialogTrigger asChild>
-                            <Button size="sm" variant="outline" disabled={busy === r.key} title="Disconnect">
-                              <Link2Off className="h-3.5 w-3.5" />
-                              <span className="ml-1.5 hidden sm:inline">Disconnect</span>
-                            </Button>
-                          </AlertDialogTrigger>
-                          <AlertDialogContent>
-                            <AlertDialogHeader>
-                              <AlertDialogTitle>Disconnect {r.platformName}?</AlertDialogTitle>
-                              <AlertDialogDescription>
-                                Rothme will stop pulling data from this account. You can reconnect any time.
-                              </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                              <AlertDialogCancel>Cancel</AlertDialogCancel>
-                              <AlertDialogAction onClick={() => handleDisconnect(r)}>Disconnect</AlertDialogAction>
-                            </AlertDialogFooter>
-                          </AlertDialogContent>
-                        </AlertDialog>
-                      </>
-                    )}
-                  </div>
-                </li>
+                <PlatformRow
+                  key={r.key}
+                  row={r}
+                  busy={busy === r.key}
+                  onReconnect={() => handleReconnect(r)}
+                  onDisconnect={() => handleDisconnect(r)}
+                  onRefresh={() => handleRefresh(r)}
+                />
               ))}
             </ul>
           </Card>
