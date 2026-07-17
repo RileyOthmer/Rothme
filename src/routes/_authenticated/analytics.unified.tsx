@@ -15,6 +15,9 @@ import {
   rangeToDates, unifiedAnalytics,
   type PlatformId, type RangePreset,
 } from "@/features/unified/platforms";
+import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
+import { useHasConnections } from "@/hooks/use-has-connections";
+import { useHasMetrics } from "@/hooks/use-has-metrics";
 
 const platformIds = PLATFORMS.map((p) => p.id) as [PlatformId, ...PlatformId[]];
 
@@ -43,6 +46,9 @@ export const Route = createFileRoute("/_authenticated/analytics/unified")({
 function UnifiedPage() {
   const { range, from, to, platforms } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
+  const { hasConnections, isLoading: connLoading } = useHasConnections();
+  const { hasMetrics, isLoading: metricsLoading } = useHasMetrics();
+  const showEmpty = !connLoading && !metricsLoading && (!hasConnections || !hasMetrics);
 
   const dates = useMemo(
     () => rangeToDates(range as RangePreset, { from: from || undefined, to: to || undefined }),
@@ -112,6 +118,20 @@ function UnifiedPage() {
           </div>
         </header>
 
+        {showEmpty ? (
+          <>
+            <ZeroStatGrid labels={kpis.map((k) => k.label)} />
+            <EmptyDataState
+              title={hasConnections ? "No analytics yet" : "No platforms connected"}
+              description={
+                hasConnections
+                  ? "Your platforms are connected but no metrics have been synced yet. Numbers will appear here as soon as the first sync completes."
+                  : "Connect a social account, ad platform, or website provider and this view will populate with your real numbers."
+              }
+            />
+          </>
+        ) : (
+          <>
         {/* KPI grid */}
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {kpis.map((k) => {
@@ -262,6 +282,8 @@ function UnifiedPage() {
           </Link>{" "}
           to enrich this view.
         </footer>
+          </>
+        )}
       </main>
     </div>
   );
