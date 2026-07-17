@@ -11,7 +11,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 const GOOGLE_ADS_API_VERSION = "v18";
 
 async function getFreshAccessToken(
-  supabase: Awaited<ReturnType<typeof import("@/integrations/supabase/auth-middleware").requireSupabaseAuth> extends never ? never : any>,
+  supabase: any,
   userId: string,
 ): Promise<{ accessToken: string; customerId: string; accountId: string }> {
   const { data: row, error } = await supabase
