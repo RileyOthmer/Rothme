@@ -15,7 +15,7 @@ import {
 import { getProfile } from "@/lib/profile.functions";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { DecisionCenter } from "@/features/decisions/DecisionCenter";
-import { DashboardWidget, WIDGETS } from "@/features/dashboard/DashboardWidget";
+import { DashboardWidget } from "@/features/dashboard/DashboardWidget";
 import { ProWelcome, ProChecklist } from "@/features/dashboard/ProWelcome";
 import { QuickActions } from "@/components/assistant/QuickActions";
 import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
