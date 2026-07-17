@@ -174,7 +174,7 @@ export function CommandBar() {
             <div className="flex items-center justify-between border-b border-border/60 px-4 py-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-3.5 w-3.5" />
-                <span>Rothme AI</span>
+                <span>AI Marketing Assistant</span>
               </div>
               <div className="flex items-center gap-1">
                 <button
@@ -252,7 +252,7 @@ export function CommandBar() {
                 }}
                 rows={1}
                 placeholder={PLACEHOLDER}
-                aria-label="Ask Rothme AI"
+                aria-label="Ask your AI Marketing Assistant"
                 className="max-h-[200px] min-h-[40px] w-full resize-none rounded-xl border border-border bg-surface px-3 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-border-strong"
               />
             </div>
