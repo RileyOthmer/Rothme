@@ -60,9 +60,17 @@ function BrandAssetsPage() {
 
   const invalidate = () => qc.invalidateQueries({ queryKey: ["brand-assets"] });
 
+  type SavePatch = {
+    logo_path?: string | null;
+    guidelines_path?: string | null;
+    image_paths?: string[];
+    colors?: BrandColor[];
+    fonts?: BrandFont[];
+    notes?: string | null;
+  };
+
   const save = useMutation({
-    mutationFn: (patch: Parameters<typeof saveFn>[0]["data"]) =>
-      saveFn({ data: patch }),
+    mutationFn: (patch: SavePatch) => saveFn({ data: patch }),
     onSuccess: () => {
       invalidate();
     },
