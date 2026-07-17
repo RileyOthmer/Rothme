@@ -118,6 +118,20 @@ function UnifiedPage() {
           </div>
         </header>
 
+        {showEmpty ? (
+          <>
+            <ZeroStatGrid labels={kpis.map((k) => k.label)} />
+            <EmptyDataState
+              title={hasConnections ? "No analytics yet" : "No platforms connected"}
+              description={
+                hasConnections
+                  ? "Your platforms are connected but no metrics have been synced yet. Numbers will appear here as soon as the first sync completes."
+                  : "Connect a social account, ad platform, or website provider and this view will populate with your real numbers."
+              }
+            />
+          </>
+        ) : (
+          <>
         {/* KPI grid */}
         <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
           {kpis.map((k) => {
