@@ -247,6 +247,23 @@ export const PLATFORMS: PlatformConfig[] = [
     usesPKCE: true,
     docsUrl: "https://docs.bsky.app/docs/advanced-guides/oauth-client",
     blurb: "Posts and follower activity on the AT Protocol.",
+  {
+    id: "google_ads",
+    availability: "available",
+    name: "Google Ads",
+    category: "ads",
+    brandColor: "#4285F4",
+    mark: "GA",
+    authorizeUrl: "https://accounts.google.com/o/oauth2/v2/auth",
+    tokenUrl: "https://oauth2.googleapis.com/token",
+    revokeUrl: "https://oauth2.googleapis.com/revoke",
+    scopes: ["https://www.googleapis.com/auth/adwords"],
+    clientIdEnv: "GOOGLE_ADS_CLIENT_ID",
+    clientSecretEnv: "GOOGLE_ADS_CLIENT_SECRET",
+    usesPKCE: false,
+    docsUrl: "https://developers.google.com/google-ads/api/docs/oauth/overview",
+    extraAuthorizeParams: { access_type: "offline", prompt: "consent", include_granted_scopes: "true" },
+    blurb: "Search, display, and performance campaign results.",
   },
 ];
 
