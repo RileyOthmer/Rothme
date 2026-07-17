@@ -28,6 +28,7 @@ function AuthenticatedLayout() {
         <SidebarInset className="min-w-0 flex-1">
           <Outlet />
           <CommandBar />
+          <GlobalSearchLauncher />
         </SidebarInset>
       </div>
     </SidebarProvider>
