@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast, Toaster } from "sonner";
 import {
   RefreshCw, Link2, Link2Off, Search, Loader2, CheckCircle2,
-  AlertTriangle, Clock, Sparkles,
+  AlertTriangle, Clock, Sparkles, ChevronDown, ChevronUp, ShieldCheck, XCircle,
 } from "lucide-react";
 
 import { AppHeader } from "@/components/layout/AppHeader";
