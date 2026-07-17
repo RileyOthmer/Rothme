@@ -116,6 +116,21 @@ async function handleSubscriptionUpsert(subscription: any, env: StripeEnv, custo
       subscription.customer as string,
     );
   }
+
+  try {
+    const { notifyUser } = await import("@/lib/notifications/notify.server");
+    await notifyUser(getSupabase(), {
+      userId,
+      kind: "subscription.updated",
+      title: active ? "Subscription active" : `Subscription ${subscription.status}`,
+      body: active
+        ? "Your Pro plan is active. Thanks for supporting the product."
+        : `Your subscription status changed to "${subscription.status}".`,
+      severity: active ? "opportunity" : "info",
+      dedupeKey: `subscription.updated:${subscription.id}:${subscription.status}`,
+      metadata: { subscriptionId: subscription.id, status: subscription.status },
+    });
+  } catch { /* non-fatal */ }
 }
 
 async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
@@ -145,6 +160,20 @@ async function handleSubscriptionDeleted(subscription: any, env: StripeEnv) {
     await logActivity(orgId, userId ?? null, "subscription.canceled",
       "Pro subscription canceled — access continues until period end",
       { subscription_id: subscription.id, access_until: ts(periodEnd) });
+  }
+  if (userId) {
+    try {
+      const { notifyUser } = await import("@/lib/notifications/notify.server");
+      await notifyUser(getSupabase(), {
+        userId,
+        kind: "subscription.updated",
+        title: "Subscription canceled",
+        body: "Access continues until the end of your current billing period.",
+        severity: "info",
+        dedupeKey: `subscription.updated:${subscription.id}:canceled`,
+        metadata: { subscriptionId: subscription.id, status: "canceled" },
+      });
+    } catch { /* non-fatal */ }
   }
 }
 

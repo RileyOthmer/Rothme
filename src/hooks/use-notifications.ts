@@ -1,12 +1,22 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { supabase } from "@/integrations/supabase/client";
 import {
-  SEED_NOTIFICATIONS,
+  CATEGORY_LABEL,
   type Notification,
   type NotificationCategory,
 } from "@/lib/notifications-mock";
+import {
+  listNotifications,
+  markNotificationRead,
+  markAllNotificationsRead,
+  dismissNotification,
+  type NotificationRow,
+} from "@/lib/notifications/notifications.functions";
 
 // -----------------------------------------------------------------------------
-// Preferences
+// Preferences (kept in localStorage — only affects UI filters, not delivery)
 // -----------------------------------------------------------------------------
 
 export type NotificationFrequency = "realtime" | "daily" | "weekly" | "off";
@@ -34,147 +44,181 @@ export const DEFAULT_PREFS: NotificationPrefs = {
     site: { enabled: true, frequency: "realtime" },
     ai: { enabled: true, frequency: "daily" },
   },
-  onlyImportant: true,
-  quietHours: { enabled: true, from: "21:00", to: "08:00" },
+  onlyImportant: false,
+  quietHours: { enabled: false, from: "21:00", to: "08:00" },
 };
-
-// -----------------------------------------------------------------------------
-// Persistence keys
-// -----------------------------------------------------------------------------
 
 const PREFS_KEY = "ROTHME.notifications.prefs.v1";
-const READ_KEY = "ROTHME.notifications.read.v1";
-const DISMISSED_KEY = "ROTHME.notifications.dismissed.v1";
 
-// -----------------------------------------------------------------------------
-// Shared subscription store — every consumer stays in sync
-// -----------------------------------------------------------------------------
-
-type State = {
-  prefs: NotificationPrefs;
-  read: string[];
-  dismissed: string[];
-};
-
-let state: State = {
-  prefs: DEFAULT_PREFS,
-  read: [],
-  dismissed: [],
-};
-let hydrated = false;
-const listeners = new Set<() => void>();
-
-function readJSON<T>(key: string, fallback: T): T {
+function readPrefs(): NotificationPrefs {
+  if (typeof window === "undefined") return DEFAULT_PREFS;
   try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return fallback;
-    return { ...fallback, ...JSON.parse(raw) } as T;
+    const raw = localStorage.getItem(PREFS_KEY);
+    if (!raw) return DEFAULT_PREFS;
+    return { ...DEFAULT_PREFS, ...JSON.parse(raw) };
   } catch {
-    return fallback;
+    return DEFAULT_PREFS;
   }
 }
 
-function readArray(key: string): string[] {
+function writePrefs(p: NotificationPrefs) {
   try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    localStorage.setItem(PREFS_KEY, JSON.stringify(p));
   } catch {
-    return [];
+    /* ignore */
   }
 }
 
-function hydrate() {
-  if (hydrated || typeof window === "undefined") return;
-  state = {
-    prefs: readJSON<NotificationPrefs>(PREFS_KEY, DEFAULT_PREFS),
-    read: readArray(READ_KEY),
-    dismissed: readArray(DISMISSED_KEY),
+// -----------------------------------------------------------------------------
+// Kind → category / label mapping
+// -----------------------------------------------------------------------------
+
+const KIND_CATEGORY: Record<string, NotificationCategory> = {
+  "connection.success": "site",
+  "connection.failed": "site",
+  "publish.success": "campaign",
+  "publish.failed": "campaign",
+  "analytics.synced": "seo",
+  "subscription.updated": "sales",
+};
+
+function toUiNotification(row: NotificationRow): Notification {
+  const category = KIND_CATEGORY[row.kind] ?? "ai";
+  return {
+    id: row.id,
+    title: row.title,
+    what: row.body ?? "",
+    why: "",
+    action: "",
+    impact: "",
+    severity: row.severity,
+    category,
+    createdAt: row.created_at,
   };
-  hydrated = true;
-}
-
-function emit() {
-  listeners.forEach((l) => l());
-}
-
-function persist() {
-  try {
-    localStorage.setItem(PREFS_KEY, JSON.stringify(state.prefs));
-    localStorage.setItem(READ_KEY, JSON.stringify(state.read));
-    localStorage.setItem(DISMISSED_KEY, JSON.stringify(state.dismissed));
-  } catch {
-    /* ignore quota errors */
-  }
 }
 
 // -----------------------------------------------------------------------------
-// Public hook
+// Hook
 // -----------------------------------------------------------------------------
+
+const QUERY_KEY = ["notifications"] as const;
 
 export function useNotifications() {
-  const [, setTick] = useState(0);
+  const qc = useQueryClient();
+  const listFn = useServerFn(listNotifications);
+  const markReadFn = useServerFn(markNotificationRead);
+  const markAllFn = useServerFn(markAllNotificationsRead);
+  const dismissFn = useServerFn(dismissNotification);
 
-  // Hydrate once on the client, then subscribe for cross-component updates.
-  useEffect(() => {
-    hydrate();
-    const l = () => setTick((n) => n + 1);
-    listeners.add(l);
-    l();
-    return () => {
-      listeners.delete(l);
-    };
-  }, []);
-
-  const notifications = SEED_NOTIFICATIONS.filter((n) => {
-    if (state.dismissed.includes(n.id)) return false;
-    const pref = state.prefs.categories[n.category];
-    if (!pref?.enabled) return false;
-    if (state.prefs.onlyImportant && n.severity === "info") return false;
-    return true;
+  const { data: rows = [] } = useQuery({
+    queryKey: QUERY_KEY,
+    queryFn: () => listFn(),
+    staleTime: 30_000,
   });
 
-  const unreadCount = notifications.filter((n) => !state.read.includes(n.id)).length;
+  // Realtime — invalidate on any insert/update/delete for this user
+  useEffect(() => {
+    const channel = supabase
+      .channel("notifications-feed")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "notifications" },
+        () => {
+          qc.invalidateQueries({ queryKey: QUERY_KEY });
+        },
+      )
+      .subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [qc]);
 
-  const markRead = useCallback((id: string) => {
-    if (state.read.includes(id)) return;
-    state = { ...state, read: [...state.read, id] };
-    persist();
-    emit();
+  // Prefs
+  const [prefs, setPrefsState] = useState<NotificationPrefs>(DEFAULT_PREFS);
+  useEffect(() => {
+    setPrefsState(readPrefs());
   }, []);
 
-  const markAllRead = useCallback(() => {
-    state = { ...state, read: SEED_NOTIFICATIONS.map((n) => n.id) };
-    persist();
-    emit();
-  }, []);
+  const notifications = useMemo(() => {
+    return rows
+      .map(toUiNotification)
+      .filter((n) => {
+        const pref = prefs.categories[n.category];
+        if (!pref?.enabled) return false;
+        if (prefs.onlyImportant && n.severity === "info") return false;
+        return true;
+      });
+  }, [rows, prefs]);
 
-  const dismiss = useCallback((id: string) => {
-    state = { ...state, dismissed: [...state.dismissed, id] };
-    persist();
-    emit();
-  }, []);
+  const unreadCount = useMemo(
+    () => rows.filter((r) => r.status === "unread").length,
+    [rows],
+  );
+
+  const isRead = useCallback(
+    (id: string) => rows.find((r) => r.id === id)?.status !== "unread",
+    [rows],
+  );
+
+  const markRead = useCallback(
+    async (id: string) => {
+      qc.setQueryData<NotificationRow[]>(QUERY_KEY, (prev) =>
+        (prev ?? []).map((r) => (r.id === id ? { ...r, status: "read" } : r)),
+      );
+      try {
+        await markReadFn({ data: { id } });
+      } catch {
+        qc.invalidateQueries({ queryKey: QUERY_KEY });
+      }
+    },
+    [markReadFn, qc],
+  );
+
+  const markAllRead = useCallback(async () => {
+    qc.setQueryData<NotificationRow[]>(QUERY_KEY, (prev) =>
+      (prev ?? []).map((r) => ({ ...r, status: "read" })),
+    );
+    try {
+      await markAllFn();
+    } catch {
+      qc.invalidateQueries({ queryKey: QUERY_KEY });
+    }
+  }, [markAllFn, qc]);
+
+  const dismiss = useCallback(
+    async (id: string) => {
+      qc.setQueryData<NotificationRow[]>(QUERY_KEY, (prev) =>
+        (prev ?? []).filter((r) => r.id !== id),
+      );
+      try {
+        await dismissFn({ data: { id } });
+      } catch {
+        qc.invalidateQueries({ queryKey: QUERY_KEY });
+      }
+    },
+    [dismissFn, qc],
+  );
 
   const setPrefs = useCallback(
     (updater: (prev: NotificationPrefs) => NotificationPrefs) => {
-      state = { ...state, prefs: updater(state.prefs) };
-      persist();
-      emit();
+      setPrefsState((prev) => {
+        const next = updater(prev);
+        writePrefs(next);
+        return next;
+      });
     },
     [],
   );
 
-  const isRead = useCallback((id: string) => state.read.includes(id), []);
-
   return {
     notifications,
     unreadCount,
-    prefs: state.prefs,
+    prefs,
     markRead,
     markAllRead,
     dismiss,
     setPrefs,
     isRead,
+    categoryLabels: CATEGORY_LABEL,
   };
 }
