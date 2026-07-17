@@ -26,7 +26,7 @@ function AuthenticatedLayout() {
         <AppSidebar />
         <SidebarInset className="min-w-0 flex-1">
           <Outlet />
-          <FloatingAssistant />
+          <CommandBar />
         </SidebarInset>
       </div>
     </SidebarProvider>
