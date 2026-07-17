@@ -25,6 +25,8 @@ const PLATFORMS: PlatformCard[] = [
   { id: "resend", name: "Resend", category: "Email", mark: "R", brandColor: "#000000" },
   { id: "twilio", name: "Twilio", category: "SMS", mark: "T", brandColor: "#F22F46" },
   { id: "mailchimp", name: "Mailchimp", category: "Email Marketing", mark: "M", brandColor: "#FFE01B" },
+  { id: "tiktok", name: "TikTok", category: "Social Video", mark: "TT", brandColor: "#010101" },
+  { id: "youtube", name: "YouTube", category: "Video", mark: "YT", brandColor: "#FF0000" },
 ];
 
 export function PlatformConnectGrid() {
