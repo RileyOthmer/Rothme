@@ -1,46 +1,50 @@
 import {
-  Megaphone,
-  MessageSquare,
-  CalendarDays,
-  Rocket,
-  MapPin,
-  Music2,
-  Youtube,
+  Compass,
+  Globe,
+  Share2,
+  Mail,
+  Search,
+  Facebook,
+  LayoutTemplate,
+  ClipboardCheck,
   type LucideIcon,
 } from "lucide-react";
 
-import { QUICK_ACTIONS, askAI, type QuickAction } from "./quick-actions";
+import { QUICK_ACTIONS, askAI, type QuickActionIcon } from "./quick-actions";
 
-const ICONS: Record<QuickAction["icon"], LucideIcon> = {
-  post: MessageSquare,
-  ad: Megaphone,
-  plan: CalendarDays,
-  campaign: Rocket,
-  gbp: MapPin,
-  tiktok: Music2,
-  youtube: Youtube,
+const ICONS: Record<QuickActionIcon, LucideIcon> = {
+  strategy: Compass,
+  website: Globe,
+  social: Share2,
+  email: Mail,
+  "google-ads": Search,
+  facebook: Facebook,
+  landing: LayoutTemplate,
+  audit: ClipboardCheck,
 };
 
 /**
- * Grid of Quick Actions for the dashboard.
- * Every button opens the shared Global Command Bar preconfigured with a task
- * prompt — no duplicated AI logic; all generation flows through /api/chat.
+ * Premium action cards on the dashboard. Each card opens the global
+ * AI Marketing Assistant preconfigured for a specific task — no
+ * duplicated AI logic; every prompt streams through /api/chat.
  */
 export function QuickActions({ className }: { className?: string }) {
   return (
     <section aria-labelledby="quick-actions-heading" className={className}>
-      <div className="mb-3 flex items-baseline justify-between">
-        <h2
-          id="quick-actions-heading"
-          className="text-sm font-semibold tracking-tight text-foreground"
-        >
-          Quick actions
-        </h2>
-        <span className="text-[11px] text-muted-foreground">
-          One click → drafted by Rothme AI · nothing publishes automatically
-        </span>
+      <div className="mb-4 flex items-baseline justify-between">
+        <div>
+          <h2
+            id="quick-actions-heading"
+            className="text-base font-semibold tracking-tight text-foreground"
+          >
+            Quick actions
+          </h2>
+          <p className="mt-0.5 text-xs text-muted-foreground">
+            One click — your AI CMO drafts it. Nothing publishes without your review.
+          </p>
+        </div>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {QUICK_ACTIONS.map((action) => {
           const Icon = ICONS[action.icon];
           return (
@@ -48,16 +52,20 @@ export function QuickActions({ className }: { className?: string }) {
               key={action.id}
               type="button"
               onClick={() => askAI({ prompt: action.prompt, source: `quick-action:${action.id}` })}
-              className="group flex items-start gap-3 rounded-xl border border-border bg-surface p-3 text-left transition-colors hover:border-border-strong hover:bg-surface-2"
+              className="group relative flex h-full flex-col items-start gap-3 overflow-hidden rounded-2xl border border-border bg-card p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5"
             >
-              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-border bg-background text-foreground">
-                <Icon className="h-4 w-4" />
+              <span
+                aria-hidden
+                className="pointer-events-none absolute inset-0 -z-0 bg-gradient-to-br from-primary/[0.06] via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+              />
+              <span className="relative grid h-10 w-10 place-items-center rounded-xl border border-border bg-background text-foreground shadow-sm transition-colors group-hover:border-primary/40 group-hover:text-primary">
+                <Icon className="h-[18px] w-[18px]" />
               </span>
-              <span className="min-w-0">
-                <span className="block truncate text-sm font-medium text-foreground">
+              <span className="relative min-w-0">
+                <span className="block text-sm font-semibold tracking-tight text-foreground">
                   {action.label}
                 </span>
-                <span className="mt-0.5 block text-[11px] leading-snug text-muted-foreground">
+                <span className="mt-1 block text-[12px] leading-snug text-muted-foreground">
                   {action.description}
                 </span>
               </span>

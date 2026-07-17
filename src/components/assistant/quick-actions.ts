@@ -1,98 +1,103 @@
 /**
- * Quick Actions — reusable presets that open the global Command Bar
- * pre-configured for a specific marketing task. All actions route through
- * the same AI engine (the CommandBar's /api/chat stream) — no duplicated
- * generation logic.
- *
- * A quick action dispatches an `askAI` CustomEvent; the CommandBar listens
- * for it, focuses/expands, and sends the prompt through its existing
- * useChat transport.
+ * Quick Actions — premium action cards on the dashboard.
+ * Each card opens the global AI Marketing Assistant (Command Bar) with a
+ * preconfigured prompt. All generation flows through the same /api/chat
+ * engine — no duplicated logic.
  */
 
 export const ASK_AI_EVENT = "rothme:ask-ai";
 
 export type AskAIPayload = {
   prompt: string;
-  /** Optional label for analytics / debugging. */
   source?: string;
 };
 
-/** Trigger the global command bar with a preconfigured prompt. */
 export function askAI(payload: AskAIPayload) {
   if (typeof window === "undefined") return;
   window.dispatchEvent(new CustomEvent<AskAIPayload>(ASK_AI_EVENT, { detail: payload }));
 }
+
+export type QuickActionIcon =
+  | "strategy"
+  | "website"
+  | "social"
+  | "email"
+  | "google-ads"
+  | "facebook"
+  | "landing"
+  | "audit";
 
 export type QuickAction = {
   id: string;
   label: string;
   description: string;
   prompt: string;
-  icon:
-    | "post"
-    | "ad"
-    | "plan"
-    | "campaign"
-    | "gbp"
-    | "tiktok"
-    | "youtube";
+  icon: QuickActionIcon;
 };
 
 export const QUICK_ACTIONS: QuickAction[] = [
   {
-    id: "social-post",
-    label: "Create Social Post",
-    description: "Draft a ready-to-review post for your top channel.",
-    icon: "post",
+    id: "marketing-strategy",
+    label: "Create Marketing Strategy",
+    description: "A 90-day plan tailored to my business and goals.",
+    icon: "strategy",
     prompt:
-      "Create a social media post I can review before publishing. Write it in my brand voice, keep it platform-appropriate, and include 2 short caption variants plus 5 relevant hashtags. Ask me for the platform if it matters.",
+      "Act as my Chief Marketing Officer. Build a 90-day marketing strategy for my business. Include: positioning, target audience, top 3 channels with rationale, monthly milestones, budget guidance, and the KPIs we should track. Ask me for anything missing about the business.",
   },
   {
-    id: "advertisement",
-    label: "Create Advertisement",
-    description: "Ad copy with headline, body, and CTA.",
-    icon: "ad",
+    id: "analyze-website",
+    label: "Analyze My Website",
+    description: "Conversion, SEO, and UX audit with fixes.",
+    icon: "website",
     prompt:
-      "Write an advertisement I can review before running. Include: primary headline, 2 alternate headlines, body copy (under 125 characters), a clear call-to-action, and a one-line targeting suggestion. Ask me for the product/offer and platform if you need them.",
+      "Analyze my website like a senior CRO + SEO consultant. Cover: first-impression, value proposition clarity, conversion path, technical SEO signals, on-page SEO, mobile UX, and 5 prioritized fixes ranked by impact vs effort. Ask me for the URL if I haven't given it.",
   },
   {
-    id: "weekly-plan",
-    label: "Create Weekly Plan",
-    description: "A 7-day content plan across your channels.",
-    icon: "plan",
+    id: "social-content",
+    label: "Generate Social Content",
+    description: "A week of ready-to-review posts across channels.",
+    icon: "social",
     prompt:
-      "Plan the next 7 days of marketing content for me. Give one post idea per day with: date label, channel, hook, and 1-line rationale tied to my goals. Keep it realistic — no more than one post per channel per day.",
+      "Generate a week of social media content across my active channels. For each post: platform, hook, caption in my brand voice, hashtags, and image/video direction. Keep it realistic — one post per channel per day, aligned to my goals.",
   },
   {
-    id: "campaign",
-    label: "Generate Campaign",
-    description: "A themed multi-channel campaign outline.",
-    icon: "campaign",
+    id: "email-campaign",
+    label: "Create Email Campaign",
+    description: "Subject lines, body, and CTAs for a full sequence.",
+    icon: "email",
     prompt:
-      "Generate a multi-channel marketing campaign concept. Include: campaign name, single sentence promise, target audience, 3-week timeline, channels to use, 5 content pieces mapped to channels, and how we'll measure success. Ask me for the goal or offer if you need it.",
+      "Draft a 4-email marketing campaign I can review before sending. For each email: subject line + 2 alternates, preview text, body copy, and a single clear CTA. Ask me for the goal (welcome / launch / re-engagement / promo) if it isn't obvious.",
   },
   {
-    id: "gbp-update",
-    label: "Write Google Business Update",
-    description: "A short GBP post that follows Google's rules.",
-    icon: "gbp",
+    id: "google-ads",
+    label: "Build Google Ads",
+    description: "Search campaign with keywords, ads, and structure.",
+    icon: "google-ads",
     prompt:
-      "Write a Google Business Profile update. Under 1,500 characters, plain and useful, no marketing fluff, one clear call-to-action, no prohibited content (no discount-only spam, no external tracking URLs). Suggest an accompanying image idea in one line.",
+      "Build a Google Ads Search campaign. Include: campaign structure, 3 ad groups with themed keywords (exact + phrase), 3 Responsive Search Ads per group (15 headlines, 4 descriptions each), negative keyword list, and suggested daily budget range. Ask me for the offer if you need it.",
   },
   {
-    id: "tiktok-ideas",
-    label: "Generate TikTok Ideas",
-    description: "10 short-form video hooks tuned for TikTok.",
-    icon: "tiktok",
+    id: "facebook-campaign",
+    label: "Create Facebook Campaign",
+    description: "Meta Ads campaign with audiences and creative.",
+    icon: "facebook",
     prompt:
-      "Give me 10 TikTok video ideas tailored to my business. For each: hook (first 3 seconds), format (talking head / demo / trend / etc.), 1-line script beat, and suggested on-screen text. Keep them realistic to film with a phone.",
+      "Design a Meta (Facebook + Instagram) ad campaign. Include: objective, 2 audience definitions (interest + lookalike), 3 creative concepts (hook, visual direction, primary text, headline, CTA), placements, and a suggested daily budget + testing plan.",
   },
   {
-    id: "youtube-ideas",
-    label: "Generate YouTube Ideas",
-    description: "10 video ideas with titles and angles.",
-    icon: "youtube",
+    id: "landing-page",
+    label: "Generate Landing Page Copy",
+    description: "High-converting page copy, section by section.",
+    icon: "landing",
     prompt:
-      "Give me 10 YouTube video ideas for my business. For each: clickable title (under 60 characters), the angle/hook, target viewer, and rough length (short / 5-10 min / long-form). Prioritize ideas that could realistically rank or get recommended.",
+      "Write high-converting landing page copy for my offer. Sections: hero (headline + subhead + CTA), 3 benefit blocks, social proof placement, feature list, FAQ (6 questions), and final CTA. Match my brand voice. Ask me for the offer if I haven't shared it.",
+  },
+  {
+    id: "marketing-audit",
+    label: "Marketing Audit",
+    description: "Full audit of what's working and what to fix.",
+    icon: "audit",
+    prompt:
+      "Run a full marketing audit across my connected channels. Cover: what's working, what's underperforming, wasted spend, missing fundamentals, and the top 5 prioritized actions with estimated impact. Be direct — this is an executive briefing, not a pep talk.",
   },
 ];
