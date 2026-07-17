@@ -16,6 +16,7 @@ import { getProfile } from "@/lib/profile.functions";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { DecisionCenter } from "@/features/decisions/DecisionCenter";
 import { DashboardWidget } from "@/features/dashboard/DashboardWidget";
+import { PlatformConnectGrid } from "@/features/dashboard/PlatformConnectGrid";
 import { ProWelcome, ProChecklist } from "@/features/dashboard/ProWelcome";
 import { QuickActions } from "@/components/assistant/QuickActions";
 import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
@@ -233,6 +234,8 @@ function DashboardPage() {
             to="/settings/platforms"
           />
         )}
+
+        <PlatformConnectGrid />
 
         <section aria-labelledby="widgets-heading" className="space-y-4">
           <h2 id="widgets-heading" className="sr-only">Shortcuts</h2>
