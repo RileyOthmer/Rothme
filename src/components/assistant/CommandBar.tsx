@@ -261,18 +261,18 @@ export function CommandBar() {
                 type="button"
                 onClick={() => stop()}
                 aria-label="Stop generating"
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-border bg-surface text-foreground hover:bg-surface-2"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-border bg-surface text-foreground hover:bg-surface-2"
               >
-                <Square className="h-3.5 w-3.5" />
+                <Square className="h-3 w-3" />
               </button>
             ) : (
               <button
                 type="submit"
                 aria-label="Send"
                 disabled={!input.trim()}
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground disabled:opacity-40"
+                className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary text-primary-foreground disabled:opacity-40"
               >
-                <ArrowUp className="h-4 w-4" />
+                <ArrowUp className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
