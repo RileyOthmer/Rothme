@@ -17,7 +17,8 @@ export type PlatformId =
   | "pinterest"
   | "gbp"
   | "reddit"
-  | "bluesky";
+  | "bluesky"
+  | "google_ads";
 
 export type PlatformConfig = {
   id: PlatformId;
