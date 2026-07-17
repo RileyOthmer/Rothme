@@ -209,6 +209,91 @@ export const deletePost = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/** Update a post's status. Use for archive / restore flows. */
+export const setPostStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        status: z.enum([
+          "draft",
+          "scheduled",
+          "publishing",
+          "published",
+          "failed",
+          "archived",
+        ]),
+      })
+      .parse(d),
+  )
+  .handler(async ({ context, data }) => {
+    const { error } = await context.supabase
+      .from("posts")
+      .update({ status: data.status })
+      .eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+/**
+ * Duplicate an existing post (with its variants) as a fresh draft.
+ * Schedules are intentionally not copied — a duplicate should never
+ * accidentally re-publish anywhere.
+ */
+export const duplicatePost = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ context, data }) => {
+    const orgId = await activeOrgId(context as Ctx);
+
+    const { data: src, error: readErr } = await context.supabase
+      .from("posts")
+      .select("*, post_variants(*)")
+      .eq("id", data.id)
+      .eq("org_id", orgId)
+      .single();
+    if (readErr) throw new Error(readErr.message);
+    if (!src) throw new Error("Post not found");
+
+    const copiedTitle = src.title ? `${src.title} (copy)` : "Untitled (copy)";
+    const { data: created, error: insErr } = await context.supabase
+      .from("posts")
+      .insert({
+        org_id: orgId,
+        created_by: context.userId,
+        title: copiedTitle,
+        body: src.body ?? "",
+        status: "draft",
+        tags: src.tags ?? [],
+      })
+      .select("id")
+      .single();
+    if (insErr) throw new Error(insErr.message);
+
+    const variants = (src.post_variants ?? []) as Array<{
+      platform_id: string;
+      body: string | null;
+      media_ids: string[] | null;
+      platform_meta: Record<string, unknown> | null;
+    }>;
+    if (variants.length) {
+      const { error: vErr } = await context.supabase.from("post_variants").insert(
+        variants.map((v) => ({
+          post_id: created.id,
+          platform_id: v.platform_id,
+          body: v.body ?? "",
+          media_ids: v.media_ids ?? [],
+          platform_meta: v.platform_meta ?? {},
+        })),
+      );
+      if (vErr) throw new Error(vErr.message);
+    }
+
+    return { id: created.id as string };
+  });
+
+
 export const rescheduleItem = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
