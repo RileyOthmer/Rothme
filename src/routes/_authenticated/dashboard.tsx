@@ -11,6 +11,7 @@ import { DashboardWidget, WIDGETS } from "@/features/dashboard/DashboardWidget";
 import { ProWelcome, ProChecklist } from "@/features/dashboard/ProWelcome";
 import { QuickActions } from "@/components/assistant/QuickActions";
 import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
+import { RecentActivity } from "@/features/activity/RecentActivity";
 import { useHasConnections } from "@/hooks/use-has-connections";
 import {
   loadDashboardPrefs,
@@ -126,6 +127,8 @@ function DashboardPage() {
             ))}
           </div>
         </section>
+
+        <RecentActivity />
 
         <DecisionCenter firstName={firstName} hasConnections={false} />
       </main>

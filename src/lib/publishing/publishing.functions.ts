@@ -3,6 +3,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { logActivity } from "@/lib/collab/activity-helper.server";
 
 type Ctx = { supabase: any; userId: string };
 
@@ -141,6 +142,7 @@ export const savePost = createServerFn({ method: "POST" })
   .handler(async ({ context, data }) => {
     const orgId = await activeOrgId(context as Ctx);
     let postId = data.id;
+    const isNew = !postId;
 
     if (!postId) {
       const { data: created, error } = await context.supabase
@@ -169,6 +171,16 @@ export const savePost = createServerFn({ method: "POST" })
         .eq("id", postId);
       if (error) throw new Error(error.message);
     }
+
+    const label = data.title?.trim() || "Untitled draft";
+    await logActivity(context.supabase, {
+      orgId,
+      actorId: context.userId,
+      verb: isNew ? "draft.created" : "draft.updated",
+      subjectType: "post",
+      subjectId: postId,
+      summary: isNew ? `Draft created — ${label}` : `Draft updated — ${label}`,
+    });
 
     // Replace variants
     await context.supabase.from("post_variants").delete().eq("post_id", postId);
@@ -228,11 +240,35 @@ export const setPostStatus = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ context, data }) => {
+    const orgId = await activeOrgId(context as Ctx);
+    const { data: existing } = await context.supabase
+      .from("posts").select("title").eq("id", data.id).maybeSingle();
     const { error } = await context.supabase
       .from("posts")
       .update({ status: data.status })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
+    const label = existing?.title?.trim() || "Untitled post";
+    const verbMap: Record<string, string> = {
+      published: "content.published",
+      archived: "post.archived",
+      draft: "post.restored",
+    };
+    const summaryMap: Record<string, string> = {
+      published: `Content published — ${label}`,
+      archived: `Post archived — ${label}`,
+      draft: `Post restored — ${label}`,
+    };
+    if (verbMap[data.status]) {
+      await logActivity(context.supabase, {
+        orgId,
+        actorId: context.userId,
+        verb: verbMap[data.status],
+        subjectType: "post",
+        subjectId: data.id,
+        summary: summaryMap[data.status],
+      });
+    }
     return { ok: true };
   });
 
