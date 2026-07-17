@@ -32,6 +32,17 @@ import { INTEGRATIONS } from "@/features/integrations/registry";
 
 type UnifiedStatus = "connected" | "syncing" | "needs_reauth" | "error" | "not_connected" | "coming_soon";
 
+type MissingGroup = { feature: string; reason: string; scopes: string[] };
+type Capabilities = {
+  granted: string[];
+  required: string[];
+  missing: MissingGroup[];
+  publishingReady: boolean;
+  analyticsReady: boolean;
+  healthy: boolean;
+  healthReason?: string;
+};
+
 type Row = {
   key: string;
   platformId: string;
@@ -45,7 +56,103 @@ type Row = {
   lastSync: string | null;
   accountId?: string;
   providerId?: Provider;
+  capabilities?: Capabilities;
 };
+
+// ------- Capability heuristics ------------------------------------------------
+
+const PUBLISH_RE = /publish|write|content_publish|w_member_social|business\.manage|tweet\.write|video\.publish|manage_posts/i;
+const ANALYTICS_RE = /insight|analytic|read(?!.*write)|readonly|basic|show_list|manage_insights|users\.read|tweet\.read|list/i;
+
+function classifyScope(s: string): "publish" | "analytics" | "identity" {
+  if (PUBLISH_RE.test(s)) return "publish";
+  if (ANALYTICS_RE.test(s)) return "analytics";
+  return "identity";
+}
+
+/** Human-readable reason we'd request each capability group. */
+function reasonFor(feature: "publish" | "analytics", platformName: string): string {
+  if (feature === "publish") {
+    return `Rothme needs write access on ${platformName} so you can schedule and publish posts from the composer without leaving the app.`;
+  }
+  return `Rothme needs read access on ${platformName} to pull post reach, engagement, and follower data into your dashboards and AI insights.`;
+}
+
+function deriveSocialCapabilities(
+  platformName: string,
+  requiredScopes: string[],
+  grantedScopes: string[] | null | undefined,
+  status: UnifiedStatus,
+  lastError: string | null | undefined,
+  tokenExpiration: string | null | undefined,
+): Capabilities {
+  const granted = grantedScopes ?? [];
+  const grantedSet = new Set(granted);
+  const missingPub: string[] = [];
+  const missingAn: string[] = [];
+  let hasPubReq = false, hasAnReq = false;
+  let hasPubGranted = false, hasAnGranted = false;
+
+  for (const s of requiredScopes) {
+    const kind = classifyScope(s);
+    if (kind === "publish") hasPubReq = true;
+    if (kind === "analytics") hasAnReq = true;
+    if (!grantedSet.has(s)) {
+      if (kind === "publish") missingPub.push(s);
+      else if (kind === "analytics") missingAn.push(s);
+    }
+  }
+  for (const s of granted) {
+    const kind = classifyScope(s);
+    if (kind === "publish") hasPubGranted = true;
+    if (kind === "analytics") hasAnGranted = true;
+  }
+
+  const missing: MissingGroup[] = [];
+  if (missingPub.length) {
+    missing.push({ feature: "Publishing", reason: reasonFor("publish", platformName), scopes: missingPub });
+  }
+  if (missingAn.length) {
+    missing.push({ feature: "Analytics", reason: reasonFor("analytics", platformName), scopes: missingAn });
+  }
+
+  const expired = tokenExpiration ? new Date(tokenExpiration).getTime() < Date.now() : false;
+  const healthy = status === "connected" && !lastError && !expired;
+  const healthReason = expired
+    ? "Access token has expired — reconnect to restore access."
+    : lastError
+      ? lastError
+      : status === "needs_reauth"
+        ? "The platform revoked or expired this connection — reconnect to continue."
+        : status === "error"
+          ? "Last sync failed — check the platform and reconnect if needed."
+          : undefined;
+
+  return {
+    granted,
+    required: requiredScopes,
+    missing,
+    publishingReady: hasPubReq ? hasPubGranted && missingPub.length === 0 : hasPubGranted,
+    analyticsReady: hasAnReq ? hasAnGranted && missingAn.length === 0 : hasAnGranted,
+    healthy,
+    healthReason,
+  };
+}
+
+function deriveProviderCapabilities(connected: boolean, platformName: string): Capabilities {
+  // Providers in PROVIDER_META are analytics-only (Ads / GA4 / Shopify / Mailchimp).
+  return {
+    granted: connected ? ["Read analytics"] : [],
+    required: ["Read analytics"],
+    missing: connected
+      ? []
+      : [{ feature: "Analytics", reason: reasonFor("analytics", platformName), scopes: ["Read analytics"] }],
+    publishingReady: false,
+    analyticsReady: connected,
+    healthy: connected,
+    healthReason: connected ? undefined : "Not connected yet.",
+  };
+}
 
 export const Route = createFileRoute("/_authenticated/settings/platforms")({
   head: () => ({
