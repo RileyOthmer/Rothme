@@ -269,6 +269,21 @@ export const setPostStatus = createServerFn({ method: "POST" })
         summary: summaryMap[data.status],
       });
     }
+    if (data.status === "published" || data.status === "failed") {
+      const { notifyUser } = await import("@/lib/notifications/notify.server");
+      await notifyUser(context.supabase, {
+        userId: context.userId,
+        kind: data.status === "published" ? "publish.success" : "publish.failed",
+        title: data.status === "published" ? "Content published" : "Publishing failed",
+        body:
+          data.status === "published"
+            ? `"${label}" is now live.`
+            : `"${label}" didn't publish. Open it to see what to fix.`,
+        severity: data.status === "published" ? "opportunity" : "critical",
+        dedupeKey: `publish.${data.status}:${data.id}`,
+        metadata: { postId: data.id },
+      });
+    }
     return { ok: true };
   });
 
