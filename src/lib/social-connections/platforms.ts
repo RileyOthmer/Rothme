@@ -23,7 +23,7 @@ export type PlatformId =
 export type PlatformConfig = {
   id: PlatformId;
   name: string;
-  category: "social" | "video" | "professional" | "presence";
+  category: "social" | "video" | "professional" | "presence" | "ads";
   brandColor: string;
   /** Two-letter mark shown inside the logo tile. */
   mark: string;
