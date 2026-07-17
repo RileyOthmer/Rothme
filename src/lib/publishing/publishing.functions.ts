@@ -277,7 +277,6 @@ export const duplicatePost = createServerFn({ method: "POST" })
       media_ids: string[] | null;
       platform_meta: Record<string, unknown> | null;
     }>;
-    type Json = string | number | boolean | null | { [k: string]: Json } | Json[];
     if (variants.length) {
       const { error: vErr } = await context.supabase.from("post_variants").insert(
         variants.map((v) => ({
@@ -285,7 +284,7 @@ export const duplicatePost = createServerFn({ method: "POST" })
           platform_id: v.platform_id,
           body: v.body ?? "",
           media_ids: v.media_ids ?? [],
-          platform_meta: v.platform_meta ?? {},
+          platform_meta: (v.platform_meta ?? {}) as never,
         })),
       );
       if (vErr) throw new Error(vErr.message);
