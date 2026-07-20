@@ -647,7 +647,252 @@ function MarketingProblem() {
   );
 }
 
+/* ─────────────────────────── Rothme Solution ─────────────────────────── */
+
+const SOLUTION_PLATFORMS = [
+  { name: "Instagram", initial: "IG" },
+  { name: "Facebook", initial: "f" },
+  { name: "TikTok", initial: "TT" },
+  { name: "YouTube", initial: "YT" },
+  { name: "LinkedIn", initial: "in" },
+  { name: "Google Analytics", initial: "GA" },
+  { name: "Google Ads", initial: "Ad" },
+  { name: "Business Profile", initial: "GB" },
+  { name: "Gmail", initial: "GM" },
+  { name: "Outlook", initial: "OL" },
+  { name: "HubSpot", initial: "HS" },
+  { name: "Mailchimp", initial: "MC" },
+  { name: "Klaviyo", initial: "Kl" },
+  { name: "Twilio", initial: "Tw" },
+];
+
+const SOLUTION_FEATURES = [
+  { title: "Unified Dashboard", body: "View your marketing performance across connected platforms from one centralized dashboard.", Icon: LayoutDashboard },
+  { title: "Lead Audit", body: "Monitor your marketing ecosystem for issues such as disconnected integrations, tracking problems, and lead capture errors.", Icon: ShieldCheck },
+  { title: "Marketing Health Score", body: "Quickly understand the health of your connected marketing systems with a simple overall score.", Icon: Activity },
+  { title: "Marketing Cheat Sheet", body: "Click any metric to instantly understand what it means through clear educational explanations.", Icon: BookOpen },
+];
+
+const SOLUTION_STATS = [
+  { label: "Connected Platforms", value: 14, suffix: "+" },
+  { label: "Marketing Metrics", value: 150, suffix: "+" },
+  { label: "Health Checks", value: 100, suffix: "+" },
+  { label: "Educational Topics", value: 500, suffix: "+" },
+];
+
+function useInView<T extends HTMLElement>(options?: IntersectionObserverInit) {
+  const ref = useRef<T | null>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || inView) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.25, ...options },
+    );
+    io.observe(node);
+    return () => io.disconnect();
+  }, [inView, options]);
+  return { ref, inView };
+}
+
+function CountUp({ end, suffix = "", duration = 1400 }: { end: number; suffix?: string; duration?: number }) {
+  const { ref, inView } = useInView<HTMLSpanElement>();
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (!inView) return;
+    const start = performance.now();
+    let raf = 0;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - start) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setN(Math.round(end * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, end, duration]);
+  return (
+    <span ref={ref}>
+      {n.toLocaleString()}
+      {suffix}
+    </span>
+  );
+}
+
+function SolutionDiagram() {
+  // Distribute platforms around a circle around the central Rothme node.
+  const platforms = SOLUTION_PLATFORMS;
+  const cx = 50;
+  const cy = 50;
+  const rOuter = 40;
+  return (
+    <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-white via-surface-2/30 to-white shadow-sm">
+      <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_1px_1px,theme(colors.slate.200)_1px,transparent_0)] [background-size:22px_22px]" />
+      <div className="pointer-events-none absolute -inset-24 opacity-40 blur-3xl [background:radial-gradient(circle_at_center,theme(colors.primary/15),transparent_60%)]" />
+
+      {/* Connection lines (SVG) */}
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
+        <defs>
+          <linearGradient id="rothme-line" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="currentColor" stopOpacity="0.05" />
+            <stop offset="60%" stopColor="currentColor" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="currentColor" stopOpacity="0.7" />
+          </linearGradient>
+        </defs>
+        {platforms.map((_, i) => {
+          const angle = (i / platforms.length) * Math.PI * 2 - Math.PI / 2;
+          const x = cx + Math.cos(angle) * rOuter;
+          const y = cy + Math.sin(angle) * rOuter;
+          return (
+            <line
+              key={i}
+              x1={x}
+              y1={y}
+              x2={cx}
+              y2={cy}
+              stroke="url(#rothme-line)"
+              strokeWidth="0.4"
+              className="text-primary"
+              style={{
+                strokeDasharray: 2,
+                animation: `dash-flow 3.5s linear infinite`,
+                animationDelay: `${i * 0.15}s`,
+              }}
+            />
+          );
+        })}
+      </svg>
+
+      {/* Platform chips positioned around */}
+      {platforms.map((p, i) => {
+        const angle = (i / platforms.length) * Math.PI * 2 - Math.PI / 2;
+        const x = 50 + Math.cos(angle) * rOuter;
+        const y = 50 + Math.sin(angle) * rOuter;
+        return (
+          <div
+            key={p.name}
+            className="absolute animate-float"
+            style={{
+              left: `${x}%`,
+              top: `${y}%`,
+              transform: "translate(-50%, -50%)",
+              animationDelay: `${(i % 6) * 0.4}s`,
+            }}
+          >
+            <div className="flex items-center gap-2 rounded-full border border-border/80 bg-white/95 px-3 py-1.5 shadow-[0_8px_20px_-12px_rgba(15,23,42,0.2)] backdrop-blur">
+              <div className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-surface-2 text-[10px] font-semibold text-foreground/75">
+                {p.initial}
+              </div>
+              <span className="hidden whitespace-nowrap text-[11px] font-medium text-foreground/80 sm:inline">
+                {p.name}
+              </span>
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Central Rothme node */}
+      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <div className="relative">
+          <div className="absolute inset-0 -m-4 rounded-3xl bg-primary/20 blur-2xl" />
+          <div className="relative flex flex-col items-center gap-2 rounded-2xl border border-border bg-white px-6 py-5 shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)]">
+            <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
+              <Sparkles className="h-5 w-5" />
+            </div>
+            <div className="font-serif text-lg leading-none tracking-tight text-foreground">Rothme</div>
+            <div className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+              One dashboard
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function RothmeSolution() {
+  return (
+    <section id="rothme-solution" className="border-b border-border/70 bg-white">
+      <style>{`
+        @keyframes dash-flow { to { stroke-dashoffset: -20; } }
+      `}</style>
+      <div className="mx-auto max-w-6xl px-6 py-24 sm:py-28 md:py-32">
+        <div className="mx-auto max-w-3xl text-center animate-rise">
+          <span className="eyebrow">The Rothme solution</span>
+          <h2 className="mt-4 font-serif text-4xl leading-[1.05] tracking-tight text-foreground sm:text-5xl">
+            Everything. <span className="italic text-primary">One place.</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Connect your marketing platforms, monitor your business, understand every metric, and protect
+            every lead from a single dashboard. No switching between apps. No confusing reports. Just
+            complete visibility into your marketing.
+          </p>
+        </div>
+
+        <div className="mt-16 grid gap-10 md:mt-20 md:grid-cols-2 md:items-center md:gap-14">
+          <div className="order-1 animate-rise">
+            <SolutionDiagram />
+          </div>
+
+          <div className="order-2 grid gap-4 sm:grid-cols-2">
+            {SOLUTION_FEATURES.map((f, i) => (
+              <div
+                key={f.title}
+                className="animate-rise rounded-2xl border border-border/70 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-20px_rgba(15,23,42,0.15)] transition hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_20px_40px_-20px_rgba(15,23,42,0.2)]"
+                style={{ animationDelay: `${i * 90}ms` }}
+              >
+                <div className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-surface-2/70 text-primary">
+                  <f.Icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-4 text-[15px] font-semibold text-foreground">{f.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Statistics bar */}
+        <div className="mt-20">
+          <div className="grid gap-3 rounded-3xl border border-border/70 bg-gradient-to-br from-surface-2/50 via-white to-surface-2/40 p-4 shadow-sm sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
+            {SOLUTION_STATS.map((s) => (
+              <div
+                key={s.label}
+                className="rounded-2xl border border-border/60 bg-white px-6 py-6 text-center"
+              >
+                <div className="font-serif text-4xl leading-none tracking-tight text-foreground sm:text-5xl">
+                  <CountUp end={s.value} suffix={s.suffix} />
+                </div>
+                <div className="mt-2 text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                  {s.label}
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 text-center text-xs text-muted-foreground">
+            More integrations and educational content are continuously added through platform updates.
+          </p>
+        </div>
+
+        <div className="mx-auto mt-20 max-w-3xl text-center">
+          <p className="font-serif text-2xl leading-snug text-foreground sm:text-3xl md:text-4xl">
+            Marketing doesn't have to be complicated.
+            <br />
+            <span className="italic text-primary">Rothme was built to make it understandable.</span>
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─────────────────────────────── Problem ─────────────────────────────── */
+
 
 
 const PROBLEMS = [
