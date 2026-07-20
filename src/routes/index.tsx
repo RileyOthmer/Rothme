@@ -31,7 +31,7 @@ import {
   Zap,
 } from "lucide-react";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
