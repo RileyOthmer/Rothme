@@ -40,6 +40,8 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
