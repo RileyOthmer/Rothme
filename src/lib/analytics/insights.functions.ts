@@ -7,6 +7,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateText } from "ai";
 import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+
 
 const kpiSchema = z.object({
   label: z.string(),
@@ -21,6 +23,7 @@ const inputSchema = z.object({
 });
 
 export const getExecutiveInsights = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d) => inputSchema.parse(d))
   .handler(async ({ data }) => {
     const key = process.env.LOVABLE_API_KEY;
