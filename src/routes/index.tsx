@@ -2,13 +2,16 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   Activity,
   ArrowRight,
+  ArrowUpRight,
   BarChart3,
+  Bell,
   BookOpen,
   Bot,
   Building2,
   Calendar,
   Check,
   ChevronDown,
+  ChevronRight,
   Eye,
   FileText,
   Gauge,
@@ -21,15 +24,18 @@ import {
   Play,
   Plug,
   Search,
+  Settings as SettingsIcon,
   ShieldCheck,
   Sparkles,
   Star,
+  TrendingDown,
   TrendingUp,
   Users,
   Workflow,
   X,
   Zap,
 } from "lucide-react";
+
 
 import { useEffect, useRef, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
