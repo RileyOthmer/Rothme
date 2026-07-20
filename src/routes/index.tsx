@@ -3,6 +3,7 @@ import {
   Activity,
   ArrowRight,
   BarChart3,
+  BookOpen,
   Bot,
   Building2,
   Calendar,
@@ -11,6 +12,7 @@ import {
   Eye,
   FileText,
   Gauge,
+  LayoutDashboard,
   Lightbulb,
   Link2,
   Lock,
@@ -28,6 +30,7 @@ import {
   X,
   Zap,
 } from "lucide-react";
+
 import { useEffect, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
