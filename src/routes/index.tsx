@@ -60,7 +60,9 @@ function Index() {
       <main>
         <Hero />
         <MarketingProblem />
+        <RothmeSolution />
         <TrustedBy />
+
 
         <Problem />
         <Solution />
