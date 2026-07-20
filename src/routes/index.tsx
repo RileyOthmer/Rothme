@@ -445,6 +445,7 @@ function Footer() {
             { label: "About", href: "#" },
             { label: "Contact", href: "#" },
             { label: "Careers", href: "#" },
+            { label: "AI Transparency", to: "/ai-transparency" as const },
           ]} />
           <FooterCol title="Legal" links={[
             { label: "Privacy", href: "#" },
