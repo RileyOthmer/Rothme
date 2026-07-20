@@ -445,6 +445,7 @@ function Footer() {
             { label: "About", href: "#" },
             { label: "Contact", href: "#" },
             { label: "Careers", href: "#" },
+            { label: "AI Transparency", to: "/ai-transparency" as const },
           ]} />
           <FooterCol title="Legal" links={[
             { label: "Privacy", href: "#" },
@@ -461,7 +462,7 @@ function Footer() {
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: Array<{ label: string; href?: string; to?: "/pricing" | "/why" }> }) {
+function FooterCol({ title, links }: { title: string; links: Array<{ label: string; href?: string; to?: "/pricing" | "/why" | "/ai-transparency" }> }) {
   return (
     <div>
       <div className="text-[13px] font-medium text-foreground">{title}</div>

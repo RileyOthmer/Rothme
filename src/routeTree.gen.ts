@@ -19,6 +19,7 @@ import { Route as DesignRouteImport } from './routes/design'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AssistantRouteImport } from './routes/assistant'
+import { Route as AiTransparencyRouteImport } from './routes/ai-transparency'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GetStartedIndexRouteImport } from './routes/get-started.index'
@@ -172,6 +173,11 @@ const AuthRoute = AuthRouteImport.update({
 const AssistantRoute = AssistantRouteImport.update({
   id: '/assistant',
   path: '/assistant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiTransparencyRoute = AiTransparencyRouteImport.update({
+  id: '/ai-transparency',
+  path: '/ai-transparency',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -767,6 +773,7 @@ const ApiPublicOauthPlatformCallbackRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-transparency': typeof AiTransparencyRoute
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
@@ -882,6 +889,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-transparency': typeof AiTransparencyRoute
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
@@ -994,6 +1002,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/ai-transparency': typeof AiTransparencyRoute
   '/assistant': typeof AssistantRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/checkout': typeof CheckoutRouteWithChildren
@@ -1111,6 +1120,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ai-transparency'
     | '/assistant'
     | '/auth'
     | '/checkout'
@@ -1226,6 +1236,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ai-transparency'
     | '/assistant'
     | '/auth'
     | '/checkout'
@@ -1337,6 +1348,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/ai-transparency'
     | '/assistant'
     | '/auth'
     | '/checkout'
@@ -1454,6 +1466,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AiTransparencyRoute: typeof AiTransparencyRoute
   AssistantRoute: typeof AssistantRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   CheckoutRoute: typeof CheckoutRouteWithChildren
@@ -1551,6 +1564,13 @@ declare module '@tanstack/react-router' {
       path: '/assistant'
       fullPath: '/assistant'
       preLoaderRoute: typeof AssistantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-transparency': {
+      id: '/ai-transparency'
+      path: '/ai-transparency'
+      fullPath: '/ai-transparency'
+      preLoaderRoute: typeof AiTransparencyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -2594,6 +2614,7 @@ const GetStartedRouteWithChildren = GetStartedRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AiTransparencyRoute: AiTransparencyRoute,
   AssistantRoute: AssistantRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   CheckoutRoute: CheckoutRouteWithChildren,
