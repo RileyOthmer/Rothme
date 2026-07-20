@@ -59,7 +59,9 @@ function Index() {
       <Header />
       <main>
         <Hero />
+        <MarketingProblem />
         <TrustedBy />
+
         <Problem />
         <Solution />
         <DashboardSection />
@@ -546,7 +548,102 @@ function SectionHead({ eyebrow, title, italic, sub }: { eyebrow: string; title: 
   );
 }
 
+/* ─────────────────────────── Marketing Problem ─────────────────────────── */
+
+const PLATFORM_CHIPS = [
+  { name: "Instagram", initial: "IG", top: "4%", left: "8%", delay: "0s", tint: "from-pink-500/15 to-orange-400/10" },
+  { name: "Facebook", initial: "f", top: "2%", left: "48%", delay: "1.2s", tint: "from-blue-500/15 to-indigo-400/10" },
+  { name: "TikTok", initial: "TT", top: "16%", left: "78%", delay: "0.6s", tint: "from-slate-800/10 to-teal-400/10" },
+  { name: "YouTube", initial: "YT", top: "24%", left: "22%", delay: "1.8s", tint: "from-red-500/15 to-rose-400/10" },
+  { name: "Google Analytics", initial: "GA", top: "36%", left: "58%", delay: "0.3s", tint: "from-amber-500/15 to-orange-400/10" },
+  { name: "Google Ads", initial: "Ad", top: "44%", left: "6%", delay: "2.1s", tint: "from-emerald-500/15 to-lime-400/10" },
+  { name: "Business Profile", initial: "GB", top: "50%", left: "80%", delay: "0.9s", tint: "from-sky-500/15 to-blue-400/10" },
+  { name: "Gmail", initial: "GM", top: "60%", left: "40%", delay: "1.5s", tint: "from-red-400/15 to-yellow-400/10" },
+  { name: "Outlook", initial: "OL", top: "68%", left: "10%", delay: "0.4s", tint: "from-blue-600/15 to-cyan-400/10" },
+  { name: "HubSpot", initial: "HS", top: "72%", left: "68%", delay: "2.3s", tint: "from-orange-500/15 to-amber-400/10" },
+  { name: "Twilio", initial: "Tw", top: "84%", left: "32%", delay: "1.0s", tint: "from-red-500/15 to-pink-400/10" },
+  { name: "Mailchimp", initial: "MC", top: "88%", left: "60%", delay: "0.2s", tint: "from-yellow-500/15 to-amber-400/10" },
+  { name: "Klaviyo", initial: "Kl", top: "82%", left: "84%", delay: "1.7s", tint: "from-emerald-600/15 to-teal-400/10" },
+];
+
+const MARKETING_PAINS = [
+  { title: "Too Many Dashboards", body: "Your marketing lives across multiple platforms, making it difficult to see the complete picture." },
+  { title: "Hard To Understand", body: "Reports are filled with numbers and charts, but rarely explain what you're looking at." },
+  { title: "Problems Go Unnoticed", body: "Broken tracking, disconnected integrations, or lead capture issues can quietly impact your business." },
+  { title: "Leads Get Lost", body: "Without visibility into your marketing ecosystem, opportunities can be missed before anyone notices." },
+];
+
+function MarketingProblem() {
+  return (
+    <section id="marketing-problem" className="border-b border-border/70 bg-white">
+      <div className="mx-auto max-w-6xl px-6 py-24 sm:py-28 md:py-32">
+        <div className="mx-auto max-w-3xl text-center animate-rise">
+          <span className="eyebrow">The marketing problem</span>
+          <h2 className="mt-4 font-serif text-4xl leading-[1.05] tracking-tight text-foreground sm:text-5xl">
+            Marketing shouldn't require opening <span className="italic text-primary">ten different platforms.</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Every day, businesses switch between multiple dashboards just to understand what is happening.
+            Marketing data is scattered everywhere. Time is wasted. Important issues go unnoticed.
+            And valuable leads can slip through the cracks.
+          </p>
+        </div>
+
+        <div className="mt-16 grid gap-10 md:mt-20 md:grid-cols-2 md:gap-12 md:items-center">
+          {/* Left: scattered floating platform chips */}
+          <div
+            className="order-1 relative h-[440px] w-full overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-surface-2/60 via-white to-surface-2/40 shadow-sm sm:h-[500px]"
+            aria-hidden="true"
+          >
+            <div className="pointer-events-none absolute inset-0 opacity-70 [background-image:radial-gradient(circle_at_1px_1px,theme(colors.slate.200)_1px,transparent_0)] [background-size:22px_22px]" />
+            {PLATFORM_CHIPS.map((p) => (
+              <div
+                key={p.name}
+                className="absolute animate-float"
+                style={{ top: p.top, left: p.left, animationDelay: p.delay }}
+              >
+                <div className="flex items-center gap-2.5 rounded-2xl border border-border/80 bg-white/95 px-3.5 py-2.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] backdrop-blur">
+                  <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br ${p.tint} text-[11px] font-semibold text-foreground/80`}>
+                    {p.initial}
+                  </div>
+                  <span className="whitespace-nowrap text-[13px] font-medium text-foreground/85">{p.name}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Right: pain point cards */}
+          <div className="order-2 grid gap-4 sm:grid-cols-2">
+            {MARKETING_PAINS.map((p, i) => (
+              <div
+                key={p.title}
+                className="animate-rise rounded-2xl border border-border/70 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-20px_rgba(15,23,42,0.15)] transition hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_20px_40px_-20px_rgba(15,23,42,0.2)]"
+                style={{ animationDelay: `${i * 80}ms` }}
+              >
+                <div className="grid h-9 w-9 place-items-center rounded-xl border border-border bg-surface-2/70 text-foreground/70">
+                  <span className="text-[13px] font-semibold">{i + 1}</span>
+                </div>
+                <h3 className="mt-4 text-[15px] font-semibold text-foreground">{p.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mx-auto mt-20 max-w-3xl text-center">
+          <p className="font-serif text-2xl leading-snug text-foreground sm:text-3xl md:text-4xl">
+            Every platform tells part of the story.
+            <br />
+            <span className="italic text-primary">Rothme helps you see the whole picture.</span>
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ─────────────────────────────── Problem ─────────────────────────────── */
+
 
 const PROBLEMS = [
   { title: "Six tabs, no answers", body: "Meta, Google, Shopify, Mailchimp… you open them all and still can't tell what's actually working." },
