@@ -23,6 +23,8 @@ const inputSchema = z.object({
 });
 
 export const getExecutiveInsights = createServerFn({ method: "POST" })
+export const getExecutiveInsights = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((d) => inputSchema.parse(d))
   .handler(async ({ data }) => {
     const key = process.env.LOVABLE_API_KEY;
