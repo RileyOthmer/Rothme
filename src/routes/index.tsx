@@ -59,7 +59,9 @@ function Index() {
       <Header />
       <main>
         <Hero />
+        <MarketingProblem />
         <TrustedBy />
+
         <Problem />
         <Solution />
         <DashboardSection />
