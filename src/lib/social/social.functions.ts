@@ -46,7 +46,16 @@ export const pingSocialConnection = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: { connectionId: string }) =>
     z.object({ connectionId: z.string().uuid() }).parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    // Verify caller can see this connection under RLS (org-membership scoped).
+    const { data: row, error: lookupErr } = await context.supabase
+      .from("social_connections")
+      .select("id")
+      .eq("id", data.connectionId)
+      .maybeSingle();
+    if (lookupErr) throw new Error(lookupErr.message);
+    if (!row) throw new Error("Connection not found");
+
     const { getIntegrationManager } = await import("./manager.server");
     const { recordHealth } = await import("./store.server");
     const mgr = await getIntegrationManager();
@@ -64,5 +73,6 @@ export const pingSocialConnection = createServerFn({ method: "POST" })
       return { ok: false, error: msg };
     }
   });
+
 
 export const socialPlatforms = platformSchema.options;
