@@ -462,7 +462,7 @@ function Footer() {
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: Array<{ label: string; href?: string; to?: "/pricing" | "/why" }> }) {
+function FooterCol({ title, links }: { title: string; links: Array<{ label: string; href?: string; to?: "/pricing" | "/why" | "/ai-transparency" }> }) {
   return (
     <div>
       <div className="text-[13px] font-medium text-foreground">{title}</div>
