@@ -1523,36 +1523,208 @@ function MetricPanelBlock({ title, children }: { title: string; children: React.
 
 
 function LeadAudit() {
-  const items = [
-    { title: "Where leads come from", body: "Every source, ranked by real revenue — not just clicks." },
-    { title: "Where they leak", body: "The exact step of your funnel losing the most people this week." },
-    { title: "What to fix first", body: "One prioritized action, sized to your time and budget." },
+  const categories = [
+    { name: "Website", Icon: Globe },
+    { name: "Tracking", Icon: BarChart3 },
+    { name: "Lead Capture", Icon: MousePointerClick },
+    { name: "Email", Icon: Mail },
+    { name: "SMS", Icon: MessageSquare },
+    { name: "Integrations", Icon: Plug },
+    { name: "Advertising", Icon: Megaphone },
+    { name: "SEO", Icon: Search },
+    { name: "Google Business Profile", Icon: Building2 },
   ];
+
+  const timeline = [
+    { time: "11:03 AM", label: "Website Health Check Passed" },
+    { time: "11:08 AM", label: "Google Analytics Connected" },
+    { time: "11:14 AM", label: "Lead Forms Responding Normally" },
+    { time: "11:21 AM", label: "Meta Pixel Active" },
+    { time: "11:30 AM", label: "Twilio SMS Service Connected" },
+    { time: "11:37 AM", label: "Weekly Marketing Report Generated" },
+  ];
+
+  const cards = [
+    { title: "Website Monitoring", body: "Continuously checks website availability and connection status.", Icon: Globe },
+    { title: "Lead Capture Monitoring", body: "Monitor contact forms, booking links, and connected lead capture systems.", Icon: MousePointerClick },
+    { title: "Tracking Monitoring", body: "Monitor connected analytics and advertising tracking systems.", Icon: BarChart3 },
+    { title: "Email Monitoring", body: "Monitor connected email platforms and communication status.", Icon: Mail },
+    { title: "SMS Monitoring", body: "Monitor connected SMS providers and delivery services.", Icon: Radio },
+    { title: "Integration Monitoring", body: "Monitor all connected marketing platforms and alert users when an integration requires attention.", Icon: Plug },
+    { title: "Marketing Health", body: "Every completed audit contributes to your overall Marketing Health Score.", Icon: Gauge },
+  ];
+
+  const { ref: timelineRef, inView: timelineIn } = useInView<HTMLOListElement>();
+  const { ref: cardsRef, inView: cardsIn } = useInView<HTMLDivElement>();
+
   return (
-    <Section tint>
-      <div className="grid gap-14 md:grid-cols-[1fr_1.1fr] md:items-center">
-        <div>
-          <SectionHead
-            eyebrow="Lead Audit"
-            title="Know where every customer"
-            italic="actually comes from."
-            sub="Rothme traces every lead back to the ad, post, or channel that started it — then tells you plainly what to double down on and what to cut."
-          />
+    <Section id="lead-audit" tint>
+      <div className="mx-auto max-w-3xl text-center">
+        <span className="eyebrow">Lead Audit</span>
+        <h2 className="mt-4 text-4xl font-medium tracking-tight text-foreground sm:text-5xl">
+          Protect Every <span className="font-serif italic font-normal">Lead.</span>
+        </h2>
+        <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          Marketing issues often go unnoticed until they begin affecting your business. Lead Audit
+          continuously monitors your connected marketing ecosystem so you always know when
+          something needs attention.
+        </p>
+      </div>
+
+      <div className="mt-16 grid gap-10 lg:grid-cols-[1.15fr_1fr] lg:items-start">
+        {/* LEFT — Dashboard */}
+        <div className="relative">
+          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-primary/10 via-transparent to-emerald-400/10 blur-2xl" />
+          <div className="rounded-3xl border border-border/70 bg-surface/90 p-6 shadow-xl backdrop-blur sm:p-8">
+            {/* Header */}
+            <div className="flex flex-wrap items-start justify-between gap-6 border-b border-border/60 pb-6">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                  Lead Audit Score
+                </div>
+                <div className="mt-2 flex items-baseline gap-2">
+                  <span className="text-6xl font-medium tracking-tight text-foreground">
+                    <CountUp end={96} duration={1600} />
+                  </span>
+                  <span className="text-lg text-muted-foreground">/ 100</span>
+                </div>
+                <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-emerald-200/70 bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  </span>
+                  Status: Healthy
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-right sm:text-left">
+                <div className="rounded-xl border border-border/60 bg-background/60 px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Last Scan</div>
+                  <div className="mt-1 text-sm font-medium text-foreground">2 min ago</div>
+                </div>
+                <div className="rounded-xl border border-border/60 bg-background/60 px-4 py-3">
+                  <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Next Scan</div>
+                  <div className="mt-1 text-sm font-medium text-foreground">58 min</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Categories */}
+            <div className="mt-6">
+              <div className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                System Categories
+              </div>
+              <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {categories.map(({ name, Icon }, i) => (
+                  <li
+                    key={name}
+                    className="flex items-center justify-between rounded-xl border border-border/60 bg-background/50 px-3.5 py-2.5 transition-colors hover:bg-background"
+                    style={{ animation: `rise 0.6s ease-out both`, animationDelay: `${i * 60}ms` }}
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <span className="truncate text-sm font-medium text-foreground">{name}</span>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                      <span className="relative flex h-1.5 w-1.5">
+                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      </span>
+                      Healthy
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Timeline */}
+            <div className="mt-8 rounded-2xl border border-border/60 bg-background/40 p-5">
+              <div className="mb-4 flex items-center gap-2">
+                <Activity className="h-4 w-4 text-primary" />
+                <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Active Monitoring
+                </div>
+              </div>
+              <ol ref={timelineRef} className="relative space-y-4 border-l border-border/70 pl-5">
+                {timeline.map((t, i) => (
+                  <li
+                    key={t.time}
+                    className="relative"
+                    style={
+                      timelineIn
+                        ? { animation: `rise 0.5s ease-out both`, animationDelay: `${i * 90}ms` }
+                        : { opacity: 0 }
+                    }
+                  >
+                    <span className="absolute -left-[27px] top-1 grid h-4 w-4 place-items-center rounded-full border border-emerald-300/70 bg-emerald-50 dark:border-emerald-500/40 dark:bg-emerald-500/15">
+                      <CheckCircle2 className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
+                    </span>
+                    <div className="flex items-baseline justify-between gap-4">
+                      <span className="text-sm text-foreground">{t.label}</span>
+                      <span className="shrink-0 font-mono text-xs text-muted-foreground">{t.time}</span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
         </div>
-        <div className="space-y-3">
-          {items.map((i) => (
-            <div key={i.title} className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+
+        {/* RIGHT — Feature cards */}
+        <div ref={cardsRef} className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+          {cards.map((c, i) => (
+            <div
+              key={c.title}
+              className="group rounded-2xl border border-border/70 bg-surface p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-md"
+              style={
+                cardsIn
+                  ? { animation: `rise 0.55s ease-out both`, animationDelay: `${i * 70}ms` }
+                  : { opacity: 0 }
+              }
+            >
               <div className="flex items-start gap-3">
-                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
-                  <Search className="h-4 w-4" />
+                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                  <c.Icon className="h-4 w-4" />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-[15px] font-semibold text-foreground">{i.title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{i.body}</p>
+                  <h3 className="text-[15px] font-semibold text-foreground">{c.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{c.body}</p>
                 </div>
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Callout */}
+      <div className="mx-auto mt-20 max-w-4xl text-center">
+        <p className="text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl">
+          Know when something changes{" "}
+          <span className="font-serif italic font-normal text-muted-foreground">
+            before it becomes a bigger problem.
+          </span>
+        </p>
+      </div>
+
+      {/* Transparency */}
+      <div className="mx-auto mt-12 max-w-3xl">
+        <div className="rounded-2xl border border-border/70 bg-surface/80 p-6 shadow-xs backdrop-blur sm:p-7">
+          <div className="flex items-start gap-3">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-[15px] font-semibold text-foreground">Transparency</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Lead Audit reports information based on connected services, successful system
+                checks, and available platform data.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Lead Audit helps identify potential issues but does not guarantee business outcomes
+                or marketing performance.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </Section>
