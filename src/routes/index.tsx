@@ -2,13 +2,16 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
   Activity,
   ArrowRight,
+  ArrowUpRight,
   BarChart3,
+  Bell,
   BookOpen,
   Bot,
   Building2,
   Calendar,
   Check,
   ChevronDown,
+  ChevronRight,
   Eye,
   FileText,
   Gauge,
@@ -21,9 +24,11 @@ import {
   Play,
   Plug,
   Search,
+  Settings as SettingsIcon,
   ShieldCheck,
   Sparkles,
   Star,
+  TrendingDown,
   TrendingUp,
   Users,
   Workflow,
@@ -31,9 +36,12 @@ import {
   Zap,
 } from "lucide-react";
 
+
 import { useEffect, useRef, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
@@ -972,50 +980,541 @@ function Solution() {
   );
 }
 
-/* ─────────────────────────────── Dashboard section ─────────────────────────────── */
+/* ─────────────────────────── Dashboard preview ─────────────────────────── */
+
+const DASH_SIDEBAR = [
+  { label: "Dashboard", icon: LayoutDashboard, active: true },
+  { label: "Analytics", icon: BarChart3 },
+  { label: "Lead Audit", icon: ShieldCheck },
+  { label: "Marketing Health", icon: Activity },
+  { label: "Cheat Sheet", icon: BookOpen },
+  { label: "Reports", icon: FileText },
+  { label: "Integrations", icon: Plug },
+  { label: "Notifications", icon: Bell },
+  { label: "Settings", icon: SettingsIcon },
+];
+
+const DASH_PLATFORMS = [
+  { name: "Instagram", initial: "IG" },
+  { name: "Facebook", initial: "f" },
+  { name: "TikTok", initial: "TT" },
+  { name: "YouTube", initial: "YT" },
+  { name: "Google Analytics", initial: "GA" },
+  { name: "Google Ads", initial: "Ad" },
+  { name: "HubSpot", initial: "HS" },
+  { name: "Twilio", initial: "Tw" },
+  { name: "Gmail", initial: "GM" },
+  { name: "Outlook", initial: "OL" },
+];
+
+const DASH_PERFORMANCE = [
+  { name: "Instagram", value: 92 },
+  { name: "Facebook", value: 74 },
+  { name: "TikTok", value: 61 },
+  { name: "LinkedIn", value: 48 },
+  { name: "YouTube", value: 39 },
+];
+
+type DashMetric = {
+  label: string;
+  value: string;
+  delta: string;
+  positive: boolean;
+  previous: string;
+  definition: string;
+  why: string;
+  formula?: string;
+  howCalc: string;
+  related: string[];
+  faqs: { q: string; a: string }[];
+};
+
+const DASH_METRICS: DashMetric[] = [
+  {
+    label: "Followers", value: "48,204", delta: "+3.2%", positive: true, previous: "46,712",
+    definition: "The total number of accounts following your connected profiles across every platform.",
+    why: "Followers represent an audience you can reach without paying — the foundation of organic distribution.",
+    howCalc: "Rothme sums follower counts across every connected social account, refreshed every 15 minutes.",
+    related: ["Reach", "Impressions", "Engagement rate"],
+    faqs: [
+      { q: "Does this include followers I lost?", a: "Yes — the number is net: new followers minus unfollows." },
+      { q: "How often does this update?", a: "Every 15 minutes for connected platforms; hourly for platforms with rate limits." },
+    ],
+  },
+  {
+    label: "Reach", value: "182,940", delta: "+11.4%", positive: true, previous: "164,220",
+    definition: "The number of unique people who saw any of your content in the selected date range.",
+    why: "Reach tells you how far your marketing traveled — how many distinct humans, not just impressions.",
+    howCalc: "Rothme deduplicates viewers per platform, then sums across platforms (people on multiple platforms are counted once per platform).",
+    related: ["Impressions", "Followers", "CTR"],
+    faqs: [{ q: "What's the difference from impressions?", a: "Reach = unique people. Impressions = total views, including repeat views by the same person." }],
+  },
+  {
+    label: "Impressions", value: "412,558", delta: "+8.1%", positive: true, previous: "381,662",
+    definition: "The total number of times your content was shown, including repeat views by the same viewer.",
+    why: "Impressions measure exposure volume. Paired with Reach, they show how repeatedly your audience sees you.",
+    formula: "Impressions ÷ Reach = Frequency",
+    howCalc: "Aggregated from each platform's reporting API for the selected date range.",
+    related: ["Reach", "CTR", "Followers"],
+    faqs: [{ q: "Higher impressions = better?", a: "Not always. Very high impressions with low reach means the same people are seeing your content over and over." }],
+  },
+  {
+    label: "CTR", value: "3.42%", delta: "+0.4pp", positive: true, previous: "3.02%",
+    definition: "Click-through rate — the percentage of impressions that resulted in a click.",
+    why: "CTR shows how compelling your creative and message are to the audience actually seeing it.",
+    formula: "CTR = (Clicks ÷ Impressions) × 100",
+    howCalc: "Rothme divides total clicks by total impressions across all connected paid and organic sources for the period.",
+    related: ["Impressions", "Website Clicks", "Conversions"],
+    faqs: [{ q: "What's a good CTR?", a: "It depends on the channel — social averages 1–3%, search ads 3–6%. Rothme compares you to your own historical baseline." }],
+  },
+  {
+    label: "Website Clicks", value: "12,884", delta: "+6.8%", positive: true, previous: "12,062",
+    definition: "The number of clicks that sent someone to your website from any connected marketing channel.",
+    why: "This is the top of your website funnel — the raw traffic your marketing is generating.",
+    howCalc: "Combined from UTM-tagged link clicks in social, ads, and email connectors.",
+    related: ["CTR", "Leads", "Conversions"],
+    faqs: [{ q: "Does this match Google Analytics?", a: "Close, but not identical — GA counts sessions with attribution windows, Rothme counts click events." }],
+  },
+  {
+    label: "Leads", value: "1,204", delta: "+14.2%", positive: true, previous: "1,054",
+    definition: "New prospective customers captured through forms, sign-ups, or conversion events.",
+    why: "Leads are the direct output of your marketing — the people your business can now follow up with.",
+    howCalc: "Aggregated from form submissions, lead ads, and conversion events in your connected platforms.",
+    related: ["Conversions", "Revenue", "Website Clicks"],
+    faqs: [{ q: "Are duplicates counted?", a: "No — Rothme deduplicates by email address across sources." }],
+  },
+  {
+    label: "Conversions", value: "312", delta: "−1.9%", positive: false, previous: "318",
+    definition: "The number of leads or visitors who completed a defined goal action (purchase, booking, sign-up).",
+    why: "Conversions are the events tied most directly to business outcomes.",
+    formula: "Conversion rate = (Conversions ÷ Website Clicks) × 100",
+    howCalc: "Pulled from the conversion events you've defined in each connected platform (GA4 goals, Meta pixel events, Shopify orders).",
+    related: ["Leads", "Revenue", "CTR"],
+    faqs: [{ q: "Why is this lower than leads?", a: "Not every lead completes the goal. The gap between leads and conversions is your conversion funnel." }],
+  },
+  {
+    label: "Revenue", value: "$48,210", delta: "+9.6%", positive: true, previous: "$43,988",
+    definition: "Revenue attributed to marketing-driven sessions across your connected commerce platforms.",
+    why: "Revenue is the bottom line — the number that decides whether marketing is paying for itself.",
+    howCalc: "Rothme reads order totals from your commerce integrations (Shopify, Stripe) and attributes them to the marketing source of the visit.",
+    related: ["Conversions", "Leads", "CTR"],
+    faqs: [{ q: "Does this include refunds?", a: "Yes — refunds within the period are subtracted from revenue." }],
+  },
+];
+
+const DASH_ACTIVITY = [
+  { text: "Google Analytics synced successfully", when: "2m ago" },
+  { text: "Lead Audit completed", when: "18m ago" },
+  { text: "Weekly Report generated", when: "1h ago" },
+  { text: "Meta Pixel connected", when: "3h ago" },
+  { text: "Website health check passed", when: "6h ago" },
+  { text: "Email integration connected", when: "Yesterday" },
+];
+
+const DASH_UPCOMING = [
+  { title: "Weekly Marketing Report", when: "Monday", icon: FileText },
+  { title: "Monthly Executive Report", when: "1st of Month", icon: BarChart3 },
+  { title: "Lead Audit", when: "Tomorrow", icon: ShieldCheck },
+];
 
 function DashboardSection() {
   return (
-    <Section id="dashboard">
-      <SectionHead
-        eyebrow="The Executive Brief"
-        title="The dashboard that"
-        italic="reads itself to you."
-        sub="No 12-widget wall of numbers. One paragraph, one action, one confidence level — every morning."
-      />
-      <div className="mt-14 rounded-2xl border border-border bg-surface p-3 shadow-2xl shadow-primary/5">
-        <div className="rounded-xl bg-gradient-to-br from-surface-2/60 to-surface p-6 sm:p-10">
-          <div className="mb-5 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="eyebrow">This morning</span>
-            <span className="ml-auto rounded-full border border-border bg-surface px-2 py-0.5 text-[10px] text-muted-foreground">high confidence</span>
-          </div>
-          <p className="font-serif text-2xl leading-snug text-foreground sm:text-3xl">
-            Your ads are quietly having their best week of the quarter.
+    <section id="dashboard" className="border-b border-border/70 bg-white">
+      <div className="mx-auto max-w-6xl px-6 py-24 sm:py-28 md:py-32">
+        <div className="mx-auto max-w-3xl text-center animate-rise">
+          <span className="eyebrow">The dashboard</span>
+          <h2 className="mt-4 font-serif text-4xl leading-[1.05] tracking-tight text-foreground sm:text-5xl">
+            Your Marketing.
+            <br />
+            <span className="italic text-primary">One Dashboard.</span>
+          </h2>
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            See your marketing performance, monitor your lead health, and understand your business from one simple dashboard.
           </p>
-          <p className="mt-3 max-w-3xl text-[15px] leading-relaxed text-muted-foreground">
-            Instagram brought in 42 new customers — up 31% on last week — mostly from the reel you posted Tuesday. One thing to do today: reply to the 4 comments waiting on that post.
-          </p>
-          <div className="mt-8 grid grid-cols-3 gap-3 text-center">
-            {[
-              { l: "New customers", v: "42", d: "+31%" },
-              { l: "Ad spend", v: "$318", d: "−12%" },
-              { l: "Reach", v: "18.4k", d: "+9%" },
-            ].map((m) => (
-              <div key={m.l} className="rounded-xl border border-border bg-surface p-4">
-                <div className="text-xs text-muted-foreground">{m.l}</div>
-                <div className="mt-1 font-serif text-2xl text-foreground">{m.v}</div>
-                <div className="mt-0.5 text-[11px] font-medium text-emerald-600">{m.d}</div>
+        </div>
+
+        <div className="mt-14 md:mt-20">
+          <DashboardPreview />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function DashboardPreview() {
+  const [range, setRange] = useState<"Weekly" | "Monthly" | "Yearly">("Monthly");
+  return (
+    <div className="mx-auto w-[95%] max-w-[1180px] animate-rise overflow-hidden rounded-3xl border border-border bg-white shadow-[0_30px_80px_-30px_rgba(15,23,42,0.28),0_10px_30px_-15px_rgba(15,23,42,0.15)]">
+      <div className="overflow-x-auto">
+        <div className="grid min-w-[900px] grid-cols-[220px_1fr]">
+          {/* Sidebar */}
+          <aside className="border-r border-border/70 bg-surface-2/40 p-4" aria-label="Dashboard navigation">
+            <div className="flex items-center gap-2 px-2 py-1">
+              <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
+                <Sparkles className="h-4 w-4" />
               </div>
-            ))}
+              <span className="font-serif text-lg leading-none text-foreground">Rothme</span>
+            </div>
+            <nav className="mt-6 space-y-1">
+              {DASH_SIDEBAR.map((s) => (
+                <button
+                  key={s.label}
+                  type="button"
+                  aria-current={s.active ? "page" : undefined}
+                  className={
+                    "group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] transition " +
+                    (s.active
+                      ? "bg-primary/10 font-medium text-primary"
+                      : "text-foreground/75 hover:bg-white hover:text-foreground")
+                  }
+                >
+                  <s.icon className="h-4 w-4 shrink-0" />
+                  <span className="truncate">{s.label}</span>
+                </button>
+              ))}
+            </nav>
+          </aside>
+
+          {/* Main */}
+          <div className="min-w-0">
+            {/* Top nav */}
+            <div className="flex items-center gap-3 border-b border-border/70 bg-white px-5 py-3">
+              <div className="relative flex-1 max-w-md">
+                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  aria-label="Search dashboard"
+                  placeholder="Search metrics, reports, platforms…"
+                  className="h-9 w-full rounded-lg border border-border bg-surface-2/40 pl-8 pr-3 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+              <button type="button" className="hidden items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-1.5 text-[12px] text-foreground/80 hover:bg-surface-2/60 sm:inline-flex">
+                <Calendar className="h-3.5 w-3.5" />
+                Last 30 days
+                <ChevronDown className="h-3.5 w-3.5" />
+              </button>
+              <button type="button" aria-label="Notifications" className="relative grid h-9 w-9 place-items-center rounded-lg border border-border bg-white text-foreground/70 hover:bg-surface-2/60">
+                <Bell className="h-4 w-4" />
+                <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-primary" />
+              </button>
+              <div aria-label="Profile" className="grid h-9 w-9 place-items-center rounded-full border border-border bg-gradient-to-br from-primary/20 to-primary/5 text-[11px] font-semibold text-foreground">
+                RM
+              </div>
+            </div>
+
+            <div className="space-y-5 bg-surface-2/30 p-5">
+              {/* Top row */}
+              <div className="grid gap-4 lg:grid-cols-3">
+                <DashCard>
+                  <div className="flex items-center justify-between">
+                    <span className="eyebrow">Marketing Health</span>
+                    <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-600">Excellent</span>
+                  </div>
+                  <div className="mt-3 flex items-baseline gap-1.5">
+                    <span className="font-serif text-4xl leading-none text-foreground">94</span>
+                    <span className="text-sm text-muted-foreground">/ 100</span>
+                  </div>
+                  <div className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-emerald-600">
+                    <TrendingUp className="h-3 w-3" /> +4 this month
+                  </div>
+                </DashCard>
+
+                <DashCard>
+                  <div className="flex items-center justify-between">
+                    <span className="eyebrow">Lead Audit</span>
+                    <span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500/15 text-emerald-600">
+                      <Check className="h-3 w-3" />
+                    </span>
+                  </div>
+                  <div className="mt-3 font-serif text-2xl leading-tight text-foreground">Healthy</div>
+                  <p className="mt-1 text-[12px] text-muted-foreground">No critical issues detected.</p>
+                  <button type="button" className="mt-3 inline-flex items-center gap-1 text-[12px] font-medium text-primary hover:underline">
+                    View Audit <ChevronRight className="h-3 w-3" />
+                  </button>
+                </DashCard>
+
+                <DashCard>
+                  <div className="flex items-center justify-between">
+                    <span className="eyebrow">Connected Platforms</span>
+                    <span className="text-[11px] font-medium text-foreground/70">14 Connected</span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {DASH_PLATFORMS.map((p) => (
+                      <span
+                        key={p.name}
+                        title={p.name}
+                        className="grid h-7 w-7 place-items-center rounded-md border border-border bg-white text-[10px] font-semibold text-foreground/75"
+                      >
+                        {p.initial}
+                      </span>
+                    ))}
+                  </div>
+                </DashCard>
+              </div>
+
+              {/* Second row */}
+              <div className="grid gap-4 lg:grid-cols-[1.6fr_1fr]">
+                <DashCard>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <span className="eyebrow">Growth</span>
+                      <div className="mt-1 font-serif text-lg text-foreground">Traffic & engagement</div>
+                    </div>
+                    <div className="inline-flex overflow-hidden rounded-lg border border-border">
+                      {(["Weekly", "Monthly", "Yearly"] as const).map((r) => (
+                        <button
+                          key={r}
+                          type="button"
+                          onClick={() => setRange(r)}
+                          className={
+                            "px-2.5 py-1 text-[11px] font-medium transition " +
+                            (range === r ? "bg-primary text-primary-foreground" : "bg-white text-foreground/70 hover:bg-surface-2/60")
+                          }
+                        >
+                          {r}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <GrowthChart key={range} range={range} />
+                  </div>
+                </DashCard>
+
+                <DashCard>
+                  <span className="eyebrow">Platform Performance</span>
+                  <div className="mt-4 space-y-3">
+                    {DASH_PERFORMANCE.map((p, i) => (
+                      <div key={p.name}>
+                        <div className="flex items-center justify-between text-[12px]">
+                          <span className="text-foreground/80">{p.name}</span>
+                          <span className="font-medium text-foreground">{p.value}</span>
+                        </div>
+                        <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-surface-2">
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-primary to-primary/60"
+                            style={{
+                              width: `${p.value}%`,
+                              animation: `bar-grow 900ms ease-out ${i * 90}ms both`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </DashCard>
+              </div>
+
+              {/* Third row */}
+              <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
+                <DashCard>
+                  <div className="flex items-center justify-between">
+                    <span className="eyebrow">Marketing Metrics</span>
+                    <span className="text-[11px] text-muted-foreground">vs previous period</span>
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                    {DASH_METRICS.map((m) => (
+                      <MetricCard key={m.label} metric={m} />
+                    ))}
+                  </div>
+                </DashCard>
+
+                <DashCard>
+                  <div className="flex items-center justify-between">
+                    <span className="eyebrow">Recent Activity</span>
+                    <Activity className="h-3.5 w-3.5 text-muted-foreground" />
+                  </div>
+                  <ul className="mt-3 space-y-2.5">
+                    {DASH_ACTIVITY.map((a, i) => (
+                      <li
+                        key={a.text}
+                        className="flex items-start gap-2 rounded-lg px-1 py-0.5 animate-rise"
+                        style={{ animationDelay: `${i * 60}ms` }}
+                      >
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate text-[12px] text-foreground/85">{a.text}</div>
+                          <div className="text-[10px] text-muted-foreground">{a.when}</div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </DashCard>
+              </div>
+
+              {/* Bottom row — upcoming reports */}
+              <DashCard>
+                <div className="flex items-center justify-between">
+                  <span className="eyebrow">Upcoming Reports</span>
+                  <button type="button" className="text-[11px] font-medium text-primary hover:underline">
+                    View all
+                  </button>
+                </div>
+                <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                  {DASH_UPCOMING.map((r) => (
+                    <div
+                      key={r.title}
+                      className="flex items-center gap-3 rounded-xl border border-border/70 bg-white p-3"
+                    >
+                      <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
+                        <r.icon className="h-4 w-4" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="truncate text-[13px] font-medium text-foreground">{r.title}</div>
+                        <div className="text-[11px] text-muted-foreground">{r.when}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </DashCard>
+            </div>
           </div>
         </div>
       </div>
-    </Section>
+
+      <style>{`
+        @keyframes bar-grow { from { width: 0; } }
+        @keyframes stroke-in { from { stroke-dashoffset: 1000; } to { stroke-dashoffset: 0; } }
+      `}</style>
+    </div>
+  );
+}
+
+function DashCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-border/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.03),0_10px_25px_-18px_rgba(15,23,42,0.15)] transition hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_18px_36px_-20px_rgba(15,23,42,0.2)]">
+      {children}
+    </div>
+  );
+}
+
+function GrowthChart({ range }: { range: "Weekly" | "Monthly" | "Yearly" }) {
+  const seeds: Record<string, number[]> = {
+    Weekly: [22, 30, 28, 42, 38, 55, 60],
+    Monthly: [28, 34, 30, 46, 44, 58, 55, 68, 72, 66, 78, 84],
+    Yearly: [40, 48, 55, 52, 68, 74, 70, 82, 88, 84, 96, 104],
+  };
+  const data = seeds[range];
+  const w = 640;
+  const h = 180;
+  const pad = 12;
+  const max = Math.max(...data);
+  const step = (w - pad * 2) / (data.length - 1);
+  const pts = data.map((v, i) => [pad + i * step, h - pad - (v / max) * (h - pad * 2)] as const);
+  const path = pts.map((p, i) => (i === 0 ? `M${p[0]},${p[1]}` : `L${p[0]},${p[1]}`)).join(" ");
+  const area = `${path} L${pts[pts.length - 1][0]},${h - pad} L${pts[0][0]},${h - pad} Z`;
+  return (
+    <svg viewBox={`0 0 ${w} ${h}`} className="h-40 w-full" role="img" aria-label={`${range} growth chart`}>
+      <defs>
+        <linearGradient id="growth-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="currentColor" stopOpacity="0.18" />
+          <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <g className="text-primary">
+        <path d={area} fill="url(#growth-fill)" />
+        <path
+          d={path}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ strokeDasharray: 1000, animation: "stroke-in 1.2s ease-out both" }}
+        />
+        {pts.map((p, i) => (
+          <circle key={i} cx={p[0]} cy={p[1]} r="2.5" fill="currentColor" opacity={i === pts.length - 1 ? 1 : 0.35} />
+        ))}
+      </g>
+    </svg>
+  );
+}
+
+function MetricCard({ metric }: { metric: DashMetric }) {
+  const Trend = metric.positive ? TrendingUp : TrendingDown;
+  return (
+    <div className="group rounded-xl border border-border/70 bg-white p-3 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_10px_24px_-18px_rgba(15,23,42,0.25)]">
+      <div className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{metric.label}</div>
+      <div className="mt-1 font-serif text-xl leading-none text-foreground">{metric.value}</div>
+      <div className="mt-2 flex items-center justify-between">
+        <span
+          className={
+            "inline-flex items-center gap-0.5 rounded-full px-1.5 py-0.5 text-[10px] font-medium " +
+            (metric.positive ? "bg-emerald-500/10 text-emerald-600" : "bg-rose-500/10 text-rose-600")
+          }
+        >
+          <Trend className="h-3 w-3" />
+          {metric.delta}
+        </span>
+        <span className="text-[10px] text-muted-foreground">prev {metric.previous}</span>
+      </div>
+      <Sheet>
+        <SheetTrigger asChild>
+          <button
+            type="button"
+            className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-md border border-border bg-white px-2 py-1 text-[11px] font-medium text-foreground/80 transition hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+          >
+            Learn more <ArrowUpRight className="h-3 w-3" />
+          </button>
+        </SheetTrigger>
+        <SheetContent side="right" className="w-full overflow-y-auto sm:max-w-md">
+          <SheetHeader>
+            <div className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">Metric</div>
+            <SheetTitle className="font-serif text-2xl leading-tight text-foreground">{metric.label}</SheetTitle>
+            <SheetDescription className="text-[13px] leading-relaxed text-muted-foreground">
+              {metric.definition}
+            </SheetDescription>
+          </SheetHeader>
+          <div className="mt-6 space-y-6">
+            <MetricPanelBlock title="Why it matters">
+              <p>{metric.why}</p>
+            </MetricPanelBlock>
+            {metric.formula && (
+              <MetricPanelBlock title="Formula">
+                <code className="block rounded-md border border-border bg-surface-2/60 px-3 py-2 font-mono text-[12px] text-foreground">
+                  {metric.formula}
+                </code>
+              </MetricPanelBlock>
+            )}
+            <MetricPanelBlock title="How Rothme calculates it">
+              <p>{metric.howCalc}</p>
+            </MetricPanelBlock>
+            <MetricPanelBlock title="Related metrics">
+              <div className="flex flex-wrap gap-1.5">
+                {metric.related.map((r) => (
+                  <span key={r} className="rounded-full border border-border bg-surface-2/60 px-2.5 py-1 text-[11px] text-foreground/80">
+                    {r}
+                  </span>
+                ))}
+              </div>
+            </MetricPanelBlock>
+            <MetricPanelBlock title="Frequently asked questions">
+              <ul className="space-y-3">
+                {metric.faqs.map((f) => (
+                  <li key={f.q}>
+                    <div className="text-[13px] font-medium text-foreground">{f.q}</div>
+                    <div className="mt-1 text-[13px] leading-relaxed text-muted-foreground">{f.a}</div>
+                  </li>
+                ))}
+              </ul>
+            </MetricPanelBlock>
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
+  );
+}
+
+function MetricPanelBlock({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section>
+      <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">{title}</h3>
+      <div className="mt-2 text-[13px] leading-relaxed text-foreground/85">{children}</div>
+    </section>
   );
 }
 
 /* ─────────────────────────────── Lead Audit ─────────────────────────────── */
+
 
 function LeadAudit() {
   const items = [
