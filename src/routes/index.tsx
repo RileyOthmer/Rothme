@@ -2669,31 +2669,211 @@ function IntegrationsSection() {
 
 /* ─────────────────────────────── How It Works ─────────────────────────────── */
 
-const STEPS = [
-  { n: "1", title: "Tell us about your business", body: "A short wizard learns your industry, goals, and current tools." },
-  { n: "2", title: "Connect your platforms", body: "One-click official connections for every major marketing channel." },
-  { n: "3", title: "We unify your data", body: "Every metric normalized into one source of truth in minutes." },
-  { n: "4", title: "Grow, guided by AI", body: "Daily briefings, next actions, and reports that write themselves." },
+const HIW_STEPS = [
+  {
+    n: "01",
+    title: "Connect Your Platforms",
+    body: "Securely connect the marketing platforms you already use. Rothme supports popular tools across social media, analytics, advertising, communication, CRM, and commerce.",
+    footer: "Usually takes just a few minutes.",
+    icon: Plug,
+  },
+  {
+    n: "02",
+    title: "Rothme Organizes Everything",
+    body: "Once connected, Rothme securely syncs your marketing data into a single, easy-to-understand dashboard while monitoring your connected ecosystem.",
+    footer: "Automatic syncing keeps your dashboard up to date.",
+    icon: Workflow,
+  },
+  {
+    n: "03",
+    title: "Understand Your Marketing",
+    body: "View reports, monitor Lead Audit, check your Marketing Health Score, and learn every metric through the built-in Marketing Cheat Sheet.",
+    footer: "Built for clarity, not complexity.",
+    icon: Lightbulb,
+  },
 ];
+
+const HIW_BENEFITS = [
+  { icon: Zap, title: "Fast Setup", body: "Connect supported platforms in minutes." },
+  { icon: ShieldCheck, title: "Secure", body: "Industry-standard authentication and encryption." },
+  { icon: Activity, title: "Automatic", body: "Data stays synchronized through scheduled updates." },
+  { icon: BookOpen, title: "Educational", body: "Understand your marketing without leaving the dashboard." },
+];
+
+const HIW_PLATFORM_CHIPS = [
+  { mark: "Ig", color: "#E4405F" },
+  { mark: "Fb", color: "#1877F2" },
+  { mark: "Ga", color: "#4285F4" },
+  { mark: "Sh", color: "#96BF48" },
+  { mark: "Hs", color: "#FF7A59" },
+];
+
+function HiwStepIllustration({ step }: { step: number }) {
+  if (step === 0) {
+    return (
+      <div className="relative h-32 overflow-hidden rounded-xl border border-border bg-gradient-to-br from-surface-2 to-surface">
+        <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+        {HIW_PLATFORM_CHIPS.map((p, i) => (
+          <div
+            key={i}
+            className="absolute -translate-y-1/2 animate-[float-y_4s_ease-in-out_infinite]"
+            style={{
+              left: `${8 + i * 14}%`,
+              top: `${30 + (i % 2) * 40}%`,
+              animationDelay: `${i * 0.3}s`,
+            }}
+          >
+            <span className="grid h-8 w-8 place-items-center rounded-lg text-[10px] font-semibold text-white shadow-sm" style={{ background: p.color }}>
+              {p.mark}
+            </span>
+          </div>
+        ))}
+        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+          <div className="grid h-11 w-11 place-items-center rounded-xl border border-primary/30 bg-surface shadow-sm">
+            <span className="font-serif text-[13px] italic text-foreground">r</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  if (step === 1) {
+    return (
+      <div className="relative h-32 overflow-hidden rounded-xl border border-border bg-gradient-to-br from-surface-2 to-surface p-3">
+        <div className="grid h-full grid-cols-3 gap-1.5">
+          {Array.from({ length: 9 }).map((_, i) => (
+            <div
+              key={i}
+              className="rounded bg-primary/10"
+              style={{
+                animation: `float-y 3s ease-in-out ${i * 0.15}s infinite`,
+                opacity: 0.4 + ((i % 3) * 0.2),
+              }}
+            />
+          ))}
+        </div>
+        <div className="absolute inset-x-3 bottom-3 flex items-center gap-2 rounded-lg border border-border bg-surface/95 px-2.5 py-1.5 shadow-sm backdrop-blur">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+          <span className="text-[10px] font-medium text-foreground">Syncing 7 platforms</span>
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="relative h-32 overflow-hidden rounded-xl border border-border bg-gradient-to-br from-surface-2 to-surface p-3">
+      <div className="flex items-center gap-2">
+        <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-border">
+          <div className="h-full w-[86%] rounded-full bg-gradient-to-r from-primary to-emerald-500" />
+        </div>
+        <span className="text-[10px] font-mono text-foreground">86</span>
+      </div>
+      <div className="mt-2.5 grid grid-cols-3 gap-1.5">
+        {["Reach", "Leads", "ROAS"].map((m) => (
+          <div key={m} className="rounded-md border border-border bg-surface p-1.5">
+            <div className="text-[9px] text-muted-foreground">{m}</div>
+            <div className="mt-0.5 flex items-end gap-0.5">
+              {[3, 5, 4, 6, 7].map((h, i) => (
+                <div key={i} className="w-1 rounded-sm bg-primary/60" style={{ height: `${h * 2}px` }} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-2 flex items-start gap-1.5 rounded-md border border-primary/20 bg-primary/5 px-2 py-1">
+        <Sparkles className="mt-0.5 h-2.5 w-2.5 shrink-0 text-primary" />
+        <span className="text-[9px] leading-tight text-foreground">Meta Ads are outperforming Google by 34%.</span>
+      </div>
+    </div>
+  );
+}
 
 function HowItWorks() {
   return (
     <Section tint>
       <SectionHead
-        eyebrow="How Rothme works"
-        title="Set it up in minutes."
-        italic="Grow every day."
+        eyebrow="How Rothme Works"
+        title="Three steps to better"
+        italic="marketing visibility."
+        sub="Connect your marketing tools, let Rothme organize your data, and start understanding your marketing from one place."
       />
-      <div className="mt-12 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-4">
-        {STEPS.map((s) => (
-          <div key={s.n} className="bg-surface p-6 sm:p-7">
-            <span className="inline-flex h-7 w-7 items-center justify-center rounded-md border border-border bg-surface-2 font-mono text-xs text-foreground/80">
-              {s.n}
-            </span>
-            <h3 className="mt-4 text-[15px] font-semibold tracking-tight text-foreground">{s.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+
+      {/* Steps */}
+      <div className="relative mt-14">
+        {/* Desktop connecting line with traveling indicator */}
+        <div className="pointer-events-none absolute left-[16%] right-[16%] top-[92px] hidden lg:block" aria-hidden="true">
+          <div className="relative h-px bg-gradient-to-r from-transparent via-border to-transparent">
+            <div className="absolute top-1/2 h-1.5 w-1.5 -translate-y-1/2 rounded-full bg-primary shadow-[0_0_12px_2px_hsl(var(--primary)/0.6)] animate-[hiw-travel_5s_ease-in-out_infinite]" />
           </div>
-        ))}
+        </div>
+
+        <ol className="relative grid gap-6 lg:grid-cols-3">
+          {HIW_STEPS.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <li
+                key={s.n}
+                className="group relative rounded-2xl border border-border bg-surface p-6 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md animate-[rise-in_0.7s_ease-out_both] sm:p-7"
+                style={{ animationDelay: `${i * 0.12}s` }}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="relative z-10 grid h-11 w-11 place-items-center rounded-xl border border-border bg-surface font-mono text-sm font-semibold text-foreground shadow-xs">
+                    {s.n}
+                  </span>
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                </div>
+
+                <h3 className="mt-5 text-lg font-semibold tracking-tight text-foreground">{s.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
+
+                <div className="mt-5">
+                  <HiwStepIllustration step={i} />
+                </div>
+
+                <div className="mt-4 flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                  {s.footer}
+                </div>
+
+                {/* Tablet arrow between cards */}
+                {i < HIW_STEPS.length - 1 && (
+                  <div className="pointer-events-none absolute -bottom-4 left-1/2 hidden -translate-x-1/2 md:block lg:hidden" aria-hidden="true">
+                    <ChevronDown className="h-5 w-5 text-border" />
+                  </div>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      {/* Benefit row */}
+      <div className="mt-16 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {HIW_BENEFITS.map((b, i) => {
+          const Icon = b.icon;
+          return (
+            <div
+              key={b.title}
+              className="rounded-2xl border border-border bg-surface p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md animate-[rise-in_0.7s_ease-out_both]"
+              style={{ animationDelay: `${0.4 + i * 0.08}s` }}
+            >
+              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <Icon className="h-4 w-4" />
+              </span>
+              <h3 className="mt-4 text-[14px] font-semibold tracking-tight text-foreground">{b.title}</h3>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{b.body}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Callout */}
+      <div className="mt-20 text-center">
+        <h3 className="mx-auto max-w-3xl font-serif text-3xl leading-tight text-foreground sm:text-4xl md:text-5xl">
+          Less time switching between tools.
+          <br />
+          <em className="italic text-foreground/70">More time understanding your business.</em>
+        </h3>
       </div>
     </Section>
   );
