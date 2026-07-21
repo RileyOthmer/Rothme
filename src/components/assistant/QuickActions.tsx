@@ -37,10 +37,10 @@ export function QuickActions({ className }: { className?: string }) {
             id="quick-actions-heading"
             className="text-base font-semibold tracking-tight text-foreground"
           >
-            Quick actions
+            Understand your marketing
           </h2>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            One click — your AI CMO drafts it. Nothing publishes without your review.
+            Ask Rothme to explain a metric, define a term, or summarize what changed.
           </p>
         </div>
       </div>
