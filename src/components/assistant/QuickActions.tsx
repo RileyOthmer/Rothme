@@ -1,26 +1,26 @@
 import {
-  Compass,
-  Globe,
-  Share2,
-  Mail,
-  Search,
-  Facebook,
-  LayoutTemplate,
-  ClipboardCheck,
+  BookOpen,
+  HelpCircle,
+  FileText,
+  ArrowLeftRight,
+  Calculator,
+  Database,
+  BarChart3,
+  Library,
   type LucideIcon,
 } from "lucide-react";
 
 import { QUICK_ACTIONS, askAI, type QuickActionIcon } from "./quick-actions";
 
 const ICONS: Record<QuickActionIcon, LucideIcon> = {
-  strategy: Compass,
-  website: Globe,
-  social: Share2,
-  email: Mail,
-  "google-ads": Search,
-  facebook: Facebook,
-  landing: LayoutTemplate,
-  audit: ClipboardCheck,
+  explain: BookOpen,
+  define: HelpCircle,
+  summary: FileText,
+  changes: ArrowLeftRight,
+  formula: Calculator,
+  source: Database,
+  chart: BarChart3,
+  glossary: Library,
 };
 
 /**
