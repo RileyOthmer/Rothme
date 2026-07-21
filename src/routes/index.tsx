@@ -1734,46 +1734,219 @@ function LeadAudit() {
 /* ─────────────────────────────── Health Score ─────────────────────────────── */
 
 function HealthScore() {
+  const categories = [
+    { name: "Website", Icon: Globe, last: "2 min ago" },
+    { name: "Analytics", Icon: BarChart3, last: "3 min ago" },
+    { name: "Advertising", Icon: Megaphone, last: "4 min ago" },
+    { name: "Lead Capture", Icon: MousePointerClick, last: "2 min ago" },
+    { name: "Email", Icon: Mail, last: "5 min ago" },
+    { name: "SMS", Icon: Radio, last: "6 min ago" },
+    { name: "CRM", Icon: Users, last: "7 min ago" },
+    { name: "SEO", Icon: Search, last: "9 min ago" },
+    { name: "Google Business Profile", Icon: Building2, last: "3 min ago" },
+  ];
+
+  const { ref: cardsRef, inView: cardsIn } = useInView<HTMLDivElement>();
+  const { ref: ringRef, inView: ringIn } = useInView<HTMLDivElement>();
+
+  const score = 94;
+  const size = 240;
+  const stroke = 14;
+  const radius = (size - stroke) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const dashOffset = ringIn ? circumference * (1 - score / 100) : circumference;
+
   return (
-    <Section>
-      <div className="grid gap-14 md:grid-cols-2 md:items-center">
-        <div className="order-2 md:order-1">
-          <div className="rounded-2xl border border-border bg-surface p-8 shadow-sm">
-            <div className="flex items-center gap-2">
-              <Gauge className="h-4 w-4 text-primary" />
-              <span className="eyebrow">Your score</span>
+    <Section id="health-score">
+      <div className="mx-auto max-w-3xl text-center">
+        <span className="eyebrow">Marketing Health Score</span>
+        <h2 className="mt-4 text-4xl font-medium tracking-tight text-foreground sm:text-5xl">
+          Know the Health of Your{" "}
+          <span className="font-serif italic font-normal">Marketing.</span>
+        </h2>
+        <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          Instead of checking dozens of dashboards, see the overall health of your connected
+          marketing ecosystem in seconds. The Marketing Health Score is designed to help
+          businesses understand the operational health of their connected marketing systems.
+        </p>
+      </div>
+
+      <div className="mt-16 grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-start">
+        {/* LEFT — Score */}
+        <div className="relative">
+          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-emerald-400/10 via-transparent to-primary/10 blur-2xl" />
+          <div className="rounded-3xl border border-border/70 bg-surface/90 p-8 shadow-xl backdrop-blur">
+            <div
+              ref={ringRef}
+              className="mx-auto flex flex-col items-center"
+              role="img"
+              aria-label={`Marketing Health Score: ${score} out of 100, Excellent`}
+            >
+              <div className="relative" style={{ width: size, height: size }}>
+                <svg width={size} height={size} className="-rotate-90">
+                  <defs>
+                    <linearGradient id="healthGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="oklch(0.72 0.17 155)" />
+                      <stop offset="100%" stopColor="oklch(0.62 0.19 175)" />
+                    </linearGradient>
+                  </defs>
+                  <circle
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    strokeWidth={stroke}
+                    className="stroke-border/60"
+                    fill="none"
+                  />
+                  <circle
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={radius}
+                    strokeWidth={stroke}
+                    stroke="url(#healthGrad)"
+                    strokeLinecap="round"
+                    fill="none"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={dashOffset}
+                    style={{ transition: "stroke-dashoffset 1.8s cubic-bezier(.2,.8,.2,1)" }}
+                  />
+                </svg>
+                <div className="absolute inset-0 flex flex-col items-center justify-center">
+                  <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                    Health Score
+                  </span>
+                  <span className="mt-1 text-6xl font-medium tracking-tight text-foreground">
+                    <CountUp end={score} duration={1800} />
+                  </span>
+                  <span className="mt-0.5 text-xs text-muted-foreground">out of 100</span>
+                </div>
+              </div>
+
+              <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-emerald-200/70 bg-emerald-50 px-3.5 py-1.5 text-xs font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                </span>
+                Status: Excellent
+              </div>
+              <div className="mt-2 text-xs text-muted-foreground">Last updated · Just now</div>
             </div>
-            <div className="mt-6 flex items-end gap-3">
-              <span className="font-serif text-7xl text-foreground">82</span>
-              <span className="pb-2 text-sm text-muted-foreground">/ 100 · Strong</span>
-            </div>
-            <div className="mt-6 space-y-3">
+
+            <dl className="mt-8 grid grid-cols-2 gap-3 border-t border-border/60 pt-6">
               {[
-                { label: "Reach & audience", score: 88 },
-                { label: "Conversion", score: 74 },
-                { label: "Retention", score: 91 },
-                { label: "Ad efficiency", score: 68 },
-              ].map((r) => (
-                <div key={r.label}>
-                  <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>{r.label}</span><span>{r.score}</span>
-                  </div>
-                  <div className="mt-1 h-1.5 w-full overflow-hidden rounded-full bg-border">
-                    <div className="h-full bg-primary" style={{ width: `${r.score}%` }} />
-                  </div>
+                { k: "Healthy systems", v: "14 of 14" },
+                { k: "Connected integrations", v: "14" },
+                { k: "Active monitoring", v: "Enabled" },
+                { k: "Last audit", v: "2 minutes ago" },
+              ].map((row) => (
+                <div
+                  key={row.k}
+                  className="rounded-xl border border-border/60 bg-background/60 px-4 py-3"
+                >
+                  <dt className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                    {row.k}
+                  </dt>
+                  <dd className="mt-1 text-sm font-medium text-foreground">{row.v}</dd>
                 </div>
               ))}
+            </dl>
+          </div>
+        </div>
+
+        {/* RIGHT — Health category cards */}
+        <div>
+          <div
+            ref={cardsRef}
+            className="grid gap-3 sm:grid-cols-2"
+            role="list"
+            aria-label="Marketing system health categories"
+          >
+            {categories.map((c, i) => (
+              <div
+                key={c.name}
+                role="listitem"
+                className="group rounded-2xl border border-border/70 bg-surface p-4 shadow-xs transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-md"
+                style={
+                  cardsIn
+                    ? { animation: `rise-in 0.5s ease-out both`, animationDelay: `${i * 70}ms` }
+                    : { opacity: 0 }
+                }
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/15">
+                      <c.Icon className="h-4 w-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="truncate text-[14px] font-semibold text-foreground">
+                        {c.name}
+                      </h3>
+                      <p className="mt-0.5 text-[11px] text-muted-foreground">
+                        Last checked · {c.last}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1.5 rounded-full border border-emerald-200/70 bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                      <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                    </span>
+                    Healthy
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Information card */}
+          <div className="mt-6 rounded-2xl border border-border/70 bg-surface/80 p-6 shadow-xs backdrop-blur">
+            <div className="flex items-start gap-3">
+              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+                <Gauge className="h-4 w-4" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="text-[15px] font-semibold text-foreground">
+                  How Your Marketing Health Score Works
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                  The Marketing Health Score summarizes the operational health of your connected
+                  marketing ecosystem. It considers information such as:
+                </p>
+                <ul className="mt-3 grid grid-cols-1 gap-1.5 text-sm text-muted-foreground sm:grid-cols-2">
+                  {[
+                    "Connected integrations",
+                    "Monitoring results",
+                    "Website availability",
+                    "Tracking systems",
+                    "Lead capture systems",
+                    "Communication services",
+                    "Marketing platform connection status",
+                  ].map((item) => (
+                    <li key={item} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-500" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  The score is intended to help users quickly understand the health of connected
+                  systems. It is not a measurement of business success, advertising effectiveness,
+                  revenue, profitability, or future marketing performance.
+                </p>
+              </div>
             </div>
           </div>
         </div>
-        <div className="order-1 md:order-2">
-          <SectionHead
-            eyebrow="Marketing Health Score"
-            title="One number for the health of your"
-            italic="entire marketing engine."
-            sub="Reach, conversion, retention, and ad efficiency — scored, trended, and explained. You'll know instantly whether things are improving or slipping."
-          />
-        </div>
+      </div>
+
+      {/* Bottom callout */}
+      <div className="mx-auto mt-20 max-w-4xl text-center">
+        <p className="text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl">
+          One score.{" "}
+          <span className="font-serif italic font-normal text-muted-foreground">
+            Complete visibility.
+          </span>
+        </p>
       </div>
     </Section>
   );
