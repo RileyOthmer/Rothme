@@ -1,8 +1,9 @@
 /**
- * Quick Actions — premium action cards on the dashboard.
- * Each card opens the global AI Marketing Assistant (Command Bar) with a
- * preconfigured prompt. All generation flows through the same /api/chat
- * engine — no duplicated logic.
+ * Quick Actions — educational prompts on the dashboard.
+ *
+ * Rothme is a Marketing Intelligence Platform. These actions only ask the
+ * assistant to EXPLAIN, DEFINE, or SUMMARIZE — never to recommend, score,
+ * or generate marketing content.
  */
 
 export const ASK_AI_EVENT = "rothme:ask-ai";
@@ -18,14 +19,14 @@ export function askAI(payload: AskAIPayload) {
 }
 
 export type QuickActionIcon =
-  | "strategy"
-  | "website"
-  | "social"
-  | "email"
-  | "google-ads"
-  | "facebook"
-  | "landing"
-  | "audit";
+  | "explain"
+  | "define"
+  | "summary"
+  | "changes"
+  | "formula"
+  | "source"
+  | "chart"
+  | "glossary";
 
 export type QuickAction = {
   id: string;
@@ -37,67 +38,67 @@ export type QuickAction = {
 
 export const QUICK_ACTIONS: QuickAction[] = [
   {
-    id: "marketing-strategy",
-    label: "Create Marketing Strategy",
-    description: "A 90-day plan tailored to my business and goals.",
-    icon: "strategy",
+    id: "explain-ctr",
+    label: "Explain my CTR",
+    description: "What click-through rate means and what mine currently is.",
+    icon: "explain",
     prompt:
-      "Act as my Chief Marketing Officer. Build a 90-day marketing strategy for my business. Include: positioning, target audience, top 3 channels with rationale, monthly milestones, budget guidance, and the KPIs we should track. Ask me for anything missing about the business.",
+      "Explain what my current click-through rate (CTR) is across my connected ad platforms this week. Define CTR in plain English, show the number from each platform, and describe how Rothme calculates it. Do not recommend any changes.",
   },
   {
-    id: "analyze-website",
-    label: "Analyze My Website",
-    description: "Conversion, SEO, and UX audit with fixes.",
-    icon: "website",
+    id: "define-reach",
+    label: "What does reach mean?",
+    description: "Plain-English definition, formula, and platform differences.",
+    icon: "define",
     prompt:
-      "Analyze my website like a senior CRO + SEO consultant. Cover: first-impression, value proposition clarity, conversion path, technical SEO signals, on-page SEO, mobile UX, and 5 prioritized fixes ranked by impact vs effort. Ask me for the URL if I haven't given it.",
+      "Define 'reach' in plain English. Include the formula, why the metric exists, how it differs from impressions, and how each connected platform (Meta, Instagram, Google Ads) reports it. Do not make recommendations.",
   },
   {
-    id: "social-content",
-    label: "Generate Social Content",
-    description: "A week of ready-to-review posts across channels.",
-    icon: "social",
+    id: "summarize-30d",
+    label: "Summarize the last 30 days",
+    description: "A factual read-out of what happened, with sources.",
+    icon: "summary",
     prompt:
-      "Generate a week of social media content across my active channels. For each post: platform, hook, caption in my brand voice, hashtags, and image/video direction. Keep it realistic — one post per channel per day, aligned to my goals.",
+      "Summarize what happened across my connected marketing platforms in the last 30 days. Report facts only: what changed, when, and which platform the data came from. Do not include recommendations, next steps, or opinions on quality.",
   },
   {
-    id: "email-campaign",
-    label: "Create Email Campaign",
-    description: "Subject lines, body, and CTAs for a full sequence.",
-    icon: "email",
+    id: "how-health-score",
+    label: "How is my Health Score calculated?",
+    description: "Every input, every weight, plainly explained.",
+    icon: "formula",
     prompt:
-      "Draft a 4-email marketing campaign I can review before sending. For each email: subject line + 2 alternates, preview text, body copy, and a single clear CTA. Ask me for the goal (welcome / launch / re-engagement / promo) if it isn't obvious.",
+      "Explain exactly how Rothme calculates the Marketing Health Score. List every input, its weight, and where the underlying data comes from. Clarify that this score reflects operational health of connected systems only — not marketing quality or business performance.",
   },
   {
-    id: "google-ads",
-    label: "Build Google Ads",
-    description: "Search campaign with keywords, ads, and structure.",
-    icon: "google-ads",
+    id: "define-roas",
+    label: "Define ROAS, CAC and CPM",
+    description: "Formulas, examples, and common misconceptions.",
+    icon: "glossary",
     prompt:
-      "Build a Google Ads Search campaign. Include: campaign structure, 3 ad groups with themed keywords (exact + phrase), 3 Responsive Search Ads per group (15 headlines, 4 descriptions each), negative keyword list, and suggested daily budget range. Ask me for the offer if you need it.",
+      "Define ROAS, CAC and CPM in plain English. For each: give the formula, an example calculation, why the metric exists, and one common misconception. No recommendations.",
   },
   {
-    id: "facebook-campaign",
-    label: "Create Facebook Campaign",
-    description: "Meta Ads campaign with audiences and creative.",
-    icon: "facebook",
+    id: "what-changed",
+    label: "What changed this week?",
+    description: "A factual diff vs. the previous 7 days.",
+    icon: "changes",
     prompt:
-      "Design a Meta (Facebook + Instagram) ad campaign. Include: objective, 2 audience definitions (interest + lookalike), 3 creative concepts (hook, visual direction, primary text, headline, CTA), placements, and a suggested daily budget + testing plan.",
+      "List every notable change across my connected platforms this week vs. the previous 7 days. Group by platform. For each change: what moved, by how much, when it was last synced. State facts only — do not interpret whether the change is good or bad, and do not suggest actions.",
   },
   {
-    id: "landing-page",
-    label: "Generate Landing Page Copy",
-    description: "High-converting page copy, section by section.",
-    icon: "landing",
+    id: "explain-chart",
+    label: "Explain this chart",
+    description: "Ask about any chart on the dashboard.",
+    icon: "chart",
     prompt:
-      "Write high-converting landing page copy for my offer. Sections: hero (headline + subhead + CTA), 3 benefit blocks, social proof placement, feature list, FAQ (6 questions), and final CTA. Match my brand voice. Ask me for the offer if I haven't shared it.",
+      "I'm looking at a chart on my Rothme dashboard. Explain what this chart represents, which platform the data comes from, how the values are calculated, and how to read it. Do not tell me what to do with it.",
   },
   {
-    id: "marketing-audit",
-    label: "Marketing Audit",
-    description: "Full audit of what's working and what to fix.",
-    icon: "audit",
+    id: "where-from",
+    label: "Where did this number come from?",
+    description: "Trace a metric back to its source platform.",
+    icon: "source",
     prompt:
-      "Run a full marketing audit across my connected channels. Cover: what's working, what's underperforming, wasted spend, missing fundamentals, and the top 5 prioritized actions with estimated impact. Be direct — this is an executive briefing, not a pep talk.",
+      "Pick a metric shown on my dashboard and trace exactly where the number came from: which connected platform reported it, when it was last synced, and how Rothme derived the displayed value from that raw data.",
   },
 ];
