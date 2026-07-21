@@ -47,6 +47,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -3455,49 +3461,80 @@ function PricingSection() {
 /* ─────────────────────────────── FAQ ─────────────────────────────── */
 
 const FAQS = [
-  { q: "Do I need to be technical to use Rothme?", a: "No. Rothme is built for business owners, not marketers. Everything is plain English — no jargon, no dashboards to decipher." },
-  { q: "Which platforms does Rothme connect to?", a: "Meta Ads, Google Ads, Google Analytics, Shopify, Mailchimp, Instagram, Facebook, TikTok, YouTube, LinkedIn, Google Business Profile, and more — with new integrations added continuously." },
-  { q: "How is my data used?", a: "Your data is yours. We never sell it, share it, or train models on it. All tokens are encrypted, and you can export or delete everything at any time." },
-  { q: "Can I try it before I pay?", a: "Yes. Start free — no credit card required. We also offer a 30-day money-back guarantee on paid plans." },
-  { q: "Does the AI publish or spend money on my behalf?", a: "Never without your explicit approval. Rothme's AI suggests actions, but you always click the button." },
-  { q: "Is there a contract or long commitment?", a: "No contracts. Cancel any time with one click — you'll keep access through the end of your billing period." },
+  {
+    q: "What is Rothme?",
+    a: "Rothme is a marketing intelligence platform that helps businesses connect their marketing tools, monitor the health of their marketing ecosystem, and understand marketing data from one centralized dashboard.",
+  },
+  {
+    q: "Who is Rothme for?",
+    a: "Rothme is designed for small businesses, growing companies, marketing teams, agencies, and business owners who want a clearer understanding of their marketing without switching between multiple platforms.",
+  },
+  {
+    q: "Which platforms can I connect?",
+    a: "Rothme supports a growing list of marketing platforms including social media, analytics, advertising, CRM, communication, and commerce tools. Additional integrations are added regularly.",
+  },
+  {
+    q: "How long does setup take?",
+    a: "Most businesses can connect their first platforms in just a few minutes.",
+  },
+  {
+    q: "What is Lead Audit?",
+    a: "Lead Audit continuously monitors your connected marketing ecosystem and helps identify potential issues with website availability, tracking, integrations, lead capture systems, and other connected services.",
+  },
+  {
+    q: "What is the Marketing Health Score?",
+    a: "The Marketing Health Score provides a simple overview of the operational health of your connected marketing systems based on available platform data and monitoring results.",
+  },
+  {
+    q: "Does Rothme use AI?",
+    a: "Rothme uses AI to help explain marketing concepts and metrics in clear language. Rothme does not make marketing decisions or automatically change your campaigns.",
+  },
+  {
+    q: "Can I cancel anytime?",
+    a: "Yes. There are no long-term contracts. You can upgrade, downgrade, or cancel your subscription at any time.",
+  },
+  {
+    q: "What happens after my 30-day Pro trial?",
+    a: "At the end of your free trial, you can continue with Rothme Pro or switch to the Starter plan if it better fits your needs.",
+  },
+  {
+    q: "Is my data secure?",
+    a: "Rothme uses secure authentication methods where supported and industry-standard encryption to help protect connected account information. You remain in control of your connected accounts.",
+  },
 ];
 
 function FAQ() {
   return (
-    <section id="faq" className="border-b border-border/70 bg-surface-2/40">
+    <section id="faq" className="bg-surface">
       <div className="mx-auto max-w-3xl px-4 py-24 sm:px-6 lg:px-8">
         <div className="text-center">
           <span className="eyebrow">FAQ</span>
           <h2 className="mt-4 text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
-            Questions,{" "}
-            <span className="font-serif italic font-normal">answered.</span>
+            Frequently Asked Questions
           </h2>
+          <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+            Everything you need to know before getting started with Rothme.
+          </p>
         </div>
-        <div className="mt-12 divide-y divide-border rounded-2xl border border-border bg-surface shadow-xs">
-          {FAQS.map((item, i) => <FAQItem key={i} q={item.q} a={item.a} />)}
-        </div>
+
+        <Accordion type="single" collapsible className="mt-12 space-y-4">
+          {FAQS.map((item, i) => (
+            <AccordionItem
+              key={i}
+              value={`item-${i}`}
+              className="rounded-2xl border border-border bg-background px-5 shadow-sm transition-shadow duration-300 hover:shadow-md data-[state=open]:shadow-md"
+            >
+              <AccordionTrigger className="py-5 text-[15px] font-medium text-foreground hover:no-underline">
+                {item.q}
+              </AccordionTrigger>
+              <AccordionContent className="pb-5 text-sm leading-relaxed text-muted-foreground">
+                {item.a}
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
     </section>
-  );
-}
-
-function FAQItem({ q, a }: { q: string; a: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div>
-      <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left"
-        aria-expanded={open}
-      >
-        <span className="text-[15px] font-medium text-foreground">{q}</span>
-        <ChevronDown className={"h-4 w-4 shrink-0 text-muted-foreground transition-transform " + (open ? "rotate-180" : "")} />
-      </button>
-      {open && (
-        <div className="px-6 pb-5 text-sm leading-relaxed text-muted-foreground animate-fade-in">{a}</div>
-      )}
-    </div>
   );
 }
 
