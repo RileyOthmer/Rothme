@@ -1652,7 +1652,7 @@ function LeadAudit() {
                     className="relative"
                     style={
                       timelineIn
-                        ? { animation: `rise 0.5s ease-out both`, animationDelay: `${i * 90}ms` }
+                        ? { animation: `rise-in 0.5s ease-out both`, animationDelay: `${i * 90}ms` }
                         : { opacity: 0 }
                     }
                   >
@@ -1678,7 +1678,7 @@ function LeadAudit() {
               className="group rounded-2xl border border-border/70 bg-surface p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:border-border hover:shadow-md"
               style={
                 cardsIn
-                  ? { animation: `rise 0.55s ease-out both`, animationDelay: `${i * 70}ms` }
+                  ? { animation: `rise-in 0.55s ease-out both`, animationDelay: `${i * 70}ms` }
                   : { opacity: 0 }
               }
             >
