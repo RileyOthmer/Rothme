@@ -1,7 +1,7 @@
-// AI Insight — the AI's plain-English reading of a metric.
-// Follows ROTHME's four-questions voice contract: What happened? Why?
-// What should I do? Would you like me to help?
-// See mem://ai/voice-contract.
+// Observation — a factual, plain-English read-out of a metric.
+// Rothme is a Marketing Intelligence Platform. Observations report WHAT
+// happened and, when the connected data supports it, WHY. They never
+// recommend actions or score marketing quality.
 
 export type InsightCategory =
   | "engagement"
@@ -20,23 +20,14 @@ export type Evidence = {
   source: string;  // "Instagram"
 };
 
-export type RecommendedAction = {
-  id: string;
-  label: string;              // "Create 3 more Reels"
-  estimatedMinutes?: number;
-  expectedLift?: string;      // "+8–12% engagement, typical"
-  cta?: { label: string; to: string };
-};
-
 export type Insight = {
   id: string;
   category: InsightCategory;
-  headline: string;           // WHAT happened — one sentence
+  headline: string;           // WHAT happened — one factual sentence
   direction: Direction;
   changePct?: number;         // e.g. -12 for a 12% drop
-  reason: string;             // WHY it happened
+  reason: string;             // WHY — only when the data supports it
   evidence: Evidence[];
-  actions: RecommendedAction[];
   confidencePct: number;      // 0–100, computed — never model-declared
   dataFreshnessHours: number;
   createdAt: string;

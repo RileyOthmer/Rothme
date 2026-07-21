@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
 import {
   TrendingUp,
   TrendingDown,
@@ -7,15 +6,12 @@ import {
   ChevronDown,
   Clock,
   AlertTriangle,
-  Sparkles,
-  ArrowRight,
 } from "lucide-react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { Button } from "@/components/ui/button";
 import type { Insight, InsightCategory } from "./types";
 
 const CATEGORY_LABEL: Record<InsightCategory, string> = {
@@ -80,50 +76,12 @@ export function InsightCard({ insight }: { insight: Insight }) {
       {/* What happened */}
       <h3 className="mt-3 text-lg font-semibold leading-snug">{insight.headline}</h3>
 
-      {/* Why */}
+      {/* Why (from the data) */}
       <div className="mt-3">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Why this is happening
+          Why (from the data)
         </p>
         <p className="mt-1 text-sm leading-relaxed text-foreground/90">{insight.reason}</p>
-      </div>
-
-      {/* Recommended actions */}
-      <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
-        <div className="flex items-center gap-1.5">
-          <Sparkles className="h-3.5 w-3.5 text-primary" />
-          <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-            Recommended actions
-          </p>
-        </div>
-        <ul className="mt-3 space-y-2.5">
-          {insight.actions.map((a) => (
-            <li
-              key={a.id}
-              className="flex flex-wrap items-start justify-between gap-3 rounded-lg border border-border/60 bg-background/60 px-3 py-2.5"
-            >
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-foreground">{a.label}</p>
-                <div className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs text-muted-foreground">
-                  {typeof a.estimatedMinutes === "number" && (
-                    <span className="inline-flex items-center gap-1">
-                      <Clock className="h-3 w-3" />~{a.estimatedMinutes} min
-                    </span>
-                  )}
-                  {a.expectedLift && <span className="italic">Expected: {a.expectedLift}</span>}
-                </div>
-              </div>
-              {a.cta && (
-                <Button asChild size="sm" variant="outline" className="shrink-0">
-                  <Link to={a.cta.to}>
-                    {a.cta.label}
-                    <ArrowRight className="ml-1 h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-              )}
-            </li>
-          ))}
-        </ul>
       </div>
 
       {/* Evidence — collapsed by default */}
@@ -156,6 +114,11 @@ export function InsightCard({ insight }: { insight: Insight }) {
           </ul>
         </CollapsibleContent>
       </Collapsible>
+
+      <p className="mt-4 flex items-center gap-1 text-xs text-muted-foreground">
+        <Clock className="h-3 w-3" />
+        Rothme reports observations from your connected data. It does not recommend actions.
+      </p>
     </article>
   );
 }
