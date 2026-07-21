@@ -2612,13 +2612,13 @@ function IntegrationsSection() {
       {/* Bottom showcase — carousel */}
       <div className="mt-16 space-y-6">
         {[
-          { label: "Connected", items: connected },
-          { label: "Available", items: available },
-          { label: "Coming Soon", items: coming },
+          { label: "Connected", status: "connected" as IntegrationStatus, items: connected },
+          { label: "Available", status: "available" as IntegrationStatus, items: available },
+          { label: "Coming Soon", status: "coming" as IntegrationStatus, items: coming },
         ].map((row) => (
           <div key={row.label}>
             <div className="mb-3 flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-              <span className={`h-1.5 w-1.5 rounded-full ${STATUS_META[row.label.toLowerCase().replace(" ", "") as IntegrationStatus]?.dot ?? "bg-muted"}`} />
+              <span className={`h-1.5 w-1.5 rounded-full ${STATUS_META[row.status].dot}`} />
               {row.label}
               <span className="text-border">·</span>
               <span className="text-muted-foreground/70">{row.items.length}</span>
