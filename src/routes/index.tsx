@@ -43,7 +43,7 @@ import {
 } from "lucide-react";
 
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -1954,30 +1954,370 @@ function HealthScore() {
 
 /* ─────────────────────────────── Cheat Sheet ─────────────────────────────── */
 
+type CheatMetric = {
+  key: string;
+  name: string;
+  short?: string;
+  value: string;
+  category: string;
+  definition: string;
+  formula: string;
+  why: string;
+  related: string[];
+  faqs: { q: string; a: string }[];
+};
+
+const CHEAT_METRICS: CheatMetric[] = [
+  {
+    key: "ctr",
+    name: "Click-Through Rate",
+    short: "CTR",
+    value: "3.42%",
+    category: "Advertising",
+    definition:
+      "The percentage of people who clicked after seeing your content or advertisement.",
+    formula: "(Clicks ÷ Impressions) × 100",
+    why: "CTR helps measure how often viewers interact with your content after seeing it.",
+    related: ["Impressions", "Reach", "Website Clicks", "Conversions"],
+    faqs: [
+      { q: "What is considered a good CTR?", a: "It varies by platform and industry. Rothme shows your CTR alongside the benchmark reported by each connected platform." },
+      { q: "Why is CTR different between platforms?", a: "Each platform defines an impression and a click slightly differently, so the same content can produce different CTRs on Meta, Google, and TikTok." },
+      { q: "Can CTR decrease naturally?", a: "Yes. CTR commonly drops as an audience sees the same creative more often. This is known as creative fatigue." },
+    ],
+  },
+  { key: "imp", name: "Impressions", value: "482,193", category: "Advertising", definition: "The total number of times your content was shown, whether or not it was clicked.", formula: "Sum of times content was rendered on a screen", why: "Impressions describe how often your content appeared in front of viewers.", related: ["Reach", "CTR", "Frequency"], faqs: [{ q: "Is one impression one person?", a: "No. The same person can generate multiple impressions." }, { q: "Do impressions include bots?", a: "Most platforms filter invalid traffic before reporting impressions to Rothme." }] },
+  { key: "reach", name: "Reach", value: "127,410", category: "Social Media", definition: "The number of unique people who saw your content at least once.", formula: "Unique viewers of your content", why: "Reach describes how many distinct people encountered your content.", related: ["Impressions", "Frequency", "Followers"], faqs: [{ q: "How is reach different from impressions?", a: "Reach counts unique people. Impressions count total views." }] },
+  { key: "cpc", name: "Cost Per Click", short: "CPC", value: "$0.87", category: "Advertising", definition: "The average amount paid each time someone clicks your advertisement.", formula: "Total Spend ÷ Total Clicks", why: "CPC describes what each click currently costs on your connected ad platforms.", related: ["CTR", "CPM", "Conversions"], faqs: [{ q: "Why did my CPC change?", a: "Auction dynamics, audience size, and creative performance all influence CPC." }] },
+  { key: "cpm", name: "Cost Per 1,000 Impressions", short: "CPM", value: "$14.20", category: "Advertising", definition: "The cost to show your advertisement to one thousand viewers.", formula: "(Total Spend ÷ Impressions) × 1,000", why: "CPM describes how expensive it currently is to reach an audience on a given platform.", related: ["Impressions", "Reach", "CPC"], faqs: [{ q: "Is a lower CPM always better?", a: "Not necessarily. A very low CPM can indicate a low-quality audience." }] },
+  { key: "conv", name: "Conversions", value: "1,284", category: "Analytics", definition: "The number of tracked actions completed, such as purchases, sign-ups, or form submissions.", formula: "Sum of tracked conversion events", why: "Conversions describe how many desired actions were recorded through your connected tracking systems.", related: ["CTR", "Cost Per Lead", "Lead Form Submissions"], faqs: [{ q: "Where do conversions come from?", a: "From the tracking pixels and analytics platforms you have connected to Rothme." }] },
+  { key: "cpl", name: "Cost Per Lead", short: "CPL", value: "$18.44", category: "Lead Generation", definition: "The average cost of acquiring a single lead through your advertising.", formula: "Total Spend ÷ Total Leads", why: "CPL describes how much each lead costs based on connected advertising and lead capture data.", related: ["Conversions", "Lead Form Submissions", "CPC"], faqs: [{ q: "What counts as a lead?", a: "Any tracked lead capture event reported by a connected platform." }] },
+  { key: "eng", name: "Engagement Rate", value: "6.1%", category: "Social Media", definition: "The percentage of viewers who interacted with your content through likes, comments, shares, or saves.", formula: "(Engagements ÷ Reach) × 100", why: "Engagement rate describes how often viewers respond to your content.", related: ["Reach", "Followers", "Impressions"], faqs: [{ q: "Which interactions count?", a: "It depends on the platform. Rothme uses the definition each platform reports." }] },
+  { key: "fol", name: "Followers", value: "24,802", category: "Social Media", definition: "The total number of accounts currently following your connected social profiles.", formula: "Current follower count reported by each platform", why: "Followers describe the audience size on your connected social platforms.", related: ["Reach", "Engagement Rate"], faqs: [{ q: "Do lost followers get subtracted?", a: "Yes. The number reflects the current follower count reported by each platform." }] },
+  { key: "vv", name: "Video Views", value: "38,915", category: "Social Media", definition: "The number of times your videos were viewed on connected platforms.", formula: "Sum of platform-reported video views", why: "Video views describe how often your video content was watched.", related: ["Impressions", "Reach", "Engagement Rate"], faqs: [{ q: "How long counts as a view?", a: "Each platform defines its own minimum watch time." }] },
+  { key: "wc", name: "Website Clicks", value: "9,214", category: "Website Metrics", definition: "The number of clicks that sent viewers to your website from connected platforms.", formula: "Sum of outbound clicks to your website", why: "Website clicks describe how often viewers navigated from your marketing to your site.", related: ["CTR", "Conversions", "Impressions"], faqs: [{ q: "Are website clicks the same as sessions?", a: "No. Sessions are counted by your analytics platform after the click lands on your site." }] },
+  { key: "lfs", name: "Lead Form Submissions", value: "412", category: "Lead Generation", definition: "The number of completed lead forms submitted through your connected lead capture systems.", formula: "Sum of successful lead form submissions", why: "Lead form submissions describe how many completed lead forms were captured.", related: ["Conversions", "Cost Per Lead", "Website Clicks"], faqs: [{ q: "Where do form submissions come from?", a: "From your connected lead capture platforms and website forms." }] },
+];
+
+const CHEAT_CATEGORIES = [
+  "Advertising",
+  "Social Media",
+  "Analytics",
+  "SEO",
+  "Email Marketing",
+  "SMS Marketing",
+  "Lead Generation",
+  "Website Metrics",
+  "Google Business Profile",
+  "CRM",
+  "Reporting",
+];
+
 function CheatSheet() {
-  const cards = [
-    { title: "This week", tone: "primary", body: "Post twice on Instagram — carousels are outperforming reels 3:1 for your niche." },
-    { title: "This month", tone: "default", body: "Retarget your Shopify cart abandoners on Meta. Estimated payback: 8 days." },
-    { title: "This quarter", tone: "default", body: "Launch a referral program. Your top 10% of customers already refer without incentive." },
-  ];
+  const [activeKey, setActiveKey] = useState<string>("ctr");
+  const [query, setQuery] = useState("");
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return CHEAT_METRICS;
+    return CHEAT_METRICS.filter(
+      (m) =>
+        m.name.toLowerCase().includes(q) ||
+        m.short?.toLowerCase().includes(q) ||
+        m.category.toLowerCase().includes(q) ||
+        m.definition.toLowerCase().includes(q),
+    );
+  }, [query]);
+
+  const active =
+    filtered.find((m) => m.key === activeKey) ?? filtered[0] ?? CHEAT_METRICS[0];
+
+  const { ref: statsRef, inView: statsIn } = useInView<HTMLDivElement>();
+
   return (
-    <Section tint>
-      <SectionHead
-        eyebrow="Marketing Cheat Sheet"
-        title="The next best move,"
-        italic="already written."
-        sub="Prioritized recommendations for this week, this month, and this quarter — with evidence and estimated impact."
-      />
-      <div className="mt-12 grid gap-4 md:grid-cols-3">
-        {cards.map((c) => (
-          <div key={c.title} className={"rounded-2xl border p-6 shadow-xs " + (c.tone === "primary" ? "border-primary/40 bg-primary/[0.04]" : "border-border bg-surface")}>
-            <div className="flex items-center gap-2">
-              <Lightbulb className={"h-4 w-4 " + (c.tone === "primary" ? "text-primary" : "text-foreground/60")} />
-              <span className="eyebrow">{c.title}</span>
+    <Section id="cheat-sheet" tint>
+      <div className="mx-auto max-w-3xl text-center">
+        <span className="eyebrow">Marketing Cheat Sheet</span>
+        <h2 className="mt-4 text-4xl font-medium tracking-tight text-foreground sm:text-5xl">
+          Understand Every <span className="font-serif italic font-normal">Metric.</span>
+        </h2>
+        <p className="mt-5 text-[15px] leading-relaxed text-muted-foreground sm:text-base">
+          Marketing reports shouldn't require a marketing degree. Click any metric in Rothme to
+          learn what it means, how it's calculated, and why it matters.
+        </p>
+      </div>
+
+      {/* Search + categories */}
+      <div className="mx-auto mt-10 max-w-4xl">
+        <div className="relative">
+          <Search
+            className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
+          />
+          <label htmlFor="cheat-search" className="sr-only">
+            Search marketing terms
+          </label>
+          <input
+            id="cheat-search"
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search marketing terms..."
+            className="w-full rounded-full border border-border/70 bg-surface/90 py-3.5 pl-11 pr-4 text-sm text-foreground shadow-xs placeholder:text-muted-foreground focus:border-primary/40 focus:outline-none focus:ring-4 focus:ring-primary/10"
+          />
+        </div>
+        <div className="mt-4 flex flex-wrap justify-center gap-2">
+          {CHEAT_CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              type="button"
+              onClick={() => setQuery(cat)}
+              className="rounded-full border border-border/70 bg-surface px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:bg-primary/[0.04] hover:text-foreground"
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Dashboard + Panel */}
+      <div className="mt-12 grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:items-start">
+        {/* LEFT — dashboard */}
+        <div className="relative">
+          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-gradient-to-br from-primary/10 via-transparent to-emerald-400/10 blur-2xl" />
+          <div className="rounded-3xl border border-border/70 bg-surface/90 p-6 shadow-xl backdrop-blur sm:p-7">
+            <div className="mb-4 flex items-center justify-between">
+              <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Live Metrics
+              </div>
+              <div className="text-[11px] text-muted-foreground">
+                Click any metric to learn more
+              </div>
             </div>
-            <p className="mt-4 font-serif text-lg leading-snug text-foreground">{c.body}</p>
+
+            {filtered.length === 0 ? (
+              <div className="grid place-items-center rounded-2xl border border-dashed border-border/70 bg-background/40 py-16 text-sm text-muted-foreground">
+                No results for "{query}"
+              </div>
+            ) : (
+              <div
+                className="grid grid-cols-2 gap-3 sm:grid-cols-3"
+                role="listbox"
+                aria-label="Marketing metrics"
+              >
+                {filtered.map((m) => {
+                  const isActive = m.key === active.key;
+                  return (
+                    <button
+                      key={m.key}
+                      type="button"
+                      role="option"
+                      aria-selected={isActive}
+                      onClick={() => setActiveKey(m.key)}
+                      className={
+                        "group relative rounded-2xl border p-4 text-left transition-all focus:outline-none focus-visible:ring-4 focus-visible:ring-primary/15 " +
+                        (isActive
+                          ? "border-primary/60 bg-primary/[0.04] shadow-md"
+                          : "border-border/60 bg-background/60 hover:-translate-y-0.5 hover:border-border hover:shadow-md")
+                      }
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                          {m.short ?? m.category}
+                        </span>
+                        <span
+                          className={
+                            "inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] font-medium transition-colors " +
+                            (isActive
+                              ? "bg-primary/15 text-primary"
+                              : "bg-muted text-muted-foreground group-hover:bg-primary/10 group-hover:text-primary")
+                          }
+                        >
+                          <BookOpen className="h-2.5 w-2.5" />
+                          Learn
+                        </span>
+                      </div>
+                      <div className="mt-2 text-lg font-medium tracking-tight text-foreground">
+                        {m.value}
+                      </div>
+                      <div className="mt-0.5 truncate text-xs text-muted-foreground">
+                        {m.name}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* RIGHT — educational panel */}
+        <div
+          key={active.key}
+          className="rounded-3xl border border-border/70 bg-surface/90 p-6 shadow-xl backdrop-blur sm:p-8 animate-rise"
+          aria-live="polite"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                {active.category}
+              </div>
+              <h3 className="mt-1 text-2xl font-medium tracking-tight text-foreground">
+                {active.name}
+                {active.short ? (
+                  <span className="text-muted-foreground"> ({active.short})</span>
+                ) : null}
+              </h3>
+            </div>
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+              <BookOpen className="h-4 w-4" />
+            </div>
+          </div>
+
+          <dl className="mt-6 space-y-5 text-sm">
+            <div>
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Definition
+              </dt>
+              <dd className="mt-1.5 leading-relaxed text-foreground">{active.definition}</dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Formula
+              </dt>
+              <dd className="mt-1.5 rounded-lg border border-border/60 bg-background/60 px-3 py-2 font-mono text-[13px] text-foreground">
+                {active.formula}
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Why it matters
+              </dt>
+              <dd className="mt-1.5 leading-relaxed text-muted-foreground">{active.why}</dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                How Rothme calculates it
+              </dt>
+              <dd className="mt-1.5 leading-relaxed text-muted-foreground">
+                This value is calculated using information from your connected marketing platforms.
+              </dd>
+            </div>
+            <div>
+              <dt className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                Related metrics
+              </dt>
+              <dd className="mt-2 flex flex-wrap gap-1.5">
+                {active.related.map((r) => (
+                  <span
+                    key={r}
+                    className="rounded-full border border-border/60 bg-background/60 px-2.5 py-0.5 text-[11px] text-muted-foreground"
+                  >
+                    {r}
+                  </span>
+                ))}
+              </dd>
+            </div>
+          </dl>
+
+          <div className="mt-7 border-t border-border/60 pt-5">
+            <div className="mb-3 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              Frequently asked questions
+            </div>
+            <div className="divide-y divide-border/60 rounded-xl border border-border/60 bg-background/40">
+              {active.faqs.map((f, i) => {
+                const open = openFaq === i;
+                return (
+                  <div key={f.q}>
+                    <button
+                      type="button"
+                      aria-expanded={open}
+                      onClick={() => setOpenFaq(open ? null : i)}
+                      className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm text-foreground transition-colors hover:bg-background/70 focus:outline-none focus-visible:bg-background/70"
+                    >
+                      <span>{f.q}</span>
+                      <ChevronDown
+                        className={
+                          "h-4 w-4 shrink-0 text-muted-foreground transition-transform " +
+                          (open ? "rotate-180" : "")
+                        }
+                        aria-hidden
+                      />
+                    </button>
+                    {open ? (
+                      <div className="px-4 pb-4 text-sm leading-relaxed text-muted-foreground animate-rise">
+                        {f.a}
+                      </div>
+                    ) : null}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Stats */}
+      <div
+        ref={statsRef}
+        className="mt-16 grid gap-4 rounded-3xl border border-border/70 bg-surface/80 p-6 shadow-xs backdrop-blur sm:grid-cols-2 sm:p-8 lg:grid-cols-4"
+      >
+        {[
+          { label: "Educational Topics", value: 500, suffix: "+" },
+          { label: "Marketing Terms", value: 1000, suffix: "+" },
+          { label: "Frequently Asked Questions", value: 2000, suffix: "+" },
+          { label: "Platform-Specific Definitions", text: "Growing Library" },
+        ].map((s) => (
+          <div key={s.label} className="text-center sm:text-left">
+            <div className="text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
+              {"text" in s && s.text ? (
+                <span>{s.text}</span>
+              ) : statsIn ? (
+                <>
+                  <CountUp end={s.value as number} duration={1600} />
+                  {s.suffix}
+                </>
+              ) : (
+                <span>0</span>
+              )}
+            </div>
+            <div className="mt-1 text-xs uppercase tracking-wider text-muted-foreground">
+              {s.label}
+            </div>
           </div>
         ))}
+      </div>
+
+      {/* Callout */}
+      <div className="mx-auto mt-20 max-w-4xl text-center">
+        <p className="text-3xl font-medium leading-tight tracking-tight text-foreground sm:text-4xl">
+          Knowledge builds confidence.{" "}
+          <span className="font-serif italic font-normal text-muted-foreground">
+            Understanding builds better decisions.
+          </span>
+        </p>
+      </div>
+
+      {/* Notice */}
+      <div className="mx-auto mt-10 max-w-3xl">
+        <div className="rounded-2xl border border-border/70 bg-surface/80 p-6 shadow-xs backdrop-blur sm:p-7">
+          <div className="flex items-start gap-3">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+              <BookOpen className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-[15px] font-semibold text-foreground">Educational Content</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Marketing Cheat Sheet is designed to explain marketing concepts using connected
+                platform data.
+              </p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Educational content is provided for informational purposes and is not intended to
+                recommend business strategies or marketing decisions.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </Section>
   );
