@@ -1,91 +1,72 @@
-# Rothme — One-plan pricing + role-based access
 
-## Business rules to enforce
+## Repositioning Rothme: Marketing Intelligence, not Marketing Advice
 
-- One plan only: **Rothme Pro — $200/month**.
-- No access before Stripe confirms payment; full access after.
-- Two roles: **Admin** and **Customer**. Everything in the app is unlocked for any active-subscription customer. Admin is a superset with the `/admin` surface added.
-- Admin role is granted **only in the database** (via the migration tool or a SQL query). No frontend claim flow, no self-promotion endpoint.
+Applies your three answers everywhere: features convert to observational, AI becomes strictly educational, Health Score keeps its name but is redefined to operational health with a transparent formula.
 
-## 1. Strip every "tier / upgrade / premium" surface
+## Scope
 
-Files to edit or delete (already surveyed):
+~40 files across product, marketing, and copy. No new routes. All existing functionality stays reachable; only the language, prompts, and recommendation surfaces change.
 
-- **Delete** `src/routes/pricing.tsx` if it renders a comparison table; replace with a single-plan page that shows "$200/month" and one Subscribe CTA (kept because unauthenticated visitors still need a way to start checkout).
-- **`src/routes/_authenticated/settings.billing.tsx`** — remove any remaining "Upgrade" / "Pro" language; label the plan simply "Rothme — $200/month".
-- **`src/routes/_authenticated/onboarding.subscription.tsx`** — remove the plan-comparison card if present; leave a single confirm-and-subscribe screen.
-- **`src/routes/checkout.tsx`, `checkout.return.tsx`** — replace remaining "Pro" wording with "Rothme".
-- **`src/features/dashboard/ProWelcome.tsx`** — rename to `SubscriberWelcome`, remove "Pro" wording.
-- **`src/components/RequirePro.tsx`** — already a passthrough; delete the file and replace its two import sites (`dev-center.tsx`, `analytics.tsx`) with the children directly.
-- Grep for "premium", "Pro", "Upgrade", "tier", "plan comparison" and remove any remaining copy.
+## Phase 1 — AI & Assistant (strictly educational)
 
-## 2. Role model
+- `src/lib/strategist-prompt.ts` → rewrite as **Educator prompt**: explain metrics, define terms, summarize connected data, describe changes. Explicit refusals: no recommendations, no "you should", no scoring, no strategy.
+- `src/components/assistant/quick-actions.ts` → replace creative/suggestive actions with explain-only: *Explain my CTR · What does reach mean · Summarize last 30 days · How is Health Score calculated · Define ROAS · What changed this week · Explain this chart · Where did this number come from*.
+- `src/components/assistant/AssistantMessage.tsx` → remove "Save as Draft" affordance on assistant replies (educational replies aren't drafts). Draft Library route stays intact but is no longer fed by the assistant.
+- Rename user-facing assistant label to **"Marketing Educator"** (keeps "AI Marketing Assistant" fallback where the change would be too invasive).
 
-- Keep the existing `user_roles` table + `app_role` enum + `has_role` security-definer function. Already correct.
-- Everyone signed in with an active subscription is a Customer implicitly — no DB row needed.
-- Admins have an explicit `('admin')` row in `user_roles`. **Granted only via SQL** — no UI, no server function to self-grant.
-- **Migration**: drop the `claimFirstAdmin` server function; the frontend no longer exposes a way to become admin.
+## Phase 2 — Dashboard (observations, not advice)
 
-## 3. Access control for `/admin/*`
+- `src/features/dashboard/DashboardInsights.tsx`, `DashboardWidget.tsx`, `ProWelcome.tsx` → strip recommendation copy; replace with factual observation cards ("Facebook generated 62% of tracked leads", "Video represented 41% of published content", "CTR decreased 1.2 pp vs prior period").
+- `src/components/dashboard/AISummary.tsx` → rename to **"What Happened This Period"**; output pure summary, no next-step language.
+- `src/components/dashboard/UpcomingList.tsx` → rename to **"Recent Changes"** (observed changes, not "upcoming actions").
+- `src/lib/analytics/insights.functions.ts` + `src/lib/onboarding/dashboard-insights.functions.ts` → return observations only; drop `suggestedAction` fields; add `sourcePlatform` + `lastSyncedAt` to every observation for transparency.
 
-- Keep the `_authenticated/admin.tsx` layout gate (`useIsAdmin`).
-- Replace the "not found" fallback with an explicit **403 Access Denied** panel (title, short message, "Back to dashboard" button). No claim button.
-- Every admin server function (`listAdminCredentials`, `upsertAdminCredential`, `deleteAdminCredential`, `getUserStats`, `getRevenueStats`, `getConnectionsHealth`, `getSystemHealth`) already calls `assertAdmin(context.userId)` — verify and add it to any new ones.
-- Sidebar `Admin Console` link stays hidden for non-admins (already the case via `useIsAdmin`).
+## Phase 3 — Feature conversions (observational)
 
-## 4. Admin dashboard — what to build now vs defer
+- **Insights** (`features/insights/*`, `routes/_authenticated/insights.tsx`) → "Observations". Card fields become: *what happened · when · source platform · last sync · how calculated*. Remove `recommendation`, `suggestedAction`, priority scoring.
+- **Decisions** (`features/decisions/*`) → **"Changes Log"**. Each entry is an observed change with timestamp + source. No "decide" verbs, no options-to-pick.
+- **Goals** (`features/goals/*`, `routes/_authenticated/goals.tsx`) → user-defined tracking only. Delete `RecommendedGoals.tsx` from the page (file kept but unrouted, marked deprecated). Goal cards show progress + source data, never "we recommend hitting X".
+- **AI Audit** (`lib/audit/ai-audit.functions.ts`, `routes/_authenticated/audit.tsx`) → **System State Report**. Emits factual findings only: website reachable, integration authed, pixel detected, form responding, last sync at. Remove action plans, priorities, and remediation copy.
 
-The spec lists ~20 metrics. Only some have real data sources in this project today. I'll build the ones I can populate with real data and mark the rest as "Coming soon" cards so the layout is complete but never shows fake numbers.
+## Phase 4 — Health Score (the "Both" answer)
 
-**Built with real data (from Supabase / Stripe):**
+Keep the label **"Marketing Health Score"**, redefine calculation to operational health of connected systems, and add a visible transparency panel that lists exactly which signals contributed.
 
-- Total Users — `auth.users` count (already in `getUserStats`)
-- Recent User Signups — last 10 signups (already in `getUserStats`)
-- Active Subscribers — `subscriptions.status in ('active','trialing')`
-- Monthly Recurring Revenue — active subs * $200
-- Annual Recurring Revenue — MRR * 12
-- Churn Rate (30d) — canceled in last 30d ÷ active-at-start-of-window
-- Subscription Cancellations — recent `subscriptions` with `cancel_at_period_end=true` or `canceled_at not null`
-- Stripe Revenue — `getStripeData`-style read for the last 30d of paid invoices (server fn, admin-gated)
-- Connected Integrations — `platform_integrations` + `social_connections` counts (already partly in `getConnectionsHealth`)
-- Recent Errors — `platform_integration_logs` where severity=error
-- OAuth Status — `oauth_states` recent successes / failures
-- System / Server Status — DB latency ping + `getSystemHealth` uptime signals
+Formula (documented in-UI):
 
-**Placeholder cards ("Not wired yet") — no fake data:**
+```text
+Health Score =
+   30% Platforms connected & auth valid
+ + 25% Data freshness (last sync < 24h)
+ + 20% Tracking installed (pixels/tags detected)
+ + 15% Forms & endpoints responding
+ + 10% No integration errors in last 7 days
+```
 
-- AI Usage — needs an `ai_usage` events table; deferred.
-- Total API Requests — needs request logging; deferred.
-- Email Delivery Statistics — no email provider connected in DB; deferred.
-- SMS Delivery Statistics — no SMS provider; deferred.
-- Background Job Status — no job runner in project; deferred.
-- Feature Flags — no flags table; deferred.
-- Support Tickets — no tickets table; deferred.
-- Announcements — no announcements table; deferred.
-- Impersonate users — needs Supabase Auth Admin flow + audit; **explicitly out of scope for this pass** (call out risk).
+Applied to `MarketingHealth` card on the dashboard and the landing page section. UI copy explicitly states: *"This score reflects the operational health of your connected marketing systems. It is not a measure of marketing quality, ad effectiveness, or business performance."*
 
-Each deferred card renders "Coming soon — needs the [X] data source" so nothing is fabricated.
+## Phase 5 — Reports, Cheat Sheet, Notifications, Emails
 
-## 5. Admin dashboard UI
+- `src/lib/reports-mock.ts` + reports route → performance summaries, charts, tables, definitions, comparisons. Remove "recommendation" sections.
+- Marketing Cheat Sheet (landing + in-app if present) → expand every metric with *Definition · Formula · Why it exists · How Rothme calculates it · Related metrics · Platform differences · FAQ · Common misconceptions*. Remove "Tips" / "Best strategy" blocks.
+- `src/lib/notifications-mock.ts` + `routes/settings.notifications.tsx` → remove notification categories for "recommendations" / "suggested actions"; keep connection events, sync events, publishing events, subscription events.
+- Notification email templates in the same spirit — factual event copy only.
 
-- Redesign `admin.index.tsx` as a **premium enterprise dashboard**: 4-column stat grid, MRR/ARR/Churn hero row, a 30-day revenue sparkline (Recharts, already installed if we use it — verify), recent signups table, recent errors table, and integration health strip.
-- Add a top toolbar with **search** (across users by email/name) and **date range filter** (7d / 30d / 90d) that scopes revenue + churn + errors.
-- Responsive: single column on mobile, 2 cols on tablet, 4 cols on desktop.
-- Skeletons for every card; no layout shift.
+## Phase 6 — Landing & marketing pages
 
-## 6. Files touched (summary)
+- `src/routes/index.tsx`, `routes/ai-transparency.tsx`, `routes/features.automation.tsx`, `routes/get-started.solution.tsx`, `routes/design.tsx` → sweep for recommendation verbs (recommend/optimize/improve/increase/decrease/try/best practice) and rewrite to observational language. Keep all sections, layout, and visuals.
+- Hero + Solution copy: reposition as "Marketing Intelligence Platform — see what's happening, understand why, decide for yourself."
 
-- Migration: drop `claimFirstAdmin` (or leave function but disable via revoke); keep `user_roles` schema. Add a helpful `SELECT` comment showing how to grant admin.
-- `src/lib/admin/credentials.functions.ts` — delete `claimFirstAdmin` export.
-- `src/hooks/use-is-admin.ts` — drop `anyAdminExists`.
-- `src/routes/_authenticated/admin.tsx` — replace claim UI with 403 Access Denied.
-- `src/routes/_authenticated/admin.index.tsx` — full dashboard rebuild.
-- `src/lib/admin/stats.functions.ts` — add churn, MRR/ARR, stripe revenue, errors, oauth status queries.
-- Remove/rename `RequirePro`, `ProWelcome`; strip remaining "Pro/Upgrade" copy in `checkout.*`, `settings.billing.tsx`, `onboarding.subscription.tsx`.
-- `src/routes/pricing.tsx` — collapse to single-plan page (if it currently shows tiers).
+## Phase 7 — Transparency touches
 
-## Out of scope (call out explicitly)
+Where feasible without schema changes: every metric card and observation renders **source platform + last synced at** in muted footer text. On the dashboard "What Happened This Period" block, include a "Data sources" line listing the connected platforms that fed the summary.
 
-- User impersonation (needs careful audit + Supabase Auth Admin session mint; separate hardened change).
-- Building the email/SMS/jobs/flags/tickets/announcements data models — each is its own feature; today they'd only be placeholders.
-- Any change to Stripe products or price IDs.
+## Out of scope (unchanged)
+
+- Auth, RBAC, admin, connectors, OAuth flows, Stripe, storage, RLS.
+- Draft Library route stays (user-created drafts only).
+- No new routes, no schema migrations.
+
+## Execution order
+
+Phases 1 → 2 → 3 → 4 → 5 → 6 → 7, batched with parallel edits where files don't overlap. Typecheck after each phase.
