@@ -12,7 +12,7 @@ type Props = {
   hasConnections?: boolean;
 };
 
-const PRIORITY_ORDER = { high: 0, medium: 1, low: 2 } as const;
+const PRIORITY_ORDER = { notable: 0, watch: 1, steady: 2 } as const;
 
 export function DecisionCenter({ firstName, hasConnections = true }: Props) {
   const [decisions, setDecisions] = useState<Decision[]>(SEED_DECISIONS);
@@ -36,7 +36,7 @@ export function DecisionCenter({ firstName, hasConnections = true }: Props) {
       <EmptyShell
         icon={<Plug className="h-6 w-6 text-primary" />}
         title={`Welcome, ${firstName}.`}
-        body="Connect your first marketing platform and ROTHME will read the data, spot what changed, and tell you what to do about it — in plain English."
+        body="Connect your first marketing platform and Rothme will report what the data shows and explain how each number is calculated — in plain English. Rothme does not make marketing decisions for you."
         cta={
           <Button asChild>
             <Link to="/settings/connections">Connect a platform</Link>
@@ -46,18 +46,18 @@ export function DecisionCenter({ firstName, hasConnections = true }: Props) {
     );
   }
 
-  // Empty state — nothing to decide
+  // Empty state — nothing to report
   if (visible.length === 0) {
     return (
       <EmptyShell
         icon={<PartyPopper className="h-6 w-6 text-emerald-500" />}
-        title="You're on track."
-        body="No decisions need your attention right now. ROTHME will surface something the moment it matters."
+        title="Nothing new to report."
+        body="All connected platforms are within their normal range. Rothme will surface an observation the moment the data changes."
       />
     );
   }
 
-  const highCount = visible.filter((d) => d.priority === "high").length;
+  const notableCount = visible.filter((d) => d.priority === "notable").length;
 
   return (
     <section aria-labelledby="decision-heading" className="space-y-6">
@@ -67,12 +67,12 @@ export function DecisionCenter({ firstName, hasConnections = true }: Props) {
         </div>
         <div>
           <h1 id="decision-heading" className="text-2xl font-semibold tracking-tight text-foreground">
-            Here's what to do today, {firstName}.
+            Here's what your data shows, {firstName}.
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {highCount > 0
-              ? `${highCount} ${highCount === 1 ? "decision needs" : "decisions need"} your attention. Everything else can wait.`
-              : "A short list of decisions worth making. Nothing urgent."}
+            {notableCount > 0
+              ? `${notableCount} notable ${notableCount === 1 ? "change" : "changes"} across your connected platforms. Rothme reports the facts — you decide what to do.`
+              : "A short read-out of what your connected platforms are reporting. Rothme does not recommend actions."}
           </p>
         </div>
       </header>
@@ -82,15 +82,14 @@ export function DecisionCenter({ firstName, hasConnections = true }: Props) {
           <DecisionCard
             key={d.id}
             decision={d}
-            onAccept={(id) => update(id, "accepted", "Nice — marked as done.")}
-            onSnooze={(id) => update(id, "snoozed", "Snoozed until tomorrow.")}
+            onSnooze={(id) => update(id, "snoozed", "Snoozed.")}
             onDismiss={(id) => update(id, "dismissed", "Dismissed.")}
           />
         ))}
       </div>
 
       <p className="pt-2 text-center text-xs text-muted-foreground">
-        ROTHME only surfaces decisions it's confident matter. If it's not here, it's not urgent.
+        Rothme is a Marketing Intelligence Platform. It reports observations from connected data — it does not decide what to do next.
       </p>
     </section>
   );
