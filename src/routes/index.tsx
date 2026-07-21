@@ -3454,13 +3454,6 @@ function PricingSection() {
 
 /* ─────────────────────────────── FAQ ─────────────────────────────── */
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
 const FAQS = [
   {
     q: "What is Rothme?",
