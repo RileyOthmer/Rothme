@@ -101,6 +101,7 @@ function Index() {
         <CustomerStories />
         <PricingSection />
         <FAQ />
+        <FinalCTA />
       </main>
       <Footer />
     </div>
