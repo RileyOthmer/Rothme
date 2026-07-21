@@ -2325,37 +2325,343 @@ function CheatSheet() {
 
 /* ─────────────────────────────── Integrations ─────────────────────────────── */
 
-const INTEGRATION_MARKS = [
-  { mark: "Ma", name: "Meta Ads", color: "#1877F2" },
-  { mark: "Ga", name: "Google Ads", color: "#4285F4" },
-  { mark: "Ga", name: "Google Analytics", color: "#E37400" },
-  { mark: "Sh", name: "Shopify", color: "#96BF48" },
-  { mark: "Mc", name: "Mailchimp", color: "#FFB800" },
-  { mark: "Ig", name: "Instagram", color: "#E4405F" },
-  { mark: "Fb", name: "Facebook", color: "#1877F2" },
-  { mark: "Tt", name: "TikTok", color: "#111111" },
-  { mark: "Yt", name: "YouTube", color: "#FF0000" },
-  { mark: "Li", name: "LinkedIn", color: "#0A66C2" },
-  { mark: "Gb", name: "Google Business", color: "#34A853" },
-  { mark: "Rs", name: "Resend", color: "#111111" },
+type IntegrationStatus = "connected" | "syncing" | "available" | "coming";
+
+type Integration = {
+  mark: string;
+  name: string;
+  color: string;
+  status: IntegrationStatus;
+  sync: string;
+};
+
+const INTEGRATION_CATEGORIES: {
+  label: string;
+  icon: typeof Users;
+  items: Integration[];
+}[] = [
+  {
+    label: "Social Media",
+    icon: Users,
+    items: [
+      { mark: "Ig", name: "Instagram", color: "#E4405F", status: "connected", sync: "2m ago" },
+      { mark: "Fb", name: "Facebook", color: "#1877F2", status: "connected", sync: "4m ago" },
+      { mark: "Tt", name: "TikTok", color: "#111111", status: "syncing", sync: "syncing…" },
+      { mark: "Yt", name: "YouTube", color: "#FF0000", status: "available", sync: "—" },
+      { mark: "Li", name: "LinkedIn", color: "#0A66C2", status: "connected", sync: "9m ago" },
+      { mark: "Th", name: "Threads", color: "#111111", status: "coming", sync: "Soon" },
+    ],
+  },
+  {
+    label: "Analytics",
+    icon: BarChart3,
+    items: [
+      { mark: "Ga", name: "Google Analytics", color: "#E37400", status: "connected", sync: "1m ago" },
+      { mark: "Sc", name: "Search Console", color: "#4285F4", status: "syncing", sync: "syncing…" },
+      { mark: "Tm", name: "Tag Manager", color: "#246FDB", status: "available", sync: "—" },
+    ],
+  },
+  {
+    label: "Advertising",
+    icon: Megaphone,
+    items: [
+      { mark: "Ga", name: "Google Ads", color: "#4285F4", status: "connected", sync: "6m ago" },
+      { mark: "Ma", name: "Meta Ads", color: "#1877F2", status: "connected", sync: "8m ago" },
+      { mark: "Ta", name: "TikTok Ads", color: "#111111", status: "available", sync: "—" },
+      { mark: "La", name: "LinkedIn Ads", color: "#0A66C2", status: "available", sync: "—" },
+    ],
+  },
+  {
+    label: "Business",
+    icon: Building2,
+    items: [
+      { mark: "Gb", name: "Google Business", color: "#34A853", status: "connected", sync: "12m ago" },
+    ],
+  },
+  {
+    label: "Communication",
+    icon: Mail,
+    items: [
+      { mark: "Gm", name: "Gmail", color: "#EA4335", status: "connected", sync: "3m ago" },
+      { mark: "Ol", name: "Outlook", color: "#0078D4", status: "available", sync: "—" },
+      { mark: "Mc", name: "Mailchimp", color: "#FFB800", status: "syncing", sync: "syncing…" },
+      { mark: "Kv", name: "Klaviyo", color: "#000000", status: "available", sync: "—" },
+      { mark: "Tw", name: "Twilio", color: "#F22F46", status: "available", sync: "—" },
+    ],
+  },
+  {
+    label: "CRM",
+    icon: Users,
+    items: [
+      { mark: "Hs", name: "HubSpot", color: "#FF7A59", status: "connected", sync: "15m ago" },
+      { mark: "Sf", name: "Salesforce", color: "#00A1E0", status: "available", sync: "—" },
+    ],
+  },
+  {
+    label: "Commerce",
+    icon: Plug,
+    items: [
+      { mark: "Sh", name: "Shopify", color: "#96BF48", status: "connected", sync: "5m ago" },
+      { mark: "Wc", name: "WooCommerce", color: "#7F54B3", status: "available", sync: "—" },
+    ],
+  },
 ];
 
+const STATUS_META: Record<IntegrationStatus, { label: string; dot: string; text: string; ring: string }> = {
+  connected: { label: "Connected", dot: "bg-emerald-500", text: "text-emerald-700", ring: "ring-emerald-500/20" },
+  syncing: { label: "Syncing", dot: "bg-blue-500 animate-pulse", text: "text-blue-700", ring: "ring-blue-500/20" },
+  available: { label: "Available", dot: "bg-foreground/40", text: "text-muted-foreground", ring: "ring-border" },
+  coming: { label: "Coming Soon", dot: "bg-amber-500", text: "text-amber-700", ring: "ring-amber-500/20" },
+};
+
+const INTEGRATION_FEATURES = [
+  { icon: ShieldCheck, title: "Secure Connections", body: "Connect using official APIs whenever available." },
+  { icon: LayoutDashboard, title: "Unified Dashboard", body: "View connected marketing data in one place." },
+  { icon: Activity, title: "Automatic Syncing", body: "Keep information up to date through scheduled synchronization." },
+  { icon: Zap, title: "Simple Setup", body: "Connect your marketing platforms in just a few steps." },
+  { icon: Sparkles, title: "Growing Platform Library", body: "New integrations are continuously added through platform updates." },
+];
+
+const ORBIT_PLATFORMS: { mark: string; name: string; color: string; status: IntegrationStatus }[] = [
+  { mark: "Ig", name: "Instagram", color: "#E4405F", status: "connected" },
+  { mark: "Fb", name: "Facebook", color: "#1877F2", status: "connected" },
+  { mark: "Ga", name: "Google Ads", color: "#4285F4", status: "connected" },
+  { mark: "Sh", name: "Shopify", color: "#96BF48", status: "connected" },
+  { mark: "Ma", name: "Meta Ads", color: "#1877F2", status: "syncing" },
+  { mark: "Ga", name: "Analytics", color: "#E37400", status: "connected" },
+  { mark: "Hs", name: "HubSpot", color: "#FF7A59", status: "syncing" },
+  { mark: "Li", name: "LinkedIn", color: "#0A66C2", status: "available" },
+  { mark: "Yt", name: "YouTube", color: "#FF0000", status: "available" },
+  { mark: "Tt", name: "TikTok", color: "#111111", status: "coming" },
+];
+
+function IntegrationOrbit() {
+  const size = 460;
+  const c = size / 2;
+  const rings = [110, 175];
+  const nodes = ORBIT_PLATFORMS.map((p, i) => {
+    const ring = i < 5 ? 0 : 1;
+    const perRing = ring === 0 ? 5 : 5;
+    const idx = ring === 0 ? i : i - 5;
+    const angle = (idx / perRing) * Math.PI * 2 - Math.PI / 2;
+    const r = rings[ring];
+    return { ...p, x: c + Math.cos(angle) * r, y: c + Math.sin(angle) * r };
+  });
+
+  return (
+    <div className="relative mx-auto w-full max-w-[500px]">
+      <div className="absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-primary/5 via-transparent to-transparent blur-2xl" />
+      <svg viewBox={`0 0 ${size} ${size}`} className="w-full h-auto" role="img" aria-label="Rothme integration ecosystem">
+        {rings.map((r, i) => (
+          <circle key={i} cx={c} cy={c} r={r} fill="none" stroke="currentColor" className="text-border" strokeDasharray="3 6" />
+        ))}
+        {nodes.map((n, i) => {
+          const active = n.status === "connected" || n.status === "syncing";
+          return (
+            <line
+              key={i}
+              x1={c}
+              y1={c}
+              x2={n.x}
+              y2={n.y}
+              stroke="currentColor"
+              className={active ? "text-primary/40" : "text-border"}
+              strokeWidth={active ? 1.25 : 1}
+              strokeDasharray={n.status === "syncing" ? "4 4" : undefined}
+            >
+              {n.status === "syncing" && (
+                <animate attributeName="stroke-dashoffset" values="0;-16" dur="1.2s" repeatCount="indefinite" />
+              )}
+            </line>
+          );
+        })}
+        <circle cx={c} cy={c} r={44} className="fill-background" stroke="currentColor" strokeOpacity="0.15" />
+        <circle cx={c} cy={c} r={44} fill="none" stroke="currentColor" className="text-primary/30" strokeWidth="1">
+          <animate attributeName="r" values="44;54;44" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.5;0;0.5" dur="3s" repeatCount="indefinite" />
+        </circle>
+        <text x={c} y={c + 5} textAnchor="middle" className="fill-foreground font-serif" fontSize="20" fontStyle="italic">
+          rothme
+        </text>
+      </svg>
+
+      {nodes.map((n, i) => {
+        const meta = STATUS_META[n.status];
+        return (
+          <div
+            key={i}
+            className="absolute -translate-x-1/2 -translate-y-1/2 animate-[float_6s_ease-in-out_infinite]"
+            style={{
+              left: `${(n.x / size) * 100}%`,
+              top: `${(n.y / size) * 100}%`,
+              animationDelay: `${i * 0.25}s`,
+            }}
+          >
+            <div className={`group flex items-center gap-2 rounded-full border border-border bg-surface/95 pl-1 pr-2.5 py-1 shadow-sm ring-1 ${meta.ring} backdrop-blur-sm transition-transform hover:scale-105`}>
+              <span className="grid h-6 w-6 place-items-center rounded-full text-[10px] font-semibold text-white" style={{ background: n.color }}>
+                {n.mark}
+              </span>
+              <span className="text-[11px] font-medium text-foreground">{n.name}</span>
+              <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function PlatformCard({ item }: { item: Integration }) {
+  const meta = STATUS_META[item.status];
+  return (
+    <div className="group flex items-center gap-2.5 rounded-xl border border-border bg-surface p-2.5 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md">
+      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg text-[10px] font-semibold text-white" style={{ background: item.color }}>
+        {item.mark}
+      </span>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-xs font-medium text-foreground">{item.name}</div>
+        <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
+          <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+          <span className={meta.text}>{meta.label}</span>
+          <span className="text-border">·</span>
+          <span className="truncate">{item.sync}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function IntegrationsSection() {
+  const allPlatforms = INTEGRATION_CATEGORIES.flatMap((c) => c.items);
+  const connected = allPlatforms.filter((p) => p.status === "connected" || p.status === "syncing");
+  const available = allPlatforms.filter((p) => p.status === "available");
+  const coming = allPlatforms.filter((p) => p.status === "coming");
+
   return (
     <Section id="integrations">
       <SectionHead
         eyebrow="Integrations"
-        title="Every platform you use,"
-        italic="already speaking the same language."
-        sub="One-click official connections. Rothme normalizes every metric so cross-platform decisions actually make sense."
+        title="Connect once."
+        italic="See everything."
+        sub="Bring your marketing tools together in one secure platform. Connect your accounts once and view your marketing data through a single dashboard."
       />
-      <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {INTEGRATION_MARKS.map((i) => (
-          <div key={i.name} className="flex items-center gap-3 rounded-xl border border-border bg-surface p-4 shadow-xs transition-shadow hover:shadow-md">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-md text-xs font-semibold text-white" style={{ background: i.color }}>{i.mark}</span>
-            <span className="truncate text-sm text-foreground">{i.name}</span>
+
+      <div className="mt-14 grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:items-start">
+        {/* LEFT — Ecosystem */}
+        <div className="rounded-3xl border border-border bg-surface p-6 shadow-xs sm:p-10">
+          <IntegrationOrbit />
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11px] text-muted-foreground">
+            {(Object.keys(STATUS_META) as IntegrationStatus[]).map((s) => (
+              <span key={s} className="inline-flex items-center gap-1.5">
+                <span className={`h-1.5 w-1.5 rounded-full ${STATUS_META[s].dot}`} />
+                {STATUS_META[s].label}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* RIGHT — Features */}
+        <div className="grid gap-3 sm:grid-cols-2">
+          {INTEGRATION_FEATURES.map((f) => {
+            const Icon = f.icon;
+            return (
+              <div key={f.title} className="rounded-2xl border border-border bg-surface p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Icon className="h-4 w-4" />
+                </span>
+                <h3 className="mt-4 text-[14px] font-semibold tracking-tight text-foreground">{f.title}</h3>
+                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{f.body}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Categories */}
+      <div className="mt-16 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {INTEGRATION_CATEGORIES.map((cat) => {
+          const Icon = cat.icon;
+          return (
+            <div key={cat.label} className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
+              <div className="mb-4 flex items-center gap-2">
+                <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-primary/10 text-primary">
+                  <Icon className="h-3.5 w-3.5" />
+                </span>
+                <h3 className="text-[13px] font-semibold tracking-tight text-foreground">{cat.label}</h3>
+                <span className="ml-auto text-[10px] text-muted-foreground">{cat.items.length}</span>
+              </div>
+              <div className="grid gap-2">
+                {cat.items.map((item) => (
+                  <PlatformCard key={item.name} item={item} />
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Callout */}
+      <div className="mt-20 text-center">
+        <h3 className="mx-auto max-w-3xl font-serif text-3xl leading-tight text-foreground sm:text-4xl md:text-5xl">
+          The more you connect,
+          <br />
+          <em className="italic text-foreground/70">the more complete your marketing picture becomes.</em>
+        </h3>
+      </div>
+
+      {/* Bottom showcase — carousel */}
+      <div className="mt-16 space-y-6">
+        {[
+          { label: "Connected", status: "connected" as IntegrationStatus, items: connected },
+          { label: "Available", status: "available" as IntegrationStatus, items: available },
+          { label: "Coming Soon", status: "coming" as IntegrationStatus, items: coming },
+        ].map((row) => (
+          <div key={row.label}>
+            <div className="mb-3 flex items-center gap-2 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+              <span className={`h-1.5 w-1.5 rounded-full ${STATUS_META[row.status].dot}`} />
+              {row.label}
+              <span className="text-border">·</span>
+              <span className="text-muted-foreground/70">{row.items.length}</span>
+            </div>
+            <div className="group relative overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
+              <div className="flex w-max gap-3 animate-[marquee_40s_linear_infinite] group-hover:[animation-play-state:paused]">
+                {[...row.items, ...row.items, ...row.items].map((item, idx) => (
+                  <div
+                    key={`${item.name}-${idx}`}
+                    className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-surface px-3 py-1.5 shadow-xs transition-transform hover:-translate-y-0.5"
+                  >
+                    <span className="grid h-5 w-5 place-items-center rounded-full text-[9px] font-semibold text-white" style={{ background: item.color }}>
+                      {item.mark}
+                    </span>
+                    <span className="text-xs font-medium text-foreground">{item.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         ))}
+      </div>
+
+      {/* Security card */}
+      <div className="mt-16 overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-surface to-surface-2 p-8 shadow-xs sm:p-10">
+        <div className="grid gap-6 md:grid-cols-[auto_1fr] md:items-start md:gap-8">
+          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary">
+            <Lock className="h-6 w-6" />
+          </div>
+          <div>
+            <h3 className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">Your connections stay secure.</h3>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+              Rothme connects to supported platforms using secure authentication methods and industry-standard encryption. You control which platforms you connect and can disconnect them at any time.
+            </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {["OAuth 2.0", "AES-GCM at rest", "TLS 1.3 in transit", "Revoke anytime"].map((t) => (
+                <span key={t} className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-[11px] text-muted-foreground">
+                  <ShieldCheck className="h-3 w-3 text-primary" /> {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     </Section>
   );
