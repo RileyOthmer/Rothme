@@ -1619,7 +1619,7 @@ function LeadAudit() {
                   <li
                     key={name}
                     className="flex items-center justify-between rounded-xl border border-border/60 bg-background/50 px-3.5 py-2.5 transition-colors hover:bg-background"
-                    style={{ animation: `rise 0.6s ease-out both`, animationDelay: `${i * 60}ms` }}
+                    style={{ animation: `rise-in 0.6s ease-out both`, animationDelay: `${i * 60}ms` }}
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
                       <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
