@@ -3610,63 +3610,151 @@ const TRUST_INDICATORS = [
 
 /* ─────────────────────────────── Footer ─────────────────────────────── */
 
+const FOOTER_LINKS = {
+  product: [
+    { label: "Features", to: "#features" },
+    { label: "Lead Audit", to: "#lead-audit" },
+    { label: "Marketing Health Score", to: "#health-score" },
+    { label: "Marketing Cheat Sheet", to: "#cheat-sheet" },
+    { label: "Integrations", to: "#integrations" },
+    { label: "Pricing", to: "/pricing" },
+  ],
+  resources: [
+    { label: "Help Center", href: "#" },
+    { label: "Documentation", href: "#" },
+    { label: "API", href: "#" },
+    { label: "Blog", href: "#" },
+    { label: "Product Roadmap", href: "#" },
+    { label: "System Status", href: "#" },
+    { label: "Trust Center", href: "#" },
+  ],
+  company: [
+    { label: "About", href: "#" },
+    { label: "Careers", href: "#" },
+    { label: "Contact", href: "#" },
+    { label: "Press", href: "#" },
+    { label: "Affiliate Program", href: "#" },
+    { label: "Partners", href: "#" },
+  ],
+  legal: [
+    { label: "Privacy Policy", href: "#" },
+    { label: "Terms of Service", href: "#" },
+    { label: "Cookie Policy", href: "#" },
+    { label: "Security", href: "#" },
+    { label: "Data Processing", href: "#" },
+  ],
+  social: [
+    { label: "LinkedIn", href: "#" },
+    { label: "YouTube", href: "#" },
+    { label: "Facebook", href: "#" },
+    { label: "Instagram", href: "#" },
+    { label: "X", href: "#" },
+    { label: "TikTok", href: "#" },
+  ],
+};
+
+const BOTTOM_LINKS = [
+  { label: "Privacy", href: "#" },
+  { label: "Terms", href: "#" },
+  { label: "Cookies", href: "#" },
+  { label: "Accessibility", href: "#" },
+  { label: "Status", href: "#" },
+];
+
 function Footer() {
   return (
-    <footer>
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div className="grid gap-10 sm:grid-cols-2 md:grid-cols-4">
-          <div>
+    <footer className="bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+        <div className="grid gap-12 lg:grid-cols-12">
+          {/* Brand */}
+          <div className="lg:col-span-4">
             <Link to="/" className="flex items-center gap-2">
               <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground shadow-sm">
                 <span className="font-serif text-[15px] leading-none">R</span>
               </span>
               <Wordmark />
             </Link>
-            <p className="mt-3 max-w-xs text-xs leading-relaxed text-muted-foreground">
-              The AI marketing operating system for business owners.
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground">
+              Helping businesses understand their marketing through connected data, continuous monitoring, and educational insights.
             </p>
           </div>
-          <FooterCol title="Product" links={[
-            { label: "Features", href: "#features" },
-            { label: "Integrations", href: "#integrations" },
-            { label: "Pricing", href: "#pricing" },
-            { label: "FAQ", href: "#faq" },
-          ]} />
-          <FooterCol title="Company" links={[
-            { label: "About", href: "#" },
-            { label: "Contact", href: "#" },
-            { label: "Careers", href: "#" },
-            { label: "AI Transparency", to: "/ai-transparency" as const },
-          ]} />
-          <FooterCol title="Legal" links={[
-            { label: "Privacy", href: "#" },
-            { label: "Terms", href: "#" },
-            { label: "Security", href: "#" },
-          ]} />
+
+          {/* Link groups */}
+          <div className="grid gap-10 sm:grid-cols-3 lg:col-span-5 lg:grid-cols-3">
+            <FooterCol title="Product" links={FOOTER_LINKS.product} />
+            <FooterCol title="Resources" links={FOOTER_LINKS.resources} />
+            <FooterCol title="Company" links={FOOTER_LINKS.company} />
+          </div>
+
+          {/* Legal + Social */}
+          <div className="grid gap-10 sm:grid-cols-2 lg:col-span-3 lg:grid-cols-1">
+            <FooterCol title="Legal" links={FOOTER_LINKS.legal} />
+            <FooterCol title="Social" links={FOOTER_LINKS.social} />
+          </div>
         </div>
-        <div className="mt-10 flex flex-col items-start justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
-          <span>© {new Date().getFullYear()} Rothme.</span>
-          <span>Grow your business. Smarter.</span>
+
+        {/* Divider */}
+        <div className="mt-16 border-t border-border" />
+
+        {/* Bottom bar */}
+        <div className="mt-8 flex flex-col items-start justify-between gap-6 lg:flex-row lg:items-center">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
+            <span className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} Rothme. All rights reserved.
+            </span>
+            <nav className="flex flex-wrap items-center gap-4 text-sm">
+              {BOTTOM_LINKS.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Made with <span className="text-red-500">♥</span> for businesses that want marketing clarity.
+          </p>
         </div>
       </div>
     </footer>
   );
 }
 
-function FooterCol({ title, links }: { title: string; links: Array<{ label: string; href?: string; to?: "/pricing" | "/why" | "/ai-transparency" }> }) {
+function FooterCol({
+  title,
+  links,
+}: {
+  title: string;
+  links: Array<{ label: string; href?: string; to?: string }>;
+}) {
+  const isExternal = (href?: string) => href?.startsWith("http");
+
   return (
     <div>
-      <div className="text-[13px] font-medium text-foreground">{title}</div>
-      <ul className="mt-3 space-y-2">
-        {links.map((l) => (
-          <li key={l.label}>
-            {l.to ? (
-              <Link to={l.to} className="text-xs text-muted-foreground hover:text-foreground">{l.label}</Link>
-            ) : (
-              <a href={l.href} className="text-xs text-muted-foreground hover:text-foreground">{l.label}</a>
-            )}
-          </li>
-        ))}
+      <h3 className="text-[13px] font-medium tracking-tight text-foreground">{title}</h3>
+      <ul className="mt-4 space-y-3">
+        {links.map((l) => {
+          const className =
+            "group inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground";
+          return (
+            <li key={l.label}>
+              {l.to ? (
+                <Link to={l.to} className={className}>
+                  {l.label}
+                  {isExternal(l.to) && <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />}
+                </Link>
+              ) : (
+                <a href={l.href} className={className}>
+                  {l.label}
+                  {isExternal(l.href) && <ArrowUpRight className="h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />}
+                </a>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );
