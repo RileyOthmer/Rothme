@@ -1,26 +1,26 @@
 import {
-  Compass,
-  Globe,
-  Share2,
-  Mail,
-  Search,
-  Facebook,
-  LayoutTemplate,
-  ClipboardCheck,
+  BookOpen,
+  HelpCircle,
+  FileText,
+  ArrowLeftRight,
+  Calculator,
+  Database,
+  BarChart3,
+  Library,
   type LucideIcon,
 } from "lucide-react";
 
 import { QUICK_ACTIONS, askAI, type QuickActionIcon } from "./quick-actions";
 
 const ICONS: Record<QuickActionIcon, LucideIcon> = {
-  strategy: Compass,
-  website: Globe,
-  social: Share2,
-  email: Mail,
-  "google-ads": Search,
-  facebook: Facebook,
-  landing: LayoutTemplate,
-  audit: ClipboardCheck,
+  explain: BookOpen,
+  define: HelpCircle,
+  summary: FileText,
+  changes: ArrowLeftRight,
+  formula: Calculator,
+  source: Database,
+  chart: BarChart3,
+  glossary: Library,
 };
 
 /**
@@ -37,10 +37,10 @@ export function QuickActions({ className }: { className?: string }) {
             id="quick-actions-heading"
             className="text-base font-semibold tracking-tight text-foreground"
           >
-            Quick actions
+            Understand your marketing
           </h2>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            One click — your AI CMO drafts it. Nothing publishes without your review.
+            Ask Rothme to explain a metric, define a term, or summarize what changed.
           </p>
         </div>
       </div>

@@ -1,23 +1,23 @@
 import { useState } from "react";
-import { Clock, Check, BellOff, X, ChevronDown, AlertTriangle } from "lucide-react";
+import { BellOff, X, ChevronDown, AlertTriangle, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import type { Decision, Priority } from "./types";
+import type { Decision, ObservationCategory } from "./types";
 
-const PRIORITY_LABEL: Record<Priority, string> = {
-  high: "High priority",
-  medium: "Worth doing",
-  low: "Keep an eye on",
+const CATEGORY_LABEL: Record<ObservationCategory, string> = {
+  notable: "Notable change",
+  steady: "Within normal range",
+  watch: "Worth watching",
 };
 
-const PRIORITY_STYLES: Record<Priority, string> = {
-  high: "bg-destructive/10 text-destructive border-destructive/20",
-  medium: "bg-primary/10 text-primary border-primary/20",
-  low: "bg-muted text-muted-foreground border-border",
+const CATEGORY_STYLES: Record<ObservationCategory, string> = {
+  notable: "bg-primary/10 text-primary border-primary/20",
+  steady: "bg-muted text-muted-foreground border-border",
+  watch: "bg-amber-500/10 text-amber-700 border-amber-500/20 dark:text-amber-300",
 };
 
 function confidenceLabel(pct: number): { label: string; tone: string } {
@@ -39,20 +39,19 @@ export type DecisionCardProps = {
   onDismiss?: (id: string) => void;
 };
 
-export function DecisionCard({ decision, onAccept, onSnooze, onDismiss }: DecisionCardProps) {
-  const [open, setOpen] = useState(decision.priority === "high");
+export function DecisionCard({ decision, onSnooze, onDismiss }: DecisionCardProps) {
+  const [open, setOpen] = useState(decision.priority === "notable");
   const conf = confidenceLabel(decision.confidencePct);
   const stale = freshnessLabel(decision.dataFreshnessHours);
-  const actionable = decision.confidencePct >= 60;
 
   return (
     <article className="rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md">
       {/* Header row */}
       <div className="flex flex-wrap items-center gap-2">
         <span
-          className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${PRIORITY_STYLES[decision.priority]}`}
+          className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-medium ${CATEGORY_STYLES[decision.priority]}`}
         >
-          {PRIORITY_LABEL[decision.priority]}
+          {CATEGORY_LABEL[decision.priority]}
         </span>
         <span className={`text-xs font-medium ${conf.tone}`}>
           {conf.label} · {decision.confidencePct}%
@@ -70,31 +69,22 @@ export function DecisionCard({ decision, onAccept, onSnooze, onDismiss }: Decisi
         {decision.headline}
       </h3>
 
-      {/* Why */}
+      {/* Why (from the data) */}
       <div className="mt-3">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Why this is happening
+          Why (from the data)
         </p>
         <p className="mt-1 text-sm leading-relaxed text-foreground/90">{decision.reason}</p>
       </div>
 
-      {/* Recommendation */}
+      {/* How this is calculated */}
       <div className="mt-4 rounded-xl border border-border/60 bg-muted/40 p-4">
         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          What to do
+          How this is calculated
         </p>
         <p className="mt-1 text-sm leading-relaxed text-foreground">{decision.recommendation}</p>
-        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
-          <span className="inline-flex items-center gap-1">
-            <Clock className="h-3.5 w-3.5" />
-            {decision.estimatedTimeMinutes === 0
-              ? "No action yet"
-              : `~${decision.estimatedTimeMinutes} min`}
-          </span>
-          <span>Business impact: <span className="font-medium capitalize text-foreground/80">{decision.impact}</span></span>
-        </div>
         <p className="mt-2 text-xs italic text-muted-foreground">
-          Expected result: {decision.estimatedResult}
+          Data source: {decision.estimatedResult}
         </p>
       </div>
 
@@ -126,14 +116,8 @@ export function DecisionCard({ decision, onAccept, onSnooze, onDismiss }: Decisi
         </CollapsibleContent>
       </Collapsible>
 
-      {/* Actions */}
+      {/* Actions — snooze/dismiss only. No "I'll do this" advice CTAs. */}
       <div className="mt-5 flex flex-wrap items-center gap-2">
-        {actionable && (
-          <Button size="sm" onClick={() => onAccept?.(decision.id)}>
-            <Check className="mr-1.5 h-4 w-4" />
-            I'll do this
-          </Button>
-        )}
         <Button size="sm" variant="ghost" onClick={() => onSnooze?.(decision.id)}>
           <BellOff className="mr-1.5 h-4 w-4" />
           Snooze
@@ -148,6 +132,11 @@ export function DecisionCard({ decision, onAccept, onSnooze, onDismiss }: Decisi
           Dismiss
         </Button>
       </div>
+
+      <p className="mt-3 flex items-center gap-1 text-xs text-muted-foreground">
+        <Clock className="h-3 w-3" />
+        Rothme reports observations. It does not decide what to do next.
+      </p>
     </article>
   );
 }

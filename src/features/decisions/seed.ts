@@ -1,18 +1,18 @@
 import type { Decision } from "./types";
 
-// Seed decisions — clearly labeled as sample data until the Unified Data
-// Engine + provider adapters are wired. Kept small on purpose: three high-signal
-// decisions beats twelve noisy ones (feature quality gate).
+// Seed observations — clearly labeled as sample data until the Unified Data
+// Engine + provider adapters are wired. Rothme reports facts here — it does
+// not recommend actions.
 
 export const SEED_DECISIONS: Decision[] = [
   {
-    id: "dec_meta_cost_spike",
-    priority: "high",
-    headline: "Your Meta Ads cost per result is up 23% this week.",
+    id: "obs_meta_cost_spike",
+    priority: "notable",
+    headline: "Meta Ads cost per result moved from $14.95 to $18.40 this week (+23%).",
     reason:
-      "Two of your audiences overlap by 41%, so you're bidding against yourself. Competition in your category also rose after Monday.",
+      "Two audiences overlap by 41% — the same people are eligible in both ad sets. Overall impressions also moved +4%.",
     recommendation:
-      "Pause the 'Lookalike 3%' audience for 48 hours before you add budget. If cost per result drops, keep it paused and shift spend to 'Interest — Home Decor'.",
+      "Cost per result = amount spent ÷ results attributed by Meta. Both values come from the Meta Ads Insights API for the reporting window shown.",
     confidencePct: 91,
     impact: "high",
     supportingData: [
@@ -20,40 +20,40 @@ export const SEED_DECISIONS: Decision[] = [
       { label: "Audience overlap", value: "41%", source: "Meta Ads" },
       { label: "Impressions", value: "82,140", change: "+4%", source: "Meta Ads" },
     ],
-    estimatedTimeMinutes: 5,
-    estimatedResult: "Cost per result likely returns to ~$15 within 3–4 days.",
+    estimatedTimeMinutes: 0,
+    estimatedResult: "Meta Ads Insights API (synced 2 hours ago).",
     dataFreshnessHours: 2,
     status: "open",
     createdAt: new Date().toISOString(),
   },
   {
-    id: "dec_email_winback",
-    priority: "medium",
-    headline: "412 past customers haven't opened an email in 60 days.",
+    id: "obs_email_inactive",
+    priority: "watch",
+    headline: "412 contacts have not opened a Mailchimp email in 60 days.",
     reason:
-      "Your last three campaigns went to your full list. Inactive contacts drag down deliverability and hide your best subscribers from the numbers.",
+      "The last three campaigns went to the full list. List open rate moved from ~21.3% (30-day avg) to 18.2% on the last send.",
     recommendation:
-      "Send a short 'we miss you' email to just this segment with one clear offer. Remove anyone who doesn't open within 14 days.",
+      "Inactive contact count = contacts with 0 opens across sends in the last 60 days. List open rate = unique opens ÷ delivered.",
     confidencePct: 82,
     impact: "medium",
     supportingData: [
       { label: "Inactive contacts", value: "412", source: "Mailchimp" },
       { label: "List open rate", value: "18.2%", change: "−3.1% vs 30-day avg", source: "Mailchimp" },
     ],
-    estimatedTimeMinutes: 20,
-    estimatedResult: "Open rate on future sends typically improves by 4–7 points after a clean-up like this.",
+    estimatedTimeMinutes: 0,
+    estimatedResult: "Mailchimp Marketing API (synced 6 hours ago).",
     dataFreshnessHours: 6,
     status: "open",
-  createdAt: new Date().toISOString(),
+    createdAt: new Date().toISOString(),
   },
   {
-    id: "dec_shopify_checkout",
-    priority: "low",
-    headline: "Mobile checkout completion is slightly below your normal range.",
+    id: "obs_shopify_checkout",
+    priority: "watch",
+    headline: "Mobile checkout completion is 62.1% — 4.2 points below the 30-day average.",
     reason:
-      "Confidence is limited — we only have 4 days of data since your theme update. It could be normal variance.",
+      "Only 4 days of data since the last theme update. Sample size is small; this could be normal variance.",
     recommendation:
-      "Wait 3 more days before changing anything. If the drop continues, test checkout on your phone and look for a new field or step.",
+      "Mobile checkout rate = mobile completed checkouts ÷ mobile started checkouts, reported by Shopify Analytics.",
     confidencePct: 54,
     impact: "low",
     supportingData: [
@@ -61,7 +61,7 @@ export const SEED_DECISIONS: Decision[] = [
       { label: "Sample size", value: "4 days", source: "Shopify" },
     ],
     estimatedTimeMinutes: 0,
-    estimatedResult: "Too early to say — we'll re-evaluate once there's a full week of data.",
+    estimatedResult: "Shopify Analytics API (synced 3 hours ago).",
     dataFreshnessHours: 3,
     status: "open",
     createdAt: new Date().toISOString(),

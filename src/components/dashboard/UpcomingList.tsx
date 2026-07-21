@@ -1,10 +1,9 @@
-import { toast } from "sonner";
 import type { DashboardData } from "@/lib/dashboard-mock";
 
 export function UpcomingList({ items }: { items: DashboardData["upcoming"] }) {
   return (
     <section className="rounded-xl border border-border bg-surface p-6 shadow-sm sm:p-7">
-      <div className="eyebrow mb-4">Upcoming recommendations</div>
+      <div className="eyebrow mb-4">Recent changes</div>
       <ul className="divide-y divide-border">
         {items.map((item) => (
           <li key={item.id} className="py-3.5 first:pt-0 last:pb-0">
@@ -17,18 +16,14 @@ export function UpcomingList({ items }: { items: DashboardData["upcoming"] }) {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-sm leading-snug text-foreground">{item.action}</p>
-                <button
-                  type="button"
-                  onClick={() => toast(`Starting: ${item.cta.toLowerCase()}`)}
-                  className="mt-2 inline-flex h-7 items-center rounded-md border border-border-strong bg-surface px-2.5 text-xs font-medium text-foreground shadow-xs transition-all duration-150 hover:bg-surface-2"
-                >
-                  {item.cta}
-                </button>
               </div>
             </div>
           </li>
         ))}
       </ul>
+      <p className="mt-4 text-xs text-muted-foreground">
+        Rothme reports observed changes across your connected platforms. It does not decide what to do next.
+      </p>
     </section>
   );
 }

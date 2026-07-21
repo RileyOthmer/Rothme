@@ -1,10 +1,10 @@
-// Decision object — the AI's answer to "what should I do?"
-// Every Decision must carry evidence and honest confidence.
-// See mem://ai/voice-contract.
+// Observation object — a factual, plain-English read-out of a metric.
+// Rothme reports what the connected data shows and, when possible, why.
+// It never recommends actions or judges marketing quality.
 
-export type Priority = "high" | "medium" | "low";
+export type ObservationCategory = "notable" | "steady" | "watch";
 export type ImpactLevel = "high" | "medium" | "low";
-export type DecisionStatus = "open" | "accepted" | "snoozed" | "dismissed";
+export type DecisionStatus = "open" | "reviewed" | "snoozed" | "dismissed";
 
 export type SupportingDatum = {
   label: string; // plain English, e.g. "Cost per result"
@@ -13,18 +13,21 @@ export type SupportingDatum = {
   source: string; // e.g. "Meta Ads"
 };
 
+// Legacy alias kept so existing routes (`Priority`, `priority`) still compile.
+export type Priority = ObservationCategory;
+
 export type Decision = {
   id: string;
-  priority: Priority;
-  headline: string; // one sentence, plain English
-  reason: string; // why this is happening
-  recommendation: string; // what to do
+  priority: ObservationCategory;
+  headline: string; // one factual sentence
+  reason: string; // why — only when the data supports it
+  recommendation: string; // "How this is calculated" — never advice
   confidencePct: number; // 0-100, computed — never model-declared
   impact: ImpactLevel;
   supportingData: SupportingDatum[];
-  estimatedTimeMinutes: number;
-  estimatedResult: string; // plain English, honest, hedged
-  dataFreshnessHours: number; // for stale badge
+  estimatedTimeMinutes: number; // kept for schema compat; unused in UI
+  estimatedResult: string; // "Data source" note
+  dataFreshnessHours: number;
   status: DecisionStatus;
-  createdAt: string; // ISO
+  createdAt: string;
 };
