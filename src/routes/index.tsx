@@ -92,7 +92,7 @@ function Index() {
         <Features />
         <Security />
         <AITransparencySection />
-        <Testimonials />
+        <CustomerStories />
         <PricingSection />
         <FAQ />
       </main>
