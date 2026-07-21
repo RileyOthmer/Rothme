@@ -3150,42 +3150,252 @@ function AITransparencySection() {
   );
 }
 
-/* ─────────────────────────────── Testimonials ─────────────────────────────── */
+/* ─────────────────────────────── Customer Stories ─────────────────────────────── */
 
-const TESTIMONIALS = [
-  { quote: "I finally know if my ads are working — in one sentence, every morning.", name: "Maya R.", role: "Owner, neighbourhood café" },
-  { quote: "It replaced three tools and half a meeting a week.", name: "Daniel K.", role: "Founder, online store" },
-  { quote: "Feels like having a marketing person on the team, minus the meetings.", name: "Priya S.", role: "Owner, dental clinic" },
-  { quote: "The Monday brief is the only marketing thing I actually read.", name: "Jonas M.", role: "Head of growth, SaaS" },
-];
+type CustomerStory = {
+  quote: string;
+  name: string;
+  role: string;
+  company: string;
+  rating?: number;
+  photoUrl?: string;
+  logoUrl?: string;
+  caseStudyHref?: string;
+};
 
-function Testimonials() {
+// Authentic stories only. Leave empty until real, approved testimonials exist.
+const CUSTOMER_STORIES: CustomerStory[] = [];
+
+type CaseStudy = {
+  business: string;
+  industry: string;
+  challenge: string;
+  solution: string;
+  results: string;
+  href?: string;
+};
+
+// Only published case studies. Empty by default.
+const CASE_STUDIES: CaseStudy[] = [];
+
+type ReviewHighlight = {
+  source: "Google" | "G2" | "Capterra" | "Trustpilot";
+  quote: string;
+  author: string;
+  rating?: number;
+  href?: string;
+};
+
+// Only verified, approved reviews.
+const REVIEW_HIGHLIGHTS: ReviewHighlight[] = [];
+
+function CustomerStories() {
+  const hasStories = CUSTOMER_STORIES.length > 0;
+  const hasCases = CASE_STUDIES.length > 0;
+  const hasReviews = REVIEW_HIGHLIGHTS.length > 0;
+  const preLaunch = !hasStories && !hasCases && !hasReviews;
+
   return (
     <Section tint>
       <SectionHead
-        eyebrow="What owners say"
-        title="The people who stopped"
-        italic="opening dashboards."
+        eyebrow="Customer stories"
+        title="Built for businesses that want"
+        italic="clarity."
       />
-      <div className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {TESTIMONIALS.map((t) => (
-          <figure key={t.name} className="flex h-full flex-col rounded-2xl border border-border bg-surface p-6 shadow-xs">
-            <div className="mb-3 flex gap-0.5" aria-label="5 out of 5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="h-3.5 w-3.5 fill-foreground/80 text-foreground/80" />
+      <p className="mx-auto mt-5 max-w-2xl text-center text-[15px] leading-relaxed text-muted-foreground">
+        Rothme is designed to help businesses understand their marketing with confidence.
+        As our community grows, this section will showcase real customer experiences and measurable outcomes.
+      </p>
+
+      {preLaunch ? (
+        <div className="mt-14 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-surface p-10 shadow-xs animate-fade-in sm:p-12">
+            <div className="pointer-events-none absolute inset-0 opacity-[0.35]" aria-hidden>
+              <div className="absolute -top-24 -right-16 h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+              <div className="absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-foreground/[0.04] blur-3xl" />
+            </div>
+            <div className="relative">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+                <Sparkles className="h-3 w-3" /> Early access
+              </span>
+              <h3 className="mt-5 text-3xl font-medium tracking-tight text-foreground sm:text-4xl">
+                Be one of our{" "}
+                <span className="font-serif italic font-normal">first success stories.</span>
+              </h3>
+              <p className="mt-4 max-w-lg text-[15px] leading-relaxed text-muted-foreground">
+                We're building Rothme with feedback from early users. Join today and help shape
+                the future of marketing visibility.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  to="/get-started"
+                  className="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-6 text-sm font-medium text-primary-foreground shadow-md transition-all hover:-translate-y-px hover:shadow-lg"
+                >
+                  Start Free Trial <ArrowRight className="h-4 w-4" />
+                </Link>
+                <a
+                  href="#community"
+                  className="inline-flex h-11 items-center gap-2 rounded-lg border border-border bg-surface px-6 text-sm font-medium text-foreground transition-all hover:-translate-y-px hover:bg-surface-2"
+                >
+                  <Users className="h-4 w-4" /> Join the Community
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="community"
+            className="relative flex flex-col justify-between rounded-3xl border border-border bg-surface p-10 shadow-xs animate-fade-in"
+          >
+            <div>
+              <span className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
+                <MessageSquare className="h-5 w-5" />
+              </span>
+              <h3 className="mt-5 text-2xl font-medium tracking-tight text-foreground">
+                Help build Rothme
+              </h3>
+              <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+                Your feedback helps shape new features, integrations, and improvements.
+                Every story we publish here will come from a real customer.
+              </p>
+            </div>
+            <a
+              href="mailto:hello@rothme.app?subject=Rothme%20Feedback"
+              className="mt-8 inline-flex h-11 w-fit items-center gap-2 rounded-lg border border-border bg-surface-2 px-5 text-sm font-medium text-foreground transition-all hover:-translate-y-px hover:bg-surface"
+            >
+              Share Feedback <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-14 space-y-16">
+          {hasStories && (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {CUSTOMER_STORIES.map((s) => (
+                <figure
+                  key={`${s.name}-${s.company}`}
+                  className="flex h-full flex-col rounded-3xl border border-border bg-surface p-7 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md animate-fade-in"
+                >
+                  {typeof s.rating === "number" && (
+                    <div className="mb-3 flex gap-0.5" aria-label={`${s.rating} out of 5`}>
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-3.5 w-3.5 ${i < s.rating! ? "fill-foreground/80 text-foreground/80" : "text-border"}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                  <blockquote className="flex-1 font-serif text-[17px] leading-snug text-foreground">
+                    "{s.quote}"
+                  </blockquote>
+                  <figcaption className="mt-6 flex items-center gap-3 text-sm">
+                    {s.photoUrl ? (
+                      <img src={s.photoUrl} alt="" className="h-9 w-9 rounded-full object-cover" />
+                    ) : (
+                      <span className="grid h-9 w-9 place-items-center rounded-full bg-surface-2 text-xs font-medium text-muted-foreground">
+                        {s.name.slice(0, 1)}
+                      </span>
+                    )}
+                    <div>
+                      <div className="font-medium text-foreground">{s.name}</div>
+                      <div className="text-muted-foreground">
+                        {s.role} · {s.company}
+                      </div>
+                    </div>
+                    {s.logoUrl && (
+                      <img src={s.logoUrl} alt={`${s.company} logo`} className="ml-auto h-5 opacity-70" />
+                    )}
+                  </figcaption>
+                  {s.caseStudyHref && (
+                    <a
+                      href={s.caseStudyHref}
+                      className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
+                    >
+                      Read case study <ArrowRight className="h-3.5 w-3.5" />
+                    </a>
+                  )}
+                </figure>
               ))}
             </div>
-            <blockquote className="flex-1 font-serif text-[17px] leading-snug text-foreground">"{t.quote}"</blockquote>
-            <figcaption className="mt-6 text-sm">
-              <div className="font-medium text-foreground">{t.name}</div>
-              <div className="text-muted-foreground">{t.role}</div>
-            </figcaption>
-          </figure>
-        ))}
-      </div>
+          )}
+
+          {hasCases && (
+            <div>
+              <h3 className="text-center text-xl font-medium text-foreground">Featured case studies</h3>
+              <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {CASE_STUDIES.map((c) => (
+                  <article
+                    key={c.business}
+                    className="group flex h-full flex-col rounded-3xl border border-border bg-surface p-7 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md animate-fade-in"
+                  >
+                    <div className="text-xs uppercase tracking-wide text-muted-foreground">{c.industry}</div>
+                    <h4 className="mt-2 text-lg font-medium text-foreground">{c.business}</h4>
+                    <dl className="mt-4 space-y-3 text-sm">
+                      <div>
+                        <dt className="font-medium text-foreground">Challenge</dt>
+                        <dd className="text-muted-foreground">{c.challenge}</dd>
+                      </div>
+                      <div>
+                        <dt className="font-medium text-foreground">Solution</dt>
+                        <dd className="text-muted-foreground">{c.solution}</dd>
+                      </div>
+                      <div>
+                        <dt className="font-medium text-foreground">Results</dt>
+                        <dd className="text-muted-foreground">{c.results}</dd>
+                      </div>
+                    </dl>
+                    {c.href && (
+                      <a
+                        href={c.href}
+                        className="mt-6 inline-flex items-center gap-1 text-sm font-medium text-primary group-hover:underline"
+                      >
+                        Read more <ArrowRight className="h-3.5 w-3.5" />
+                      </a>
+                    )}
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {hasReviews && (
+            <div>
+              <h3 className="text-center text-xl font-medium text-foreground">Review highlights</h3>
+              <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                {REVIEW_HIGHLIGHTS.map((r, i) => (
+                  <a
+                    key={i}
+                    href={r.href ?? "#"}
+                    className="flex h-full flex-col rounded-2xl border border-border bg-surface p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-medium text-muted-foreground">{r.source}</span>
+                      {typeof r.rating === "number" && (
+                        <div className="flex gap-0.5" aria-label={`${r.rating} out of 5`}>
+                          {Array.from({ length: 5 }).map((_, k) => (
+                            <Star
+                              key={k}
+                              className={`h-3 w-3 ${k < r.rating! ? "fill-foreground/80 text-foreground/80" : "text-border"}`}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <p className="mt-3 flex-1 text-sm leading-snug text-foreground">"{r.quote}"</p>
+                    <div className="mt-4 text-xs text-muted-foreground">— {r.author}</div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </Section>
   );
 }
+
+
 
 /* ─────────────────────────────── Pricing ─────────────────────────────── */
 
