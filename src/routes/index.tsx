@@ -2922,34 +2922,187 @@ function Features() {
 
 /* ─────────────────────────────── Security ─────────────────────────────── */
 
-const SECURITY = [
-  { icon: ShieldCheck, title: "SOC 2 Type II", body: "Independently audited controls covering security, availability, and confidentiality." },
-  { icon: Lock, title: "Encrypted end-to-end", body: "All tokens and business data encrypted at rest with AES-GCM and in transit with TLS 1.3." },
-  { icon: Eye, title: "You own your data", body: "Export or delete everything at any time. We never sell, share, or train models on it." },
-  { icon: Link2, title: "Official OAuth only", body: "Every connection uses each platform's official OAuth. We never ask for your passwords." },
+const SECURITY_CARDS = [
+  { icon: Lock, title: "Secure Authentication", body: "Connect supported platforms using secure authentication methods such as OAuth whenever available." },
+  { icon: ShieldCheck, title: "Encrypted Connections", body: "Data is transmitted using industry-standard encryption while in transit." },
+  { icon: Users, title: "You Control Your Data", body: "Choose which platforms to connect, disconnect, or reconnect at any time." },
+  { icon: Eye, title: "Transparent Permissions", body: "Only request the permissions required to provide supported platform functionality." },
+  { icon: FileText, title: "Privacy First", body: "Rothme is designed to respect customer privacy and provide visibility into connected marketing data." },
+  { icon: Activity, title: "Growing Security Practices", body: "Security practices continue to evolve as the platform grows and new features are introduced." },
 ];
+
+const SECURITY_ORBIT = [
+  { mark: "Ga", name: "Analytics", color: "#E37400" },
+  { mark: "Ga", name: "Google Ads", color: "#4285F4" },
+  { mark: "Me", name: "Meta", color: "#1877F2" },
+  { mark: "Tt", name: "TikTok", color: "#111111" },
+  { mark: "Hs", name: "HubSpot", color: "#FF7A59" },
+  { mark: "Gm", name: "Gmail", color: "#EA4335" },
+  { mark: "Ol", name: "Outlook", color: "#0078D4" },
+  { mark: "Sh", name: "Shopify", color: "#96BF48" },
+  { mark: "Tw", name: "Twilio", color: "#F22F46" },
+];
+
+const BEST_PRACTICES = [
+  { icon: Lock, title: "Strong passwords", body: "Use unique passwords for every platform." },
+  { icon: ShieldCheck, title: "Multi-factor auth", body: "Add a second verification step to every account." },
+  { icon: Link2, title: "Official connections", body: "Connect only through each platform's official flow." },
+  { icon: Eye, title: "Regular reviews", body: "Audit connected apps and permissions periodically." },
+  { icon: CheckCircle2, title: "Secure authentication", body: "Prefer providers that support modern auth." },
+];
+
+function SecurityOrbit() {
+  const size = 420;
+  const c = size / 2;
+  const r = 160;
+  const nodes = SECURITY_ORBIT.map((p, i) => {
+    const angle = (i / SECURITY_ORBIT.length) * Math.PI * 2 - Math.PI / 2;
+    return { ...p, x: c + Math.cos(angle) * r, y: c + Math.sin(angle) * r };
+  });
+
+  return (
+    <div className="relative mx-auto w-full max-w-[460px]">
+      <div className="absolute inset-0 -z-10 rounded-full bg-gradient-to-br from-primary/10 via-transparent to-transparent blur-3xl" />
+      <svg viewBox={`0 0 ${size} ${size}`} className="h-auto w-full" role="img" aria-label="Rothme secures connected marketing platforms">
+        <circle cx={c} cy={c} r={r} fill="none" stroke="currentColor" className="text-border" strokeDasharray="3 6" />
+        {nodes.map((n, i) => (
+          <g key={i}>
+            <line x1={c} y1={c} x2={n.x} y2={n.y} stroke="currentColor" className="text-primary/30" strokeWidth="1" strokeDasharray="5 5">
+              <animate attributeName="stroke-dashoffset" values="0;-20" dur={`${2 + (i % 3) * 0.4}s`} repeatCount="indefinite" />
+            </line>
+          </g>
+        ))}
+        {/* Shield core */}
+        <circle cx={c} cy={c} r={54} className="fill-background" stroke="currentColor" strokeOpacity="0.15" />
+        <circle cx={c} cy={c} r={54} fill="none" className="text-primary/40" stroke="currentColor" strokeWidth="1">
+          <animate attributeName="r" values="54;66;54" dur="3s" repeatCount="indefinite" />
+          <animate attributeName="opacity" values="0.6;0;0.6" dur="3s" repeatCount="indefinite" />
+        </circle>
+        <g transform={`translate(${c - 18}, ${c - 20})`}>
+          <path d="M18 2 L34 8 V18 C34 27 26 34 18 36 C10 34 2 27 2 18 V8 Z" className="fill-primary/10 stroke-primary" strokeWidth="1.5" />
+          <path d="M12 18 L16 22 L24 14" className="fill-none stroke-primary" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </g>
+      </svg>
+
+      {nodes.map((n, i) => (
+        <div
+          key={i}
+          className="absolute -translate-x-1/2 -translate-y-1/2 animate-[float_6s_ease-in-out_infinite]"
+          style={{ left: `${(n.x / size) * 100}%`, top: `${(n.y / size) * 100}%`, animationDelay: `${i * 0.2}s` }}
+        >
+          <div className="flex items-center gap-1.5 rounded-full border border-border bg-surface/95 pl-1 pr-2.5 py-1 shadow-sm backdrop-blur-sm">
+            <span className="grid h-6 w-6 place-items-center rounded-full text-[10px] font-semibold text-white" style={{ background: n.color }}>
+              {n.mark}
+            </span>
+            <span className="text-[11px] font-medium text-foreground">{n.name}</span>
+            <Lock className="h-2.5 w-2.5 text-emerald-600" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function Security() {
   return (
-    <Section tint>
+    <Section id="security" tint>
       <SectionHead
         eyebrow="Security & Privacy"
-        title="Enterprise-grade security."
-        italic="Small-business simple."
+        title="Built with security"
+        italic="in mind."
+        sub="When you connect your marketing platforms, trust matters. Rothme is designed to protect your data, respect your privacy, and give you control over every connected account."
       />
-      <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {SECURITY.map((s) => {
-          const Icon = s.icon;
-          return (
-            <div key={s.title} className="rounded-2xl border border-border bg-surface p-5 shadow-xs">
-              <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Icon className="h-4 w-4" />
-              </span>
-              <h3 className="mt-4 text-[15px] font-semibold tracking-tight text-foreground">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
-            </div>
-          );
-        })}
+
+      {/* Visualization + cards */}
+      <div className="mt-14 grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:items-start">
+        <div className="rounded-3xl border border-border bg-surface p-6 shadow-xs sm:p-10">
+          <SecurityOrbit />
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5"><Lock className="h-3 w-3 text-emerald-600" /> Encrypted in transit</span>
+            <span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3 w-3 text-primary" /> Official OAuth</span>
+            <span className="inline-flex items-center gap-1.5"><Eye className="h-3 w-3 text-foreground/70" /> You stay in control</span>
+          </div>
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          {SECURITY_CARDS.map((s) => {
+            const Icon = s.icon;
+            return (
+              <div key={s.title} className="rounded-2xl border border-border bg-surface p-5 shadow-xs transition-all hover:-translate-y-0.5 hover:shadow-md">
+                <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Icon className="h-4 w-4" />
+                </span>
+                <h3 className="mt-4 text-[14px] font-semibold tracking-tight text-foreground">{s.title}</h3>
+                <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{s.body}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Transparency + Best Practices */}
+      <div className="mt-14 grid gap-4 lg:grid-cols-2">
+        <div className="rounded-2xl border border-border bg-surface p-6 shadow-xs sm:p-8">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <Eye className="h-4 w-4" />
+            </span>
+            <h3 className="text-lg font-semibold tracking-tight text-foreground">Transparency Matters</h3>
+          </div>
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            We believe you should always understand what's happening with your connected accounts. Rothme makes each of these visible in plain language.
+          </p>
+          <ul className="mt-4 space-y-2.5">
+            {[
+              "What information is connected.",
+              "Why each permission is requested.",
+              "Which features use connected data.",
+              "How to disconnect an account whenever you choose.",
+            ].map((t) => (
+              <li key={t} className="flex items-start gap-2 text-sm text-foreground">
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                <span>{t}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="rounded-2xl border border-border bg-surface p-6 shadow-xs sm:p-8">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <ShieldCheck className="h-4 w-4" />
+            </span>
+            <h3 className="text-lg font-semibold tracking-tight text-foreground">Best Practices</h3>
+            <span className="ml-auto rounded-full border border-border bg-surface-2 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+              Recommended
+            </span>
+          </div>
+          <div className="mt-4 grid gap-2 sm:grid-cols-2">
+            {BEST_PRACTICES.map((b) => {
+              const Icon = b.icon;
+              return (
+                <div key={b.title} className="flex items-start gap-2.5 rounded-xl border border-border bg-surface-2 p-3">
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-primary/10 text-primary">
+                    <Icon className="h-3.5 w-3.5" />
+                  </span>
+                  <div className="min-w-0">
+                    <div className="text-[12px] font-semibold text-foreground">{b.title}</div>
+                    <div className="text-[11px] leading-snug text-muted-foreground">{b.body}</div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Callout */}
+      <div className="mt-20 text-center">
+        <h3 className="mx-auto max-w-3xl font-serif text-3xl leading-tight text-foreground sm:text-4xl md:text-5xl">
+          Your marketing data belongs to you.
+          <br />
+          <em className="italic text-foreground/70">Rothme simply helps you understand it.</em>
+        </h3>
       </div>
     </Section>
   );
