@@ -3539,6 +3539,75 @@ function FAQ() {
   );
 }
 
+/* ─────────────────────────────── Final CTA ─────────────────────────────── */
+
+function FinalCTA() {
+  return (
+    <section id="cta" className="bg-background">
+      <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary/10 via-background to-primary/5 px-6 py-24 sm:px-12 lg:px-16">
+          {/* Soft floating shapes */}
+          <div className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+            <div className="absolute -right-20 bottom-10 h-80 w-80 rounded-full bg-primary/10 blur-3xl" />
+            <div className="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/5 blur-3xl" />
+          </div>
+
+          <div className="relative mx-auto max-w-3xl text-center">
+            <h2 className="text-4xl font-medium tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+              Start Understanding Your Marketing Today.
+            </h2>
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              Connect your marketing platforms, monitor your marketing ecosystem, and understand your business from one simple dashboard.
+            </p>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
+              No complicated reports.
+              <br />
+              No switching between platforms.
+              <br />
+              Just clarity.
+            </p>
+
+            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+              <Button
+                asChild
+                size="lg"
+                className="h-12 rounded-full px-8 text-base font-medium shadow-lg shadow-primary/20 transition-transform duration-300 hover:-translate-y-0.5"
+              >
+                <Link to="/get-started">Start Free 30-Day Pro Trial</Link>
+              </Button>
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="h-12 rounded-full px-8 text-base font-medium transition-transform duration-300 hover:-translate-y-0.5"
+              >
+                <Link to="/pricing">View Pricing</Link>
+              </Button>
+            </div>
+
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-muted-foreground">
+              {TRUST_INDICATORS.map((item) => (
+                <div key={item} className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-primary" />
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+const TRUST_INDICATORS = [
+  "Secure Connections",
+  "Cancel Anytime",
+  "30-Day Free Trial",
+  "Upgrade or Downgrade Anytime",
+];
+
 /* ─────────────────────────────── Footer ─────────────────────────────── */
 
 function Footer() {
