@@ -601,7 +601,7 @@ const MARKETING_PAINS = [
 
 function MarketingProblem() {
   return (
-    <section id="marketing-problem" className="border-b border-border/70 bg-white">
+    <section id="marketing-problem" className="border-b border-border/70 bg-card">
       <div className="mx-auto max-w-6xl px-6 py-24 sm:py-28 md:py-32">
         <div className="mx-auto max-w-3xl text-center animate-rise">
           <span className="eyebrow">The marketing problem</span>
@@ -618,7 +618,7 @@ function MarketingProblem() {
         <div className="mt-16 grid gap-10 md:mt-20 md:grid-cols-2 md:gap-12 md:items-center">
           {/* Left: scattered floating platform chips */}
           <div
-            className="order-1 relative h-[440px] w-full overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-surface-2/60 via-white to-surface-2/40 shadow-sm sm:h-[500px]"
+            className="order-1 relative h-[440px] w-full overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-surface-2/60 via-surface to-surface-2/40 shadow-sm sm:h-[500px]"
             aria-hidden="true"
           >
             <div className="pointer-events-none absolute inset-0 opacity-70 [background-image:radial-gradient(circle_at_1px_1px,theme(colors.slate.200)_1px,transparent_0)] [background-size:22px_22px]" />
@@ -628,7 +628,7 @@ function MarketingProblem() {
                 className="absolute animate-float"
                 style={{ top: p.top, left: p.left, animationDelay: p.delay }}
               >
-                <div className="flex items-center gap-2.5 rounded-2xl border border-border/80 bg-white/95 px-3.5 py-2.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] backdrop-blur">
+                <div className="flex items-center gap-2.5 rounded-2xl border border-border/80 bg-card/95 px-3.5 py-2.5 shadow-[0_8px_24px_-12px_rgba(15,23,42,0.18)] backdrop-blur">
                   <div className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-gradient-to-br ${p.tint} text-[11px] font-semibold text-foreground/80`}>
                     {p.initial}
                   </div>
@@ -643,7 +643,7 @@ function MarketingProblem() {
             {MARKETING_PAINS.map((p, i) => (
               <div
                 key={p.title}
-                className="animate-rise rounded-2xl border border-border/70 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-20px_rgba(15,23,42,0.15)] transition hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_20px_40px_-20px_rgba(15,23,42,0.2)]"
+                className="animate-rise rounded-2xl border border-border/70 bg-card p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-20px_rgba(15,23,42,0.15)] transition hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_20px_40px_-20px_rgba(15,23,42,0.2)]"
                 style={{ animationDelay: `${i * 80}ms` }}
               >
                 <div className="grid h-9 w-9 place-items-center rounded-xl border border-border bg-surface-2/70 text-foreground/70">
@@ -753,7 +753,7 @@ function SolutionDiagram() {
   const cy = 50;
   const rOuter = 40;
   return (
-    <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-white via-surface-2/30 to-white shadow-sm">
+    <div className="relative aspect-square w-full overflow-hidden rounded-3xl border border-border/70 bg-gradient-to-br from-surface via-surface-2/30 to-surface shadow-sm">
       <div className="pointer-events-none absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_1px_1px,theme(colors.slate.200)_1px,transparent_0)] [background-size:22px_22px]" />
       <div className="pointer-events-none absolute -inset-24 opacity-40 blur-3xl [background:radial-gradient(circle_at_center,theme(colors.primary/15),transparent_60%)]" />
 
@@ -806,7 +806,7 @@ function SolutionDiagram() {
               animationDelay: `${(i % 6) * 0.4}s`,
             }}
           >
-            <div className="flex items-center gap-2 rounded-full border border-border/80 bg-white/95 px-3 py-1.5 shadow-[0_8px_20px_-12px_rgba(15,23,42,0.2)] backdrop-blur">
+            <div className="flex items-center gap-2 rounded-full border border-border/80 bg-card/95 px-3 py-1.5 shadow-[0_8px_20px_-12px_rgba(15,23,42,0.2)] backdrop-blur">
               <div className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-surface-2 text-[10px] font-semibold text-foreground/75">
                 {p.initial}
               </div>
@@ -822,7 +822,7 @@ function SolutionDiagram() {
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
         <div className="relative">
           <div className="absolute inset-0 -m-4 rounded-3xl bg-primary/20 blur-2xl" />
-          <div className="relative flex flex-col items-center gap-2 rounded-2xl border border-border bg-white px-6 py-5 shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)]">
+          <div className="relative flex flex-col items-center gap-2 rounded-2xl border border-border bg-card px-6 py-5 shadow-[0_20px_60px_-20px_rgba(15,23,42,0.35)]">
             <div className="grid h-11 w-11 place-items-center rounded-xl bg-primary text-primary-foreground">
               <Sparkles className="h-5 w-5" />
             </div>
@@ -839,7 +839,7 @@ function SolutionDiagram() {
 
 function RothmeSolution() {
   return (
-    <section id="rothme-solution" className="border-b border-border/70 bg-white">
+    <section id="rothme-solution" className="border-b border-border/70 bg-card">
       <style>{`
         @keyframes dash-flow { to { stroke-dashoffset: -20; } }
       `}</style>
@@ -865,7 +865,7 @@ function RothmeSolution() {
             {SOLUTION_FEATURES.map((f, i) => (
               <div
                 key={f.title}
-                className="animate-rise rounded-2xl border border-border/70 bg-white p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-20px_rgba(15,23,42,0.15)] transition hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_20px_40px_-20px_rgba(15,23,42,0.2)]"
+                className="animate-rise rounded-2xl border border-border/70 bg-card p-6 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_12px_32px_-20px_rgba(15,23,42,0.15)] transition hover:-translate-y-0.5 hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_20px_40px_-20px_rgba(15,23,42,0.2)]"
                 style={{ animationDelay: `${i * 90}ms` }}
               >
                 <div className="grid h-10 w-10 place-items-center rounded-xl border border-border bg-surface-2/70 text-primary">
@@ -880,11 +880,11 @@ function RothmeSolution() {
 
         {/* Statistics bar */}
         <div className="mt-20">
-          <div className="grid gap-3 rounded-3xl border border-border/70 bg-gradient-to-br from-surface-2/50 via-white to-surface-2/40 p-4 shadow-sm sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
+          <div className="grid gap-3 rounded-3xl border border-border/70 bg-gradient-to-br from-surface-2/50 via-surface to-surface-2/40 p-4 shadow-sm sm:grid-cols-2 sm:p-6 lg:grid-cols-4">
             {SOLUTION_STATS.map((s) => (
               <div
                 key={s.label}
-                className="rounded-2xl border border-border/60 bg-white px-6 py-6 text-center"
+                className="rounded-2xl border border-border/60 bg-card px-6 py-6 text-center"
               >
                 <div className="font-serif text-4xl leading-none tracking-tight text-foreground sm:text-5xl">
                   <CountUp end={s.value} suffix={s.suffix} />
@@ -1132,7 +1132,7 @@ const DASH_UPCOMING = [
 
 function DashboardSection() {
   return (
-    <section id="dashboard" className="border-b border-border/70 bg-white">
+    <section id="dashboard" className="border-b border-border/70 bg-card">
       <div className="mx-auto max-w-6xl px-6 py-24 sm:py-28 md:py-32">
         <div className="mx-auto max-w-3xl text-center animate-rise">
           <span className="eyebrow">The dashboard</span>
@@ -1157,7 +1157,7 @@ function DashboardSection() {
 function DashboardPreview() {
   const [range, setRange] = useState<"Weekly" | "Monthly" | "Yearly">("Monthly");
   return (
-    <div className="mx-auto w-[95%] max-w-[1180px] animate-rise overflow-hidden rounded-3xl border border-border bg-white shadow-[0_30px_80px_-30px_rgba(15,23,42,0.28),0_10px_30px_-15px_rgba(15,23,42,0.15)]">
+    <div className="mx-auto w-[95%] max-w-[1180px] animate-rise overflow-hidden rounded-3xl border border-border bg-card shadow-[0_30px_80px_-30px_rgba(15,23,42,0.28),0_10px_30px_-15px_rgba(15,23,42,0.15)]">
       <div className="overflow-x-auto">
         <div className="grid min-w-[900px] grid-cols-[220px_1fr]">
           {/* Sidebar */}
@@ -1178,7 +1178,7 @@ function DashboardPreview() {
                     "group flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-[13px] transition " +
                     (s.active
                       ? "bg-primary/10 font-medium text-primary"
-                      : "text-foreground/75 hover:bg-white hover:text-foreground")
+                      : "text-foreground/75 hover:bg-surface-2 hover:text-foreground")
                   }
                 >
                   <s.icon className="h-4 w-4 shrink-0" />
@@ -1191,7 +1191,7 @@ function DashboardPreview() {
           {/* Main */}
           <div className="min-w-0">
             {/* Top nav */}
-            <div className="flex items-center gap-3 border-b border-border/70 bg-white px-5 py-3">
+            <div className="flex items-center gap-3 border-b border-border/70 bg-card px-5 py-3">
               <div className="relative flex-1 max-w-md">
                 <Search className="pointer-events-none absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <input
@@ -1200,12 +1200,12 @@ function DashboardPreview() {
                   className="h-9 w-full rounded-lg border border-border bg-surface-2/40 pl-8 pr-3 text-[13px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
                 />
               </div>
-              <button type="button" className="hidden items-center gap-1.5 rounded-lg border border-border bg-white px-3 py-1.5 text-[12px] text-foreground/80 hover:bg-surface-2/60 sm:inline-flex">
+              <button type="button" className="hidden items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-[12px] text-foreground/80 hover:bg-surface-2/60 sm:inline-flex">
                 <Calendar className="h-3.5 w-3.5" />
                 Last 30 days
                 <ChevronDown className="h-3.5 w-3.5" />
               </button>
-              <button type="button" aria-label="Notifications" className="relative grid h-9 w-9 place-items-center rounded-lg border border-border bg-white text-foreground/70 hover:bg-surface-2/60">
+              <button type="button" aria-label="Notifications" className="relative grid h-9 w-9 place-items-center rounded-lg border border-border bg-card text-foreground/70 hover:bg-surface-2/60">
                 <Bell className="h-4 w-4" />
                 <span className="absolute right-2 top-2 h-1.5 w-1.5 rounded-full bg-primary" />
               </button>
@@ -1255,7 +1255,7 @@ function DashboardPreview() {
                       <span
                         key={p.name}
                         title={p.name}
-                        className="grid h-7 w-7 place-items-center rounded-md border border-border bg-white text-[10px] font-semibold text-foreground/75"
+                        className="grid h-7 w-7 place-items-center rounded-md border border-border bg-card text-[10px] font-semibold text-foreground/75"
                       >
                         {p.initial}
                       </span>
@@ -1280,7 +1280,7 @@ function DashboardPreview() {
                           onClick={() => setRange(r)}
                           className={
                             "px-2.5 py-1 text-[11px] font-medium transition " +
-                            (range === r ? "bg-primary text-primary-foreground" : "bg-white text-foreground/70 hover:bg-surface-2/60")
+                            (range === r ? "bg-primary text-primary-foreground" : "bg-card text-foreground/70 hover:bg-surface-2/60")
                           }
                         >
                           {r}
@@ -1366,7 +1366,7 @@ function DashboardPreview() {
                   {DASH_UPCOMING.map((r) => (
                     <div
                       key={r.title}
-                      className="flex items-center gap-3 rounded-xl border border-border/70 bg-white p-3"
+                      className="flex items-center gap-3 rounded-xl border border-border/70 bg-card p-3"
                     >
                       <div className="grid h-9 w-9 place-items-center rounded-lg bg-primary/10 text-primary">
                         <r.icon className="h-4 w-4" />
@@ -1394,7 +1394,7 @@ function DashboardPreview() {
 
 function DashCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-border/70 bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.03),0_10px_25px_-18px_rgba(15,23,42,0.15)] transition hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_18px_36px_-20px_rgba(15,23,42,0.2)]">
+    <div className="rounded-2xl border border-border/70 bg-card p-4 shadow-[0_1px_2px_rgba(15,23,42,0.03),0_10px_25px_-18px_rgba(15,23,42,0.15)] transition hover:shadow-[0_2px_4px_rgba(15,23,42,0.05),0_18px_36px_-20px_rgba(15,23,42,0.2)]">
       {children}
     </div>
   );
@@ -1445,7 +1445,7 @@ function GrowthChart({ range }: { range: "Weekly" | "Monthly" | "Yearly" }) {
 function MetricCard({ metric }: { metric: DashMetric }) {
   const Trend = metric.positive ? TrendingUp : TrendingDown;
   return (
-    <div className="group rounded-xl border border-border/70 bg-white p-3 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_10px_24px_-18px_rgba(15,23,42,0.25)]">
+    <div className="group rounded-xl border border-border/70 bg-card p-3 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_10px_24px_-18px_rgba(15,23,42,0.25)]">
       <div className="text-[10px] font-medium uppercase tracking-[0.12em] text-muted-foreground">{metric.label}</div>
       <div className="mt-1 font-serif text-xl leading-none text-foreground">{metric.value}</div>
       <div className="mt-2 flex items-center justify-between">
@@ -1464,7 +1464,7 @@ function MetricCard({ metric }: { metric: DashMetric }) {
         <SheetTrigger asChild>
           <button
             type="button"
-            className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-md border border-border bg-white px-2 py-1 text-[11px] font-medium text-foreground/80 transition hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
+            className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-md border border-border bg-card px-2 py-1 text-[11px] font-medium text-foreground/80 transition hover:border-primary/50 hover:bg-primary/5 hover:text-primary"
           >
             Learn more <ArrowUpRight className="h-3 w-3" />
           </button>
