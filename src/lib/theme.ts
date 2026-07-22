@@ -12,7 +12,7 @@ export const themeBootstrapScript = `
 (function() {
   try {
     var stored = localStorage.getItem('${THEME_STORAGE_KEY}');
-    var theme = stored || 'system';
+    var theme = stored || 'dark';
     var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     var root = document.documentElement;
     root.classList.toggle('dark', isDark);
