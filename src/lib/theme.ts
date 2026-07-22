@@ -12,7 +12,7 @@ export const themeBootstrapScript = `
 (function() {
   try {
     var stored = localStorage.getItem('${THEME_STORAGE_KEY}');
-    var theme = stored || 'system';
+    var theme = stored || 'dark';
     var isDark = theme === 'dark' || (theme === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
     var root = document.documentElement;
     root.classList.toggle('dark', isDark);
@@ -32,11 +32,11 @@ function applyTheme(theme: Theme) {
 }
 
 export function useTheme() {
-  const [theme, setThemeState] = useState<Theme>("system");
+  const [theme, setThemeState] = useState<Theme>("dark");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const stored = (localStorage.getItem(THEME_STORAGE_KEY) as Theme | null) ?? "system";
+    const stored = (localStorage.getItem(THEME_STORAGE_KEY) as Theme | null) ?? "dark";
     setThemeState(stored);
     setMounted(true);
   }, []);
