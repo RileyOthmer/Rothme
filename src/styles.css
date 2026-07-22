@@ -5,9 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * ROTHME — calm, premium SaaS design system.
- * Light-first, near-white surfaces, ink text, one restrained accent.
- * Soft shadows always paired with a hairline border, never a shadow alone.
+ * ROTHME — dark-first Midnight Indigo palette.
+ * Deep navy surfaces, electric indigo accent, high-contrast ink.
  */
 
 @theme inline {
@@ -17,8 +16,9 @@
   --radius-xl: calc(var(--radius) + 4px);
   --radius-2xl: calc(var(--radius) + 8px);
 
-  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-serif: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Space Grotesk", "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Space Grotesk", ui-serif, Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --color-background: var(--background);
@@ -59,99 +59,56 @@
   --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-:root {
-  --radius: 0.75rem; /* 12px */
+/* Midnight Indigo — applied at :root so the app is dark by default,
+   even before the theme bootstrap toggles the .dark class. */
+:root,
+.dark {
+  --radius: 0.75rem;
 
-  /* Surfaces */
-  --background: oklch(0.99 0.002 95);       /* warm off-white */
-  --foreground: oklch(0.22 0.01 260);       /* near-black ink */
-  --surface: oklch(1 0 0);                  /* pure white cards */
-  --surface-2: oklch(0.975 0.003 95);       /* insets */
+  /* Surfaces: #0a0a1a → #141432 → #1e1e5a rims */
+  --background: oklch(0.14 0.04 275);        /* #0a0a1a-ish */
+  --foreground: oklch(0.97 0.01 270);
+  --surface: oklch(0.19 0.06 275);           /* #141432 */
+  --surface-2: oklch(0.24 0.09 275);         /* deeper indigo inset */
 
   --card: var(--surface);
   --card-foreground: var(--foreground);
-  --popover: var(--surface);
+  --popover: oklch(0.17 0.05 275);
   --popover-foreground: var(--foreground);
 
-  /* Ink accent */
-  --primary: oklch(0.32 0.05 255);          /* ~#2B3340 deep ink-blue */
+  /* Electric indigo accent */
+  --primary: oklch(0.60 0.24 275);           /* ~#4f46e5 */
   --primary-foreground: oklch(0.99 0 0);
-  --accent: oklch(0.32 0.05 255);
+  --accent: oklch(0.32 0.16 275);            /* #1e1e5a */
   --accent-foreground: oklch(0.99 0 0);
 
-  --secondary: oklch(0.975 0.003 95);
-  --secondary-foreground: oklch(0.22 0.01 260);
-
-  --muted: oklch(0.975 0.003 95);
-  --muted-foreground: oklch(0.52 0.01 260); /* ~#6B6F76 */
-
-  --destructive: oklch(0.55 0.14 25);
-  --destructive-foreground: oklch(0.99 0 0);
-
-  --border: oklch(0 0 0 / 8%);
-  --border-strong: oklch(0 0 0 / 14%);
-  --input: oklch(0 0 0 / 14%);
-  --ring: oklch(0.32 0.05 255 / 40%);
-
-  /* Verdict semantics — deliberately muted */
-  --success: oklch(0.58 0.09 155);
-  --success-foreground: oklch(0.99 0 0);
-  --warning: oklch(0.72 0.10 75);
-  --warning-foreground: oklch(0.22 0.01 260);
-  --danger: oklch(0.55 0.14 25);
-  --danger-foreground: oklch(0.99 0 0);
-
-  /* Soft shadows — always with a hairline border */
-  --shadow-xs: 0 1px 2px oklch(0 0 0 / 4%);
-  --shadow-sm: 0 1px 2px oklch(0 0 0 / 4%), 0 1px 0 oklch(0 0 0 / 3%);
-  --shadow-md: 0 8px 24px -8px oklch(0 0 0 / 8%), 0 2px 4px oklch(0 0 0 / 4%);
-  --shadow-lg: 0 24px 48px -16px oklch(0 0 0 / 10%), 0 4px 8px oklch(0 0 0 / 4%);
-}
-
-.dark {
-  /* Surfaces — cool near-black, layered by a single step */
-  --background: oklch(0.16 0.008 260);
-  --foreground: oklch(0.97 0.003 260);
-  --surface: oklch(0.20 0.008 260);
-  --surface-2: oklch(0.235 0.008 260);
-
-  --card: var(--surface);
-  --card-foreground: var(--foreground);
-  --popover: oklch(0.22 0.008 260);
-  --popover-foreground: var(--foreground);
-
-  /* Ink accent inverts: bright, high-contrast on dark */
-  --primary: oklch(0.92 0.02 255);
-  --primary-foreground: oklch(0.18 0.01 260);
-  --accent: var(--primary);
-  --accent-foreground: var(--primary-foreground);
-
-  --secondary: oklch(0.235 0.008 260);
+  --secondary: oklch(0.24 0.09 275);
   --secondary-foreground: var(--foreground);
 
-  --muted: oklch(0.235 0.008 260);
-  --muted-foreground: oklch(0.68 0.008 260);
+  --muted: oklch(0.22 0.07 275);
+  --muted-foreground: oklch(0.72 0.03 275);
 
-  --destructive: oklch(0.62 0.16 25);
+  --destructive: oklch(0.62 0.20 25);
   --destructive-foreground: oklch(0.99 0 0);
 
   --border: oklch(1 0 0 / 8%);
-  --border-strong: oklch(1 0 0 / 14%);
+  --border-strong: oklch(1 0 0 / 16%);
   --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.92 0.02 255 / 40%);
+  --ring: oklch(0.60 0.24 275 / 55%);
 
-  --success: oklch(0.72 0.13 155);
-  --success-foreground: oklch(0.14 0.01 260);
-  --warning: oklch(0.80 0.12 75);
-  --warning-foreground: oklch(0.14 0.01 260);
-  --danger: oklch(0.66 0.17 25);
+  --success: oklch(0.75 0.16 155);
+  --success-foreground: oklch(0.14 0.02 275);
+  --warning: oklch(0.82 0.14 80);
+  --warning-foreground: oklch(0.14 0.02 275);
+  --danger: oklch(0.66 0.19 25);
   --danger-foreground: oklch(0.99 0 0);
 
-  /* Elevation in dark: rely on surface layering + rim, not diffuse shadow */
   --shadow-xs: 0 1px 0 oklch(1 0 0 / 4%) inset;
-  --shadow-sm: 0 1px 0 oklch(1 0 0 / 4%) inset, 0 1px 2px oklch(0 0 0 / 40%);
-  --shadow-md: 0 1px 0 oklch(1 0 0 / 6%) inset, 0 12px 32px -12px oklch(0 0 0 / 60%);
-  --shadow-lg: 0 1px 0 oklch(1 0 0 / 8%) inset, 0 24px 60px -20px oklch(0 0 0 / 70%);
+  --shadow-sm: 0 1px 0 oklch(1 0 0 / 5%) inset, 0 1px 2px oklch(0 0 0 / 50%);
+  --shadow-md: 0 1px 0 oklch(1 0 0 / 6%) inset, 0 12px 32px -12px oklch(0 0 0 / 65%);
+  --shadow-lg: 0 1px 0 oklch(1 0 0 / 8%) inset, 0 28px 60px -20px oklch(0 0 0 / 75%);
+
+  color-scheme: dark;
 }
 
 @layer base {
