@@ -6,7 +6,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateText, Output } from "ai";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createOpenAiProvider } from "@/lib/ai-gateway.server";
 
 // ---------- Schemas ----------
 
@@ -146,8 +146,8 @@ export const analyzeBusiness = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("Missing LOVABLE_API_KEY");
+    const key = process.env.OPENAI_API_KEY;
+    if (!key) throw new Error("Missing OPENAI_API_KEY");
 
     const { data: session } = await supabase
       .from("onboarding_sessions")
@@ -157,7 +157,7 @@ export const analyzeBusiness = createServerFn({ method: "POST" })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const answers = (session?.answers ?? {}) as Record<string, any>;
 
-    const gateway = createLovableAiGatewayProvider(key);
+    const gateway = createOpenAiProvider(key);
 
     const system = `You are ROTHME's strategist. ROTHME is an AI marketing operating system for non-expert business owners.
 Voice contract:
@@ -175,7 +175,7 @@ Return an honest analysis. businessScore is 0-100. marketingMaturity is current 
     let result: OnboardingAnalysis;
     try {
       const { output } = await generateText({
-        model: gateway("google/gemini-2.5-flash"),
+        model: gateway("gpt-4o-mini"),
         system,
         prompt,
         output: Output.object({ schema: AnalysisSchema }),

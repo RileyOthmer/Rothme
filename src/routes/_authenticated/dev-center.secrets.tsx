@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 const KNOWN = [
   { name: "INTEGRATION_ENCRYPTION_KEY", desc: "AES key used to encrypt OAuth tokens at rest." },
-  { name: "LOVABLE_API_KEY",            desc: "Lovable AI Gateway (chat, summaries, insights)." },
+  { name: "OPENAI_API_KEY",             desc: "OpenAI (chat, summaries, insights)." },
   { name: "SUPABASE_URL",               desc: "Backend URL (server-side)." },
   { name: "SUPABASE_PUBLISHABLE_KEY",   desc: "Publishable key for backend Data API." },
   { name: "SUPABASE_SERVICE_ROLE_KEY",  desc: "Server-only; used by admin sync + webhook handlers." },

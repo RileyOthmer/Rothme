@@ -7,7 +7,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateText, Output, NoObjectGeneratedError } from "ai";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createOpenAiProvider } from "@/lib/ai-gateway.server";
 
 const ScoreBlock = z.object({
   score: z.number().min(0).max(100),
@@ -49,8 +49,8 @@ export const generateDashboardInsights = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("Missing LOVABLE_API_KEY");
+    const key = process.env.OPENAI_API_KEY;
+    if (!key) throw new Error("Missing OPENAI_API_KEY");
 
     const { data: session } = await supabase
       .from("onboarding_sessions")
@@ -68,7 +68,7 @@ export const generateDashboardInsights = createServerFn({ method: "POST" })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const connections = (session?.connections ?? {}) as Record<string, any>;
 
-    const gateway = createLovableAiGatewayProvider(key);
+    const gateway = createOpenAiProvider(key);
 
     const system = `You are ROTHME's senior marketing strategist for non-expert business owners.
 Voice:
@@ -98,7 +98,7 @@ Then produce 5-8 personalized recommendations that would most move these scores 
     let insights: DashboardInsights;
     try {
       const { output } = await generateText({
-        model: gateway("google/gemini-2.5-flash"),
+        model: gateway("gpt-4o-mini"),
         system,
         prompt,
         output: Output.object({ schema: InsightsSchema }),

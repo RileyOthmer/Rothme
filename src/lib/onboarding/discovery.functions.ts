@@ -7,7 +7,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { generateText, Output } from "ai";
 import { z } from "zod";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createOpenAiProvider } from "@/lib/ai-gateway.server";
 
 
 
@@ -44,10 +44,10 @@ export type PersonalizedSolution = z.infer<typeof SolutionSchema>;
 export const generatePersonalizedSolution = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => AnswersSchema.parse(input))
   .handler(async ({ data }): Promise<PersonalizedSolution> => {
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("Missing LOVABLE_API_KEY");
+    const key = process.env.OPENAI_API_KEY;
+    if (!key) throw new Error("Missing OPENAI_API_KEY");
 
-    const gateway = createLovableAiGatewayProvider(key);
+    const gateway = createOpenAiProvider(key);
 
     const system = `You are ROTHME's strategist. ROTHME is an AI marketing operating system for non-expert business owners.
 Voice contract:
@@ -78,7 +78,7 @@ Pick 3-5 recommended features and 2-6 integrations that fit THIS business.`;
 
     try {
       const { output } = await generateText({
-        model: gateway("google/gemini-2.5-flash"),
+        model: gateway("gpt-4o-mini"),
         system,
         prompt,
         output: Output.object({ schema: SolutionSchema }),

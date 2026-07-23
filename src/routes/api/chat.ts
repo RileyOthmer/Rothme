@@ -6,7 +6,7 @@ import {
   type UIMessage,
 } from "ai";
 
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createOpenAiProvider } from "@/lib/ai-gateway.server";
 import { buildStrategistSystemPrompt } from "@/lib/strategist-prompt";
 
 type ChatRequestBody = { messages?: unknown };
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const key = process.env.LOVABLE_API_KEY;
+        const key = process.env.OPENAI_API_KEY;
         if (!key) {
           return new Response(
             "The AI strategist isn't set up yet. Please try again in a moment.",
@@ -50,8 +50,8 @@ export const Route = createFileRoute("/api/chat")({
 
 
         try {
-          const gateway = createLovableAiGatewayProvider(key);
-          const model = gateway("google/gemini-3-flash-preview");
+          const gateway = createOpenAiProvider(key);
+          const model = gateway("gpt-4o");
 
           const result = streamText({
             model,
