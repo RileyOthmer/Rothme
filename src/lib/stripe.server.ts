@@ -44,7 +44,6 @@ export const PRO_MONTHLY_PRICE_ID = "price_1TtBWiRCrO28cDbmovSMFJeC";
 export function resolvePriceId(slug: string): string {
   if (slug.startsWith("price_")) return slug;
   if (slug === "pro_monthly") return PRO_MONTHLY_PRICE_ID;
-  if (slug === "pro_annual") return PRO_MONTHLY_PRICE_ID;
   throw new Error(`Unknown price slug: ${slug}`);
 }
 

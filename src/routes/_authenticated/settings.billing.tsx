@@ -90,8 +90,6 @@ function BillingPage() {
   const planLabel =
     subscription?.price_id === "pro_monthly"
       ? "Rothme — Monthly"
-      : subscription?.price_id === "pro_annual"
-      ? "Rothme — Annual"
       : isActive
       ? "Rothme"
       : "Not subscribed";
@@ -99,8 +97,6 @@ function BillingPage() {
   const planPrice =
     subscription?.price_id === "pro_monthly"
       ? "$200.00 / month"
-      : subscription?.price_id === "pro_annual"
-      ? "$2,000.00 / year"
       : null;
 
 

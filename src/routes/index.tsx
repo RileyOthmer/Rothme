@@ -3496,7 +3496,7 @@ const FAQS = [
   },
   {
     q: "What happens after my 30-day Pro trial?",
-    a: "At the end of your free trial, you can continue with Rothme Pro or switch to the Starter plan if it better fits your needs.",
+    a: "At the end of your free trial, you can continue with Rothme Pro at $200/month or cancel at any time.",
   },
   {
     q: "Is my data secure?",
