@@ -149,6 +149,28 @@ function AuthPage() {
     }
   };
 
+  const handleApple = async () => {
+    setLoading(true);
+    try {
+      const safeRedirect =
+        redirect && redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : undefined;
+      const returnQuery = safeRedirect
+        ? `?redirect=${encodeURIComponent(safeRedirect)}`
+        : "";
+      const result = await lovable.auth.signInWithOAuth("apple", {
+        redirect_uri: `${window.location.origin}/auth${returnQuery}`,
+      });
+      if (result.error) throw result.error;
+      if (result.redirected) return;
+      const t = await resolveLandingRoute(safeRedirect);
+      navigate({ to: t.to, search: t.search, replace: true } as never);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Apple sign-in failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
@@ -176,6 +198,15 @@ function AuthPage() {
               disabled={loading}
             >
               <GoogleIcon /> Continue with Google
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleApple}
+              disabled={loading}
+            >
+              <AppleIcon /> Continue with Apple
             </Button>
           </div>
 
@@ -261,6 +292,14 @@ function GoogleIcon() {
   return (
     <svg viewBox="0 0 24 24" className="mr-2 h-4 w-4" aria-hidden>
       <path fill="#EA4335" d="M12 10.2v3.9h5.5c-.2 1.3-1.7 3.9-5.5 3.9-3.3 0-6-2.7-6-6s2.7-6 6-6c1.9 0 3.1.8 3.9 1.5l2.7-2.6C16.9 3.3 14.7 2.3 12 2.3 6.7 2.3 2.4 6.6 2.4 12s4.3 9.7 9.6 9.7c5.6 0 9.3-3.9 9.3-9.4 0-.6-.1-1.1-.2-1.6H12z" />
+    </svg>
+  );
+}
+
+function AppleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="mr-2 h-4 w-4" aria-hidden fill="currentColor">
+      <path d="M16.365 1.43c0 1.14-.417 2.22-1.11 3.02-.75.87-1.97 1.54-3.02 1.46-.13-1.13.43-2.31 1.11-3.05.77-.83 2.09-1.44 3.02-1.43zM20.5 17.14c-.56 1.24-.83 1.79-1.55 2.88-1.01 1.51-2.44 3.39-4.21 3.4-1.57.01-1.97-1.02-4.1-1.01-2.13.01-2.57 1.03-4.14 1.02-1.77-.02-3.13-1.71-4.14-3.22-2.83-4.24-3.13-9.22-1.38-11.86 1.24-1.88 3.2-2.98 5.04-2.98 1.87 0 3.05 1.03 4.6 1.03 1.5 0 2.42-1.03 4.58-1.03 1.64 0 3.37.89 4.6 2.44-4.05 2.22-3.39 8.01.7 9.33z"/>
     </svg>
   );
 }
