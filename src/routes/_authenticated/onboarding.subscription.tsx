@@ -35,14 +35,14 @@ function SubscriptionStep() {
   // Skip step entirely if org already active
   useEffect(() => {
     if (!loading && isActive) {
-      save({ data: { step: "connections" } }).catch(() => {});
-      navigate({ to: "/onboarding/connections" });
+      save({ data: { step: "configuration" } }).catch(() => {});
+      navigate({ to: "/onboarding/configuration" });
     }
   }, [loading, isActive, navigate, save]);
 
   const skipForNow = async () => {
-    await save({ data: { step: "connections" } }).catch(() => {});
-    navigate({ to: "/onboarding/connections" });
+    await save({ data: { step: "configuration" } }).catch(() => {});
+    navigate({ to: "/onboarding/configuration" });
   };
 
   return (

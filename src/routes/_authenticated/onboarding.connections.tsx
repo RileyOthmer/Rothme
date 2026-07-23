@@ -60,8 +60,8 @@ function ConnectionsStep() {
   };
 
   const next = async () => {
-    await save({ data: { step: "configuration" } }).catch(() => {});
-    navigate({ to: "/onboarding/configuration" });
+    await save({ data: { step: "subscription" } }).catch(() => {});
+    navigate({ to: "/onboarding/subscription" });
   };
 
   return (
