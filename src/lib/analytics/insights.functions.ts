@@ -6,7 +6,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { generateText } from "ai";
 import { z } from "zod";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createOpenAiProvider } from "@/lib/ai-gateway.server";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 
@@ -26,15 +26,15 @@ export const getExecutiveInsights = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d) => inputSchema.parse(d))
   .handler(async ({ data }) => {
-    const key = process.env.LOVABLE_API_KEY;
+    const key = process.env.OPENAI_API_KEY;
     if (!key) {
       return {
-        summary: "AI strategist is temporarily unavailable. Configure LOVABLE_API_KEY to enable insights.",
+        summary: "AI strategist is temporarily unavailable. Configure OPENAI_API_KEY to enable insights.",
         actions: [] as string[],
         confidence: "low" as const,
       };
     }
-    const gateway = createLovableAiGatewayProvider(key);
+    const gateway = createOpenAiProvider(key);
 
     const platformLine = data.platforms.length
       ? `Platforms: ${data.platforms.join(", ")}`
@@ -70,7 +70,7 @@ export const getExecutiveInsights = createServerFn({ method: "POST" })
 
     try {
       const { text } = await generateText({
-        model: gateway("google/gemini-2.5-flash"),
+        model: gateway("gpt-4o-mini"),
         system,
         prompt,
       });

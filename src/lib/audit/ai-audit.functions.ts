@@ -8,7 +8,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { generateText, Output, NoObjectGeneratedError } from "ai";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createOpenAiProvider } from "@/lib/ai-gateway.server";
 
 export const AUDIT_CATEGORIES = [
   "website",
@@ -52,8 +52,8 @@ export const runAiAudit = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("Missing LOVABLE_API_KEY");
+    const key = process.env.OPENAI_API_KEY;
+    if (!key) throw new Error("Missing OPENAI_API_KEY");
 
     const { data: session } = await supabase
       .from("onboarding_sessions")
@@ -69,7 +69,7 @@ export const runAiAudit = createServerFn({ method: "POST" })
     const answers = (session?.answers ?? {}) as Record<string, unknown>;
     const connections = (session?.connections ?? {}) as Record<string, unknown>;
 
-    const gateway = createLovableAiGatewayProvider(key);
+    const gateway = createOpenAiProvider(key);
 
     const system = `You are ROTHME's senior growth auditor for non-expert business owners.
 Voice: plain English, concrete, honest, warm. No jargon.
@@ -110,7 +110,7 @@ The "summary" field is 2-3 sentences summarizing the biggest finding and the sin
     let audit: AiAudit;
     try {
       const { output } = await generateText({
-        model: gateway("google/gemini-2.5-flash"),
+        model: gateway("gpt-4o-mini"),
         system,
         prompt,
         output: Output.object({ schema: AuditSchema }),
