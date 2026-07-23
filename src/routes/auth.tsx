@@ -149,6 +149,28 @@ function AuthPage() {
     }
   };
 
+  const handleApple = async () => {
+    setLoading(true);
+    try {
+      const safeRedirect =
+        redirect && redirect.startsWith("/") && !redirect.startsWith("//") ? redirect : undefined;
+      const returnQuery = safeRedirect
+        ? `?redirect=${encodeURIComponent(safeRedirect)}`
+        : "";
+      const result = await lovable.auth.signInWithOAuth("apple", {
+        redirect_uri: `${window.location.origin}/auth${returnQuery}`,
+      });
+      if (result.error) throw result.error;
+      if (result.redirected) return;
+      const t = await resolveLandingRoute(safeRedirect);
+      navigate({ to: t.to, search: t.search, replace: true } as never);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Apple sign-in failed.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className="flex min-h-dvh flex-col bg-background text-foreground">
@@ -176,6 +198,15 @@ function AuthPage() {
               disabled={loading}
             >
               <GoogleIcon /> Continue with Google
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleApple}
+              disabled={loading}
+            >
+              <AppleIcon /> Continue with Apple
             </Button>
           </div>
 
