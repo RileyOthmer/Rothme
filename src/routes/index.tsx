@@ -127,15 +127,24 @@ function Header() {
 
   useEffect(() => {
     setMounted(true);
-    supabase.auth.getUser().then(({ data }) => setUser(data.user));
-    const { data: listener } = supabase.auth.onAuthStateChange((_e, session) => {
-      setUser(session?.user ?? null);
-    });
+    supabase.auth.getUser().then(({ data, error }) => {
+      if (error) return;
+      setUser(data.user);
+    }).catch(() => {});
+    let listener: { subscription: { unsubscribe: () => void } } | undefined;
+    try {
+      const result = supabase.auth.onAuthStateChange((_e, session) => {
+        setUser(session?.user ?? null);
+      });
+      listener = result.data;
+    } catch {
+      /* Supabase not configured — auth features unavailable */
+    }
     const onScroll = () => setScrolled(window.scrollY > 8);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      listener.subscription.unsubscribe();
+      listener?.subscription.unsubscribe();
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
