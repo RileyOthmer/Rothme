@@ -38,9 +38,10 @@ function createSupabaseClient() {
       ...(!SUPABASE_URL ? ['SUPABASE_URL'] : []),
       ...(!SUPABASE_PUBLISHABLE_KEY ? ['SUPABASE_PUBLISHABLE_KEY'] : []),
     ];
-    const message = `Missing Supabase environment variable(s): ${missing.join(', ')}. Connect Supabase in Lovable Cloud.`;
-    console.error(`[Supabase] ${message}`);
-    throw new Error(message);
+    console.warn(`[Supabase] Missing environment variable(s): ${missing.join(', ')}. Auth and data features will be unavailable until Supabase is configured.`);
+    return createClient<Database>('https://placeholder.supabase.co', 'placeholder-anon-key', {
+      auth: { storage: typeof window !== 'undefined' ? localStorage : undefined, persistSession: false, autoRefreshToken: false },
+    });
   }
 
   return createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
