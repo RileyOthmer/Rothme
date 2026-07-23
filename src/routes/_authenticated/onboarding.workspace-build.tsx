@@ -45,7 +45,7 @@ function WorkspaceBuildStep() {
       // Mark workspace built + advance in background
       save({
         data: {
-          step: "connections",
+          step: "subscription",
           checklist: { workspace_created: true, ai_configured: true, analytics_ready: true },
         },
       })
@@ -120,10 +120,10 @@ function WorkspaceBuildStep() {
           <Button
             size="lg"
             disabled={!done}
-            onClick={() => navigate({ to: "/onboarding/connections" })}
+            onClick={() => navigate({ to: "/onboarding/subscription" })}
             className="gap-2"
           >
-            {done ? "Connect platforms" : "Please wait…"}
+            {done ? "Choose a plan" : "Please wait…"}
           </Button>
         </div>
       </div>

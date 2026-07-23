@@ -2,15 +2,17 @@ import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { EmptyDataState, ZeroStatGrid } from "@/components/dashboard/EmptyDataState";
 import { useHasConnections } from "@/hooks/use-has-connections";
+import { useHasMetrics } from "@/hooks/use-has-metrics";
 
 export const Route = createFileRoute("/_authenticated/analytics")({
   component: AnalyticsLayout,
 });
 
 function AnalyticsLayout() {
-  const { hasConnections, isLoading } = useHasConnections();
+  const { hasConnections, isLoading: connLoading } = useHasConnections();
+  const { hasMetrics, isLoading: metricsLoading } = useHasMetrics();
 
-  if (!isLoading && !hasConnections) {
+  if (!connLoading && !metricsLoading && (!hasConnections || !hasMetrics)) {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <AppHeader />
@@ -25,8 +27,12 @@ function AnalyticsLayout() {
           </header>
           <ZeroStatGrid labels={["Reach", "Engagement", "Followers", "Revenue"]} />
           <EmptyDataState
-            title="Connect a data source to see analytics"
-            description="Rothme won't show numbers we can't back up with your data. Connect a social account, ad platform, or website provider and every chart, KPI, and insight will populate with real values."
+            title={hasConnections ? "No analytics yet" : "Connect a data source to see analytics"}
+            description={
+              hasConnections
+                ? "Your platforms are connected but no metrics have been synced yet. Numbers will appear here as soon as the first sync completes."
+                : "Rothme won't show numbers we can't back up with your data. Connect a social account, ad platform, or website provider and every chart, KPI, and insight will populate with real values."
+            }
           />
         </main>
       </div>

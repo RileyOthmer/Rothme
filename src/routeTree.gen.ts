@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WhyRouteImport } from './routes/why'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as PricingRouteImport } from './routes/pricing'
-import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as GetStartedRouteImport } from './routes/get-started'
 import { Route as DesignRouteImport } from './routes/design'
@@ -37,6 +36,7 @@ import { Route as AuthenticatedTasksRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
 import { Route as AuthenticatedPublishingRouteImport } from './routes/_authenticated/publishing'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedInsightsRouteImport } from './routes/_authenticated/insights'
 import { Route as AuthenticatedGoalsRouteImport } from './routes/_authenticated/goals'
 import { Route as AuthenticatedDevCenterRouteImport } from './routes/_authenticated/dev-center'
@@ -138,11 +138,6 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const PricingRoute = PricingRouteImport.update({
   id: '/pricing',
   path: '/pricing',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NotificationsRoute = NotificationsRouteImport.update({
-  id: '/notifications',
-  path: '/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
 const McpRoute = McpRouteImport.update({
@@ -264,6 +259,12 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedInsightsRoute = AuthenticatedInsightsRouteImport.update({
   id: '/insights',
   path: '/insights',
@@ -780,7 +781,6 @@ export interface FileRoutesByFullPath {
   '/design': typeof DesignRoute
   '/get-started': typeof GetStartedRouteWithChildren
   '/mcp': typeof McpRoute
-  '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/why': typeof WhyRoute
@@ -794,6 +794,7 @@ export interface FileRoutesByFullPath {
   '/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/onboarding': typeof AuthenticatedOnboardingRouteWithChildren
   '/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/reports': typeof AuthenticatedReportsRouteWithChildren
@@ -895,7 +896,6 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRouteWithChildren
   '/design': typeof DesignRoute
   '/mcp': typeof McpRoute
-  '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/why': typeof WhyRoute
@@ -906,6 +906,7 @@ export interface FileRoutesByTo {
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/goals': typeof AuthenticatedGoalsRoute
   '/insights': typeof AuthenticatedInsightsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/reports': typeof AuthenticatedReportsRouteWithChildren
   '/tasks': typeof AuthenticatedTasksRoute
@@ -1009,7 +1010,6 @@ export interface FileRoutesById {
   '/design': typeof DesignRoute
   '/get-started': typeof GetStartedRouteWithChildren
   '/mcp': typeof McpRoute
-  '/notifications': typeof NotificationsRoute
   '/pricing': typeof PricingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/why': typeof WhyRoute
@@ -1023,6 +1023,7 @@ export interface FileRoutesById {
   '/_authenticated/dev-center': typeof AuthenticatedDevCenterRouteWithChildren
   '/_authenticated/goals': typeof AuthenticatedGoalsRoute
   '/_authenticated/insights': typeof AuthenticatedInsightsRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRouteWithChildren
   '/_authenticated/publishing': typeof AuthenticatedPublishingRouteWithChildren
   '/_authenticated/reports': typeof AuthenticatedReportsRouteWithChildren
@@ -1127,7 +1128,6 @@ export interface FileRouteTypes {
     | '/design'
     | '/get-started'
     | '/mcp'
-    | '/notifications'
     | '/pricing'
     | '/sitemap.xml'
     | '/why'
@@ -1141,6 +1141,7 @@ export interface FileRouteTypes {
     | '/dev-center'
     | '/goals'
     | '/insights'
+    | '/notifications'
     | '/onboarding'
     | '/publishing'
     | '/reports'
@@ -1242,7 +1243,6 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/design'
     | '/mcp'
-    | '/notifications'
     | '/pricing'
     | '/sitemap.xml'
     | '/why'
@@ -1253,6 +1253,7 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/goals'
     | '/insights'
+    | '/notifications'
     | '/publishing'
     | '/reports'
     | '/tasks'
@@ -1355,7 +1356,6 @@ export interface FileRouteTypes {
     | '/design'
     | '/get-started'
     | '/mcp'
-    | '/notifications'
     | '/pricing'
     | '/sitemap.xml'
     | '/why'
@@ -1369,6 +1369,7 @@ export interface FileRouteTypes {
     | '/_authenticated/dev-center'
     | '/_authenticated/goals'
     | '/_authenticated/insights'
+    | '/_authenticated/notifications'
     | '/_authenticated/onboarding'
     | '/_authenticated/publishing'
     | '/_authenticated/reports'
@@ -1473,7 +1474,6 @@ export interface RootRouteChildren {
   DesignRoute: typeof DesignRoute
   GetStartedRoute: typeof GetStartedRouteWithChildren
   McpRoute: typeof McpRoute
-  NotificationsRoute: typeof NotificationsRoute
   PricingRoute: typeof PricingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WhyRoute: typeof WhyRoute
@@ -1515,13 +1515,6 @@ declare module '@tanstack/react-router' {
       path: '/pricing'
       fullPath: '/pricing'
       preLoaderRoute: typeof PricingRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/mcp': {
@@ -1690,6 +1683,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/insights': {
@@ -2515,6 +2515,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedDevCenterRoute: typeof AuthenticatedDevCenterRouteWithChildren
   AuthenticatedGoalsRoute: typeof AuthenticatedGoalsRoute
   AuthenticatedInsightsRoute: typeof AuthenticatedInsightsRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRouteWithChildren
   AuthenticatedPublishingRoute: typeof AuthenticatedPublishingRouteWithChildren
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRouteWithChildren
@@ -2540,6 +2541,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDevCenterRoute: AuthenticatedDevCenterRouteWithChildren,
   AuthenticatedGoalsRoute: AuthenticatedGoalsRoute,
   AuthenticatedInsightsRoute: AuthenticatedInsightsRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRouteWithChildren,
   AuthenticatedPublishingRoute: AuthenticatedPublishingRouteWithChildren,
   AuthenticatedReportsRoute: AuthenticatedReportsRouteWithChildren,
@@ -2621,7 +2623,6 @@ const rootRouteChildren: RootRouteChildren = {
   DesignRoute: DesignRoute,
   GetStartedRoute: GetStartedRouteWithChildren,
   McpRoute: McpRoute,
-  NotificationsRoute: NotificationsRoute,
   PricingRoute: PricingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WhyRoute: WhyRoute,

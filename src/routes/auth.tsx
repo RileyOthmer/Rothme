@@ -9,7 +9,7 @@ import { Wordmark } from "@/components/brand/Wordmark";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 
 const searchSchema = z.object({
   redirect: z.string().optional(),
@@ -283,7 +283,6 @@ function AuthPage() {
           </p>
         </div>
       </main>
-      <Toaster theme="light" position="bottom-right" />
     </div>
   );
 }
